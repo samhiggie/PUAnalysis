@@ -23,7 +23,7 @@ The output file, analysis.root
 
 In general To see what needs to be fixed ``` grep -r FIXME *``` or ``` CHECKME```. 
 
-Currently the CRAB/Farmout instructions need to be updated
+
 | Kind Of Issue  | Issue Detail |
 | ------------- | ------------- |
 | ES Scaling    | Put me back?  |
