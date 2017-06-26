@@ -1,0 +1,6 @@
+*__init__.py
+*.pyc
+*weights.xml
+*nohup.out
+*dump.py
+*analysis.root
