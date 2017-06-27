@@ -65,19 +65,19 @@ class CompositePtrCandidateTMEtProducer : public edm::EDProducer
 
   ~CompositePtrCandidateTMEtProducer() {}
 
-  void produce(edm::Event& evt, const edm::EventSetup& es)
+  void produce(edm::Event& iEvent, const edm::EventSetup& es)
   {
     typedef edm::View<T> TView;
     edm::Handle<TView> visDecayProductsCollection;
-    bool gotVisProducts = evt.getByLabel(srcVisDecayProducts_,visDecayProductsCollection);
+    bool gotVisProducts = iEvent.getByLabel(srcVisDecayProducts_,visDecayProductsCollection);
 
   
     METPtr metPtr;
     edm::Handle<edm::View<pat::MET> > metCollection;
-    bool gotMET = evt.getByLabel(srcMET_,metCollection);
+    bool gotMET = iEvent.getByLabel(srcMET_,metCollection);
 
     edm::Handle<edm::View<pat::Jet> > jetCollection;
-    evt.getByLabel(srcJets_,jetCollection);
+    iEvent.getByLabel(srcJets_,jetCollection);
 
     JetPtrVector pfJets;
     for(unsigned int i=0;i<jetCollection->size();++i)
@@ -87,7 +87,7 @@ class CompositePtrCandidateTMEtProducer : public edm::EDProducer
     const reco::GenParticleCollection* genParticles = 0;
     if ( srcGenParticles_.label() != "" ) {
       edm::Handle<reco::GenParticleCollection> genParticleCollection;
-      if(evt.getByLabel(srcGenParticles_,genParticleCollection))
+      if(iEvent.getByLabel(srcGenParticles_,genParticleCollection))
         genParticles = genParticleCollection.product();
     }
       
@@ -100,12 +100,12 @@ class CompositePtrCandidateTMEtProducer : public edm::EDProducer
       } else {
 	edm::LogError ("produce") << " Found " << metCollection->size() << " MET objects in collection = " << srcMET_ << ","
 				  << " --> CompositePtrCandidateTMEt collection will NOT be produced !!";
-	std::auto_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
-	evt.put(emptyCompositePtrCandidateCollection);
+	std::unique_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
+	iEvent.put(std::move(emptyCompositePtrCandidateCollection),"");
 	return;
       }
       
-      std::auto_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
+      std::unique_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
       for ( unsigned idxVisDecayProducts = 0, numVisDecayProducts = visDecayProductsCollection->size(); 
 	    idxVisDecayProducts < numVisDecayProducts; ++idxVisDecayProducts ) {
 	TPtr visDecayProductsPtr = visDecayProductsCollection->ptrAt(idxVisDecayProducts);
@@ -113,21 +113,16 @@ class CompositePtrCandidateTMEtProducer : public edm::EDProducer
 	CompositePtrCandidateTMEt<T> compositePtrCandidate = 
 	  algorithm_.buildCompositePtrCandidate(visDecayProductsPtr, metPtr,pfJets,*visDecayProductsCollection,genParticles);
 	
-
-      
-
-
-
 	compositePtrCandidateCollection->push_back(compositePtrCandidate);
       }
       
       //--- add the collection of reconstructed CompositePtrCandidateTMEts to the event
-      evt.put(compositePtrCandidateCollection);
+      iEvent.put(std::move(compositePtrCandidateCollection),"");
     }
     else
       {
-	std::auto_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
-	evt.put(emptyCompositePtrCandidateCollection);
+	std::unique_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
+	iEvent.put(std::move(emptyCompositePtrCandidateCollection),"");
       }
   }
 

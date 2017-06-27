@@ -56,11 +56,11 @@ class DiCandidateSorterByIso : public edm::EDProducer {
     }
     else {std::cout<<"SorterSize==0!"<<std::endl;}
 
-    std::auto_ptr<std::vector<T> > out(new std::vector<T>);
+    std::unique_ptr<std::vector<T> > out(new std::vector<T>);
     for(unsigned int i=0;i<toBeSorted.size();++i)
       out->push_back(toBeSorted.at(i));
     
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");
 
   } 
 

@@ -96,7 +96,7 @@ class PATElectronConvRejProducer : public edm::EDProducer {
 
 
 
-    std::auto_ptr<pat::ElectronCollection> out( new pat::ElectronCollection);
+    std::unique_ptr<pat::ElectronCollection> out( new pat::ElectronCollection);
 
     edm::Handle<pat::ElectronCollection> electrons;
     if(iEvent.getByLabel(src_,electrons)) 
@@ -122,10 +122,7 @@ class PATElectronConvRejProducer : public edm::EDProducer {
 	out->push_back(electron);
       }
       
-
-    iEvent.put(out);
-
-
+    iEvent.put(std::move(out),"");    
 
   } 
 

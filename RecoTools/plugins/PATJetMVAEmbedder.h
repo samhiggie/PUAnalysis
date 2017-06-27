@@ -80,7 +80,7 @@ class PATJetMVAEmbedder : public edm::EDProducer {
   {
     using namespace edm;
     using namespace reco;
-    std::auto_ptr<pat::JetCollection > out(new pat::JetCollection);// change to jet collection
+    std::unique_ptr<pat::JetCollection > out(new pat::JetCollection);// change to jet collection
 
     Handle<pat::JetCollection > cands;// change to jet collection
     if(iEvent.getByLabel(src_,cands)) 
@@ -141,8 +141,7 @@ class PATJetMVAEmbedder : public edm::EDProducer {
 
       }
   
-    
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");    
 
   } 
 

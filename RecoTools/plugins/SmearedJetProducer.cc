@@ -25,7 +25,7 @@ SmearedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
     JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
-    std::auto_ptr<std::vector<pat::Jet> > out(new std::vector<pat::Jet> );
+    std::unique_ptr<std::vector<pat::Jet> > out(new std::vector<pat::Jet> );
     Handle<std::vector<pat::Jet> > srcH;
     if(iEvent.getByToken(src_,srcH) &&srcH->size()>0) 
       for(unsigned int i=0;i<srcH->size();++i) {
@@ -42,7 +42,7 @@ SmearedJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	object.setP4(object.p4()*(1.+energyScaleDB_*unc));
 	out->push_back(object);
       }
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");
     delete jecUnc;
 } 
 

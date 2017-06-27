@@ -36,7 +36,7 @@ class SmearedParticleProducer : public edm::EDProducer {
      virtual void produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
        using namespace edm;
        
-       std::auto_ptr<std::vector<T> > out(new std::vector<T> );
+       std::unique_ptr<std::vector<T> > out(new std::vector<T> );
        Handle<std::vector<T> > srcH;
        
        if(iEvent.getByToken(src_,srcH)) 
@@ -45,7 +45,7 @@ class SmearedParticleProducer : public edm::EDProducer {
 	   smearingModule->smear(object);
 	   out->push_back(object);
 	 }
-       iEvent.put(out);
+       iEvent.put(std::move(out),"");    
      } 
 
 

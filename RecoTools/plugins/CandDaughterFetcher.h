@@ -39,7 +39,7 @@ class CandDaughterFetcher : public edm::EDProducer {
 	{
 	  using namespace reco;
 	  //Read the shallow clones of a candidate and save the SECOND Clone
-	  std::auto_ptr<std::vector<T> > out(new std::vector<T> );
+	  std::unique_ptr<std::vector<T> > out(new std::vector<T> );
 	  edm::Handle<std::vector<CompositePtrCandidateT1T2MEt<T,T> > > src;
 
 	  if(iEvent.getByLabel(src_,src))
@@ -67,7 +67,7 @@ class CandDaughterFetcher : public edm::EDProducer {
 	      }
 	    }
 	    
-	  iEvent.put(out);
+	  iEvent.put(std::move(out),"");    
 	}
 
       virtual void endJob() { }

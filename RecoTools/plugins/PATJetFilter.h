@@ -45,7 +45,7 @@ class PATJetFilter : public edm::EDProducer {
     using namespace reco;
     using namespace std;
     //std::cout<<"===== PATJetFilter JetCollection ====="<<std::endl;
-    std::auto_ptr<pat::JetCollection> jets(new pat::JetCollection);
+    std::unique_ptr<pat::JetCollection> jets(new pat::JetCollection);
     Handle<pat::JetCollection > cands;
     if(iEvent.getByToken(src_,cands)) 
       for(unsigned int  i=0;i!=cands->size();++i){
@@ -53,7 +53,7 @@ class PATJetFilter : public edm::EDProducer {
 	if (jet.userFloat("idLoose")&&abs(jet.eta())<4.7) jets->push_back(jet);
       }  
 
-    iEvent.put(jets);
+    iEvent.put(std::move(jets),"");
 
   } 
 

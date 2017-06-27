@@ -9,7 +9,7 @@ class SelfEmbedder : public edm::stream::EDProducer<> {
   public:
     SelfEmbedder(const edm::ParameterSet& pset);
     virtual ~SelfEmbedder(){}
-    void produce(edm::Event& evt, const edm::EventSetup& es);
+    void produce(edm::Event& iEvent, const edm::EventSetup& es);
   private:
     edm::EDGetTokenT<edm::View<T> > srcToken_;
     std::string label_;
@@ -24,19 +24,19 @@ SelfEmbedder<T>::SelfEmbedder(const edm::ParameterSet& pset):
 }
 
 template<typename T>
-void SelfEmbedder<T>::produce(edm::Event& evt, const edm::EventSetup& es) {
-  std::auto_ptr<std::vector<T> > output = std::auto_ptr<std::vector<T> >(new std::vector<T>);
+void SelfEmbedder<T>::produce(edm::Event& iEvent, const edm::EventSetup& es) {
+  std::unique_ptr<std::vector<T> > out = std::unique_ptr<std::vector<T> >(new std::vector<T>);
 
   edm::Handle<edm::View<T> > input;
-  evt.getByToken(srcToken_, input);
+  iEvent.getByToken(srcToken_, input);
 
-  output->reserve(input->size());
+  out->reserve(input->size());
   for (size_t i = 0; i < input->size(); ++i) {
     T obj = input->at(i);
-    output->push_back(obj);
+    out->push_back(obj);
   }
-
-  evt.put(output);
+  
+  iEvent.put(std::move(out),"");    
 }
 
 #include "DataFormats/PatCandidates/interface/Muon.h"

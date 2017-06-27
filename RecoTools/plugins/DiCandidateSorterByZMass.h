@@ -70,7 +70,7 @@ class DiCandidateSorterByZMass : public edm::EDProducer {
       std::sort(toBeSorted.begin(),toBeSorted.end(),sorter);
     }
 
-    std::auto_ptr<std::vector<T> > out(new std::vector<T>);
+    std::unique_ptr<std::vector<T> > out(new std::vector<T>);
     //	double tempSum=0;
     for(unsigned int i=0;i<toBeSorted.size();++i){
       //	tempSum=toBeSorted.at(i).leg1()->pt()+toBeSorted.at(i).leg2()->pt();
@@ -78,7 +78,7 @@ class DiCandidateSorterByZMass : public edm::EDProducer {
       out->push_back(toBeSorted.at(i));
     }
 
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");    
 
   } 
 

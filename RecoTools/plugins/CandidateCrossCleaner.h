@@ -40,7 +40,7 @@ class CandidateCrossCleaner : public edm::EDProducer {
 	{
 	  using namespace reco;
 	  //Read the shallow clones of a candidate and save the SECOND Clone
-	  std::auto_ptr<std::vector<T> > out(new std::vector<T> );
+	  std::unique_ptr<std::vector<T> > out(new std::vector<T> );
 	  edm::Handle<std::vector<G> > ref;
 	  edm::Handle<std::vector<T> > src;
 
@@ -63,7 +63,8 @@ class CandidateCrossCleaner : public edm::EDProducer {
 		  out->push_back(src->at(j));
 	      }
 	    
-	      iEvent.put(out);
+	      iEvent.put(std::move(out),"");
+	  
 	    }
 	}
       virtual void endJob() { }

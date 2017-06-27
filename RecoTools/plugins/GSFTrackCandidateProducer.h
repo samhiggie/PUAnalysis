@@ -63,7 +63,7 @@ class GSFTrackCandidateProducer : public edm::EDProducer {
     using namespace edm;
     using namespace reco;
 
-    std::auto_ptr<reco::RecoChargedCandidateCollection> out(new  RecoChargedCandidateCollection);
+    std::unique_ptr<reco::RecoChargedCandidateCollection> out(new  RecoChargedCandidateCollection);
     edm::Handle<reco::VertexCollection> vertices;
     reco::Vertex primary;
     if(iEvent.getByLabel("offlinePrimaryVerticesWithBS",vertices))
@@ -85,8 +85,7 @@ class GSFTrackCandidateProducer : public edm::EDProducer {
 
     }
   
-    
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");    
 
   } 
 

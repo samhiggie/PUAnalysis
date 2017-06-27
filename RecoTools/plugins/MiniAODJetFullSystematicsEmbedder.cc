@@ -23,7 +23,7 @@ public:
 
   MiniAODJetFullSystematicsEmbedder(const edm::ParameterSet& pset);
   virtual ~MiniAODJetFullSystematicsEmbedder(){}
-  void produce(edm::Event& evt, const edm::EventSetup& es);
+  void produce(edm::Event& iEvent, const edm::EventSetup& es);
 private:
   typedef edm::OrphanHandle<ShiftedCandCollection> PutHandle;
   edm::EDGetTokenT<edm::View<pat::Jet> > srcToken_;
@@ -115,17 +115,17 @@ MiniAODJetFullSystematicsEmbedder::MiniAODJetFullSystematicsEmbedder(const edm::
   };
 }
 
-void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
+void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& es) {
 
-  std::auto_ptr<pat::JetCollection> output(new pat::JetCollection);
+  std::unique_ptr<pat::JetCollection> out(new pat::JetCollection);
   edm::Handle<edm::View<pat::Jet> > jets;
-  evt.getByToken(srcToken_, jets);
+  iEvent.getByToken(srcToken_, jets);
   size_t nJets = jets->size();
 
   // Make our own copy of the jets to fill
   for (size_t i = 0; i < nJets; ++i) {
     const pat::Jet& jet = jets->at(i);
-    output->push_back(jet);
+    out->push_back(jet);
   }
 
   // For comparing with Total for Closure test
@@ -133,8 +133,8 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& evt, const edm::Even
   std::vector<double> factorizedTotalUp(nJets, 0.0);
 
   for (auto const& name : uncertNames) {
-    std::auto_ptr<ShiftedCandCollection> p4OutJESUpJets(new ShiftedCandCollection);
-    std::auto_ptr<ShiftedCandCollection> p4OutJESDownJets(new ShiftedCandCollection);
+    std::unique_ptr<ShiftedCandCollection> p4OutJESUpJets(new ShiftedCandCollection);
+    std::unique_ptr<ShiftedCandCollection> p4OutJESDownJets(new ShiftedCandCollection);
 
     p4OutJESUpJets->reserve(nJets);
     p4OutJESDownJets->reserve(nJets);
@@ -174,19 +174,19 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& evt, const edm::Even
       p4OutJESDownJets->push_back(candUncDown);
     }
 
-    PutHandle p4OutJESUpJetsH = evt.put(p4OutJESUpJets, "p4OutJESUpJetsUncor"+name);
-    PutHandle p4OutJESDownJetsH = evt.put(p4OutJESDownJets, "p4OutJESDownJetsUncor"+name);
+    PutHandle p4OutJESUpJetsH = iEvent.put(std::move(p4OutJESUpJets), "p4OutJESUpJetsUncor"+name);
+    PutHandle p4OutJESDownJetsH = iEvent.put(std::move(p4OutJESDownJets), "p4OutJESDownJetsUncor"+name);
 
     // Now embed the shifted collections into our output pat jets
-    for (size_t i = 0; i < output->size(); ++i) {
-      pat::Jet& jet = output->at(i);
+    for (size_t i = 0; i < out->size(); ++i) {
+      pat::Jet& jet = out->at(i);
       //std::cout << "Jet " << i << " uncorr pt: " << jet.pt() << std::endl;
       jet.addUserCand("jes"+name+"+", CandidatePtr(p4OutJESUpJetsH, i));
       jet.addUserCand("jes"+name+"-", CandidatePtr(p4OutJESDownJetsH, i));
     } // end cycle over all uncertainties
   } // end jets
 
-  evt.put(output);
+  iEvent.put(std::move(out),"");    
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"

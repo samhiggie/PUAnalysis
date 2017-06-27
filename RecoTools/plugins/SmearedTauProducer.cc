@@ -25,7 +25,7 @@ SmearedTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     using namespace edm;
     using namespace reco;
 
-    std::auto_ptr<std::vector<pat::Tau> > out(new std::vector<pat::Tau> );
+    std::unique_ptr<std::vector<pat::Tau> > out(new std::vector<pat::Tau> );
     Handle<std::vector<pat::Tau> > srcH;
 
     //std::cout<<"1prong: "<<oneProngEnergyScale_<<" 1prongpi0 "<<oneProngPi0EnergyScale_<<" 3prong "<<threeProngEnergyScale_<<std::endl;
@@ -88,7 +88,7 @@ SmearedTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 	out->push_back(object);
       }
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");    
 } 
 
 

@@ -52,13 +52,13 @@ class CompositePtrCandidateT1T2MEtCrossCleaner : public edm::EDProducer
 
   ~CompositePtrCandidateT1T2MEtCrossCleaner() {}
 
-  void produce(edm::Event& evt, const edm::EventSetup& es)
+  void produce(edm::Event& iEvent, const edm::EventSetup& es)
   {
 
     edm::Handle<TView> collection;
-    pf::fetchCollection(collection, src_, evt);
+    pf::fetchCollection(collection, src_, iEvent);
   
-    std::auto_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
+    std::unique_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
 
     //Cross clean by C++ pointer 
     //Also by Delta R if the user wants 
@@ -79,7 +79,7 @@ class CompositePtrCandidateT1T2MEtCrossCleaner : public edm::EDProducer
 
 
 
-    evt.put(compositePtrCandidateCollection);
+    iEvent.put(std::move(compositePtrCandidateCollection),"");
   }
 
  private:

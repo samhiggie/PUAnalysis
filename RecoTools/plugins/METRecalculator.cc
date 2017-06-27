@@ -108,7 +108,7 @@ METRecalculator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   //Make the difference which is the unclustered scale
 
-  std::auto_ptr<pat::METCollection > out(new pat::METCollection);
+  std::unique_ptr<pat::METCollection > out(new pat::METCollection);
   Handle<pat::METCollection> srcH;
   
   if(iEvent.getByToken(met_,srcH)) 
@@ -121,7 +121,8 @@ METRecalculator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       met.setP4(math::XYZTLorentzVector(newMET.px(),newMET.py(),0.0,sqrt(newMET.px()*newMET.px()+newMET.py()*newMET.py())));
       out->push_back(met);
     }
-  iEvent.put(out);
+
+    iEvent.put(std::move(out),"");    
 }
 
 

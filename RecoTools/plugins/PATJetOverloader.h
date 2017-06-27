@@ -119,7 +119,7 @@ class PATJetOverloader : public edm::EDProducer {
 			using namespace reco;
 			using namespace std;
 			//std::cout<<"===== PATJetOverloader JetCollection ====="<<std::endl;
-			std::auto_ptr<pat::JetCollection> jets(new pat::JetCollection);
+			std::unique_ptr<pat::JetCollection> out(new pat::JetCollection);
 			Handle<pat::JetCollection > cands;
 			Handle<reco::GenJetCollection > genJets;
 			if(iEvent.getByToken(src_,cands)) 
@@ -357,12 +357,11 @@ class PATJetOverloader : public edm::EDProducer {
                     jet.addUserFloat("genJetPhi",genJetPhi);
                     jet.addUserFloat("genJetPt",genJetPt);
                     jet.addUserFloat("ptRMS",sqrt(sumPt2/(sumPt*sumPt)));
-                    jets->push_back(jet);
+                    out->push_back(jet);
 
                 }  
 
-            iEvent.put(jets);
-
+	    iEvent.put(std::move(out),"");    
         } 
 
         // ----------member data ---------------------------

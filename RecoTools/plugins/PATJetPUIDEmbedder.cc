@@ -25,7 +25,7 @@ class PATJetPUIDEmbedder : public edm::EDProducer {
   public:
     PATJetPUIDEmbedder(const edm::ParameterSet& pset);
     virtual ~PATJetPUIDEmbedder(){}
-    void produce(edm::Event& evt, const edm::EventSetup& es);
+    void produce(edm::Event& iEvent, const edm::EventSetup& es);
   private:
     typedef std::vector<edm::InputTag> VInputTag;
     edm::InputTag src_;
@@ -39,16 +39,16 @@ PATJetPUIDEmbedder::PATJetPUIDEmbedder(const edm::ParameterSet& pset) {
   ids_ = pset.getParameter<VInputTag>("ids");
   produces<pat::JetCollection>();
 }
-void PATJetPUIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
-  std::auto_ptr<pat::JetCollection> output(new pat::JetCollection);
+void PATJetPUIDEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& es) {
+  std::unique_ptr<pat::JetCollection> out(new pat::JetCollection);
 
   edm::Handle<edm::View<pat::Jet> > inputs;
-  evt.getByLabel(src_, inputs);
+  iEvent.getByLabel(src_, inputs);
 
-  // Build our output collection
-  output->reserve(inputs->size());
+  // Build our out collection
+  out->reserve(inputs->size());
   for (size_t ijet = 0; ijet < inputs->size(); ++ijet) {
-    output->push_back(inputs->at(ijet));
+    out->push_back(inputs->at(ijet));
   }
 
   /*  Stuff to embed (from twiki):
@@ -65,20 +65,20 @@ void PATJetPUIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
   for (size_t iMVA = 0; iMVA < discriminants_.size(); ++iMVA) {
     // Get the discriminator
     edm::Handle<edm::ValueMap<float> > disc;
-    evt.getByLabel(discriminants_[iMVA], disc);
+    iEvent.getByLabel(discriminants_[iMVA], disc);
     const std::string& mvaName = discriminants_.at(iMVA).instance();
 
     // Embed in each pat jet
     for (size_t ijet = 0; ijet < inputs->size(); ++ijet) {
       float mva = (*disc)[inputs->refAt(ijet)->originalObjectRef()];
-      output->at(ijet).addUserFloat(mvaName, mva);
+      out->at(ijet).addUserFloat(mvaName, mva);
     }
   }
 
   // Embed IDs - these come in loose, medium and tight
   for (size_t iDisc = 0; iDisc < ids_.size(); ++iDisc) {
     edm::Handle<edm::ValueMap<int> > id;
-    evt.getByLabel(ids_[iDisc], id);
+    iEvent.getByLabel(ids_[iDisc], id);
     const std::string& idName = ids_.at(iDisc).instance();
 
     // Embed in each pat jet
@@ -90,15 +90,15 @@ void PATJetPUIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
           idflag, PileupJetIdentifier::kMedium);
       bool passesTight = PileupJetIdentifier::passJetId(
           idflag, PileupJetIdentifier::kTight);
-      output->at(ijet).addUserInt(idName, idflag);
-      output->at(ijet).addUserInt(idName + "Loose", passesLoose);
-      output->at(ijet).addUserInt(idName + "Medium", passesMedium);
-      output->at(ijet).addUserInt(idName + "Tight", passesTight);
+      out->at(ijet).addUserInt(idName, idflag);
+      out->at(ijet).addUserInt(idName + "Loose", passesLoose);
+      out->at(ijet).addUserInt(idName + "Medium", passesMedium);
+      out->at(ijet).addUserInt(idName + "Tight", passesTight);
     }
   }
 
   // Store the jets in the event
-  evt.put(output);
+  iEvent.put(std::move(out),"");    
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"

@@ -71,7 +71,7 @@ class PATWWMuonEmbedder : public edm::EDProducer {
 
 
     
-    std::auto_ptr<pat::MuonCollection > out(new pat::MuonCollection);
+    std::unique_ptr<pat::MuonCollection > out(new pat::MuonCollection);
 
     
     Handle<pat::MuonCollection > cands;
@@ -165,8 +165,7 @@ class PATWWMuonEmbedder : public edm::EDProducer {
 
       }
   
-    
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");        
 
   } 
 

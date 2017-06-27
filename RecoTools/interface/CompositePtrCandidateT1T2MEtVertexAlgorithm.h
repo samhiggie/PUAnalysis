@@ -22,7 +22,7 @@
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/TrackerGeometryBuilder/interface/GluedGeomDet.h"
+//#include "Geometry/TrackerGeometryBuilder/interface/GluedGeomDet.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"

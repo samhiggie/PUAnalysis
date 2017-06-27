@@ -65,7 +65,7 @@ class PATVBTFElectronEmbedder : public edm::EDProducer {
   {
     using namespace edm;
     using namespace reco;
-    std::auto_ptr<pat::ElectronCollection > out(new pat::ElectronCollection);
+    std::unique_ptr<pat::ElectronCollection > out(new pat::ElectronCollection);
 
     
     Handle<pat::ElectronCollection > cands;
@@ -95,8 +95,7 @@ class PATVBTFElectronEmbedder : public edm::EDProducer {
       }
   
     
-    iEvent.put(out);
-
+    iEvent.put(std::move(out),"");    
   } 
 
       // ----------member data ---------------------------

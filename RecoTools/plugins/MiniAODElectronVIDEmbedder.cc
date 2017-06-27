@@ -45,7 +45,7 @@ private:
   std::vector<std::string> idLabels_; // labels for the userInts holding results
   std::string eleIsoLabel_; //label for the dBRelIso UserFloat
   std::string eleConvLabel_; //label for the dBRelIso UserFloat
-  std::auto_ptr<std::vector<pat::Electron> > out; // Collection we'll output at the end
+  std::unique_ptr<std::vector<pat::Electron> > out; // Collection we'll output at the end
 };
 
 
@@ -83,7 +83,7 @@ MiniAODElectronVIDEmbedder::MiniAODElectronVIDEmbedder(const edm::ParameterSet& 
 
 void MiniAODElectronVIDEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-	out = std::auto_ptr<std::vector<pat::Electron> >(new std::vector<pat::Electron>);
+	out = std::unique_ptr<std::vector<pat::Electron> >(new std::vector<pat::Electron>);
 
 	edm::Handle<edm::View<pat::Electron> > electronsIn;
 	std::vector<edm::Handle<edm::ValueMap<bool> > > ids(idMapTokens_.size(), edm::Handle<edm::ValueMap<bool> >() );
@@ -151,8 +151,7 @@ void MiniAODElectronVIDEmbedder::produce(edm::Event& iEvent, const edm::EventSet
                         //std::cout<<"Adding User Float: "<<idLabels_.at(i)<<" with result: "<<float(result)<<std::endl;
 		}
 	}
-
-	iEvent.put(out);
+	iEvent.put(std::move(out),"");    
 }
 
 

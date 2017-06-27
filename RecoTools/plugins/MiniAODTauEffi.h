@@ -65,7 +65,7 @@ class MiniAODTauEffi : public edm::EDProducer {
        {
            using namespace edm;
            using namespace reco;
-           std::auto_ptr<pat::TauCollection> taus(new pat::TauCollection);
+           std::unique_ptr<pat::TauCollection> out(new pat::TauCollection);
            Handle<pat::TauCollection > cands;
 
            Handle<reco::GenParticleCollection> pruned;
@@ -102,9 +102,9 @@ class MiniAODTauEffi : public edm::EDProducer {
                        tau.addUserFloat(namesUserFloat[i],value);
                    }
 
-                   taus->push_back(tau);
+                   out->push_back(tau);
                }
-           iEvent.put(taus);
+	   iEvent.put(std::move(out),"");    
        } 
 
        // ----------member data ---------------------------

@@ -65,20 +65,20 @@ class PATCandidatePairGenBSelector : public edm::EDProducer
   }
 
 
-  void produce(edm::Event& evt, const edm::EventSetup& es) {
+  void produce(edm::Event& iEvent, const edm::EventSetup& es) {
     std::cout<<" Gets to BSelector\n"<<std::endl;
-    std::auto_ptr<CompositePtrCandidateCollection> out(new CompositePtrCandidateCollection);
+    std::unique_ptr<CompositePtrCandidateCollection> out(new CompositePtrCandidateCollection);
     edm::Handle<pat::JetCollection > jets;
     edm::Handle<reco::GenParticleCollection > genBs;
     edm::Handle<std::vector<CompositePtrCandidateT1T2MEt<T1,T2> > > cands;
     pat::JetCollection MatchedJets;
 
-    if(evt.getByLabel(src_,cands)) {
+    if(iEvent.getByLabel(src_,cands)) {
 
       for (unsigned int i=0;i<cands->size();++i) {
 	CompositePtrCandidateT1T2MEt<T1,T2> compositePtrCandidate = cands->at(i);
 	//std::cout<<"Here0"<<std::endl;
-	if(evt.getByLabel(genBs_,genBs)) 
+	if(iEvent.getByLabel(genBs_,genBs)) 
 	  for(unsigned int  k=0;k!=genBs->size();++k){
 	    const reco::GenParticle & p = (*genBs)[k];
 	    //double pt = p.pt(), eta = p.eta(), phi = p.phi(), mass = p.mass(), energy=p.E();
@@ -86,7 +86,7 @@ class PATCandidatePairGenBSelector : public edm::EDProducer
 	    //std::cout<<"Here1"<<std::endl;
 	    const reco::Candidate * mom = p.mother();
 	    if(abs(p.pdgId())==5&&mom->pdgId()==25)
-	      if(evt.getByLabel(jets_,jets)) 
+	      if(iEvent.getByLabel(jets_,jets)) 
 		for(unsigned int  j=0;j!=jets->size();++j){
 		  //std::cout<<"Here2"<<std::endl;
 		  pat::Jet jet = jets->at(j);
@@ -111,8 +111,7 @@ class PATCandidatePairGenBSelector : public edm::EDProducer
 	
       }
     }
-
-    evt.put(out);
+    iEvent.put(std::move(out),"");    
   }
 
 

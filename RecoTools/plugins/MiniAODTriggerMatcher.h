@@ -80,7 +80,7 @@ class MiniAODTriggerMatcher : public edm::EDProducer {
 			iEvent.getByToken(triggerPrescales_, triggerPrescales);
 
 			//Read the shallow clones of a candidate and save the SECOND Clone
-			std::auto_ptr<std::vector<T> > out(new std::vector<T> );
+			std::unique_ptr<std::vector<T> > out(new std::vector<T> );
 			edm::Handle<edm::View<T> > src;
 
 			if(iEvent.getByToken(src_,src)){
@@ -143,8 +143,7 @@ class MiniAODTriggerMatcher : public edm::EDProducer {
 					out->push_back(pat);
 				}
 			}
-			
-			iEvent.put(out);
+			iEvent.put(std::move(out),"");    
 			//std::cout<<"iEvent added trigger"<<std::endl;
 		}
 

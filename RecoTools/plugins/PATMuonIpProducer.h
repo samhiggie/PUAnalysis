@@ -68,7 +68,7 @@ class PATMuonIpProducer : public edm::EDProducer {
     if(verticesExist)
       verticesExist*=(vertices->size()>0)&&(vertices->at(0).isValid());
 
-    std::auto_ptr<std::vector<pat::Muon> > out(new std::vector<pat::Muon>);
+    std::unique_ptr<std::vector<pat::Muon> > out(new std::vector<pat::Muon>);
     Handle<std::vector<pat::Muon> > cands;
     if(iEvent.getByLabel(src_,cands)) 
       for(unsigned int  i=0;i!=cands->size();++i){
@@ -93,8 +93,8 @@ class PATMuonIpProducer : public edm::EDProducer {
 	  }
 	out->push_back(mu);
       }
-      
-    iEvent.put(out);
+
+    iEvent.put(std::move(out),"");    
 
   } 
 

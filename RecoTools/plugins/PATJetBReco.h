@@ -61,7 +61,7 @@ class PATJetBReco : public edm::EDProducer {
   {
     using namespace edm;
     using namespace reco;
-    std::auto_ptr<pat::JetCollection> jets(new pat::JetCollection);
+    std::unique_ptr<pat::JetCollection> out(new pat::JetCollection);
     Handle<pat::JetCollection > cands;
     Handle<pat::MuonCollection > leptons; ///adding muons! :D
     Handle<reco::VertexCollection> vertices;
@@ -290,9 +290,9 @@ class PATJetBReco : public edm::EDProducer {
 	  }
       
 	jet.addUserFloat("massBpmElecs",massBpmElecs);
-	jets->push_back(jet);
+	out->push_back(jet);
       }
-    iEvent.put(jets);
+    iEvent.put(std::move(out),"");    
   } 
   
   // ----------member data ---------------------------

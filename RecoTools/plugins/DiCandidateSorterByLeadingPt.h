@@ -70,12 +70,11 @@ class DiCandidateSorterByLeadingPt : public edm::EDProducer {
       std::sort(toBeSorted.begin(),toBeSorted.end(),sorter);
     }
 
-    std::auto_ptr<std::vector<T> > out(new std::vector<T>);
+    std::unique_ptr<std::vector<T> > out(new std::vector<T>);
     for(unsigned int i=0;i<toBeSorted.size();++i)
       out->push_back(toBeSorted.at(i));
     
-    iEvent.put(out);
-
+    iEvent.put(std::move(out),"");    
   } 
 
   //  template<class T>

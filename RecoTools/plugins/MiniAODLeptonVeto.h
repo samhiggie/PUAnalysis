@@ -53,22 +53,22 @@ class MiniAODLeptonVeto : public edm::EDProducer
   }
 
 
-  void produce(edm::Event& evt, const edm::EventSetup& es) {
-    std::auto_ptr<CompositePtrCandidateCollection> out(new CompositePtrCandidateCollection);
+  void produce(edm::Event& iEvent, const edm::EventSetup& es) {
+    std::unique_ptr<CompositePtrCandidateCollection> out(new CompositePtrCandidateCollection);
 
 
     edm::Handle<std::vector<CompositePtrCandidateT1T2MEt<T1,T2> > > cands;
 
-    if(evt.getByToken(src_,cands)) {
+    if(iEvent.getByToken(src_,cands)) {
 
       for (unsigned int i=0;i<cands->size();++i) {
 
 	      CompositePtrCandidateT1T2MEt<T1,T2> compositePtrCandidate = cands->at(i);
 	      //reco::Candidate::LorentzVector theMETP4_ = compositePtrCandidate.calibratedMET();
 	      edm::Handle<std::vector<pat::Muon>> muonsCollection;
-	      evt.getByToken(srcM_ , muonsCollection);
+	      iEvent.getByToken(srcM_ , muonsCollection);
 	      edm::Handle<std::vector<pat::Electron>> elesCollection;
-	      evt.getByToken(srcE_ , elesCollection);
+	      iEvent.getByToken(srcE_ , elesCollection);
 
 	      int veto =0;
 	      unsigned int maxMu=0;
@@ -84,7 +84,7 @@ class MiniAODLeptonVeto : public edm::EDProducer
       }
     }
 
-    evt.put(out);
+    iEvent.put(std::move(out),"");    
   }
 
  private:

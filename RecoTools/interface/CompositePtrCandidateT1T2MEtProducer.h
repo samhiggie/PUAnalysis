@@ -89,43 +89,43 @@ class CompositePtrCandidateT1T2MEtProducer : public edm::EDProducer
 
 	~CompositePtrCandidateT1T2MEtProducer() {}
 
-	void produce(edm::Event& evt, const edm::EventSetup& es)
+	void produce(edm::Event& iEvent, const edm::EventSetup& es)
 	{
 		//Instantiate the vertex Algorithm
-		//CompositePtrCandidateT1T2MEtVertexAlgorithm<T1,T2> vAlgo(evt,es);
+		//CompositePtrCandidateT1T2MEtVertexAlgorithm<T1,T2> vAlgo(iEvent,es);
 
 		//--- print-out an error message and add an empty collection to the event 
 		//    in case of erroneous configuration parameters
 
-		if(evt.isRealData()){
+		if(iEvent.isRealData()){
 			IsRealData=true;
 		}
 
 		if ( cfgError_ ) {
 			edm::LogError ("produce") << " Error in Configuration ParameterSet" 
 				<< " --> CompositePtrCandidateT1T2MEt collection will NOT be produced !!";
-			std::auto_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
-			evt.put(emptyCompositePtrCandidateCollection);
+			std::unique_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());
+			iEvent.put(std::move(emptyCompositePtrCandidateCollection),"");
 			return;
 		}
 
 		//typedef edm::View<T1> T1View;
 		edm::Handle<T1View> leg1Collection;
-		pf::fetchCollection(leg1Collection, srcLeg1_, evt);
+		pf::fetchCollection(leg1Collection, srcLeg1_, iEvent);
 
 		edm::Handle<edm::View<pat::Jet> > jetCollection;
-		pf::fetchCollection(jetCollection, srcJets_, evt);
+		pf::fetchCollection(jetCollection, srcJets_, iEvent);
 
 		//typedef edm::View<T2> T2View;
 		edm::Handle<T2View> leg2Collection;
-		pf::fetchCollection(leg2Collection, srcLeg2_, evt);
+		pf::fetchCollection(leg2Collection, srcLeg2_, iEvent);
 
 		const std::vector<pat::Tau>* tauPtr = 0;
 		if ( !(srcTaus_.isUninitialized()) ) {
 			edm::Handle<std::vector<pat::Tau> > tauCollection;
-			if(evt.getByToken(srcTaus_,tauCollection))
+			if(iEvent.getByToken(srcTaus_,tauCollection))
 				tauPtr = tauCollection.product();
-			//pf::fetchCollection(tauCollection, srcTaus_, evt);
+			//pf::fetchCollection(tauCollection, srcTaus_, iEvent);
 
 			//std::cout<< "Got Taus: " << tauCollection->size()<<endl;
 		}
@@ -133,19 +133,19 @@ class CompositePtrCandidateT1T2MEtProducer : public edm::EDProducer
 
 		reco::CandidatePtr metPtr;
 		edm::Handle<edm::View<pat::MET>> metCollection;
-		pf::fetchCollection(metCollection, srcMET_, evt);
+		pf::fetchCollection(metCollection, srcMET_, iEvent);
 		if (metCollection->size() == 0) { 
 			edm::LogError ("produce") << " Found " << metCollection->size() << " MET objects in collection "
 				<< " --> CompositePtrCandidateT1T2MEt collection will NOT be produced !!";
-			std::auto_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());      
-			evt.put(emptyCompositePtrCandidateCollection);
+			std::unique_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());      
+			iEvent.put(std::move(emptyCompositePtrCandidateCollection),"");
 			return;
 		}                
 
 		const reco::GenParticleCollection* genParticles = 0;
 		if ( !(srcGenParticles_.isUninitialized()) ) {
 			edm::Handle<reco::GenParticleCollection> genParticleCollection;
-			if(evt.getByToken(srcGenParticles_,genParticleCollection))
+			if(iEvent.getByToken(srcGenParticles_,genParticleCollection))
 				genParticles = genParticleCollection.product();
 		}
 
@@ -160,7 +160,7 @@ class CompositePtrCandidateT1T2MEtProducer : public edm::EDProducer
 		//--- check if only one combination of tau decay products 
 		//    (the combination of highest Pt object in leg1 collection + highest Pt object in leg2 collection)
 		//    shall be produced, or all possible combinations of leg1 and leg2 objects
-		std::auto_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
+		std::unique_ptr<CompositePtrCandidateCollection> compositePtrCandidateCollection(new CompositePtrCandidateCollection());
 		if ( useLeadingTausOnly_ ) {
 			//--- find highest Pt particles in leg1 and leg2 collections
 			int idxLeadingLeg1 = -1;
@@ -283,8 +283,8 @@ class CompositePtrCandidateT1T2MEtProducer : public edm::EDProducer
 						}
 						//edm::LogError ("produce") << " Found " << metCollection->size() << " MET objects in collection "
 						//<< " but NO LEPTON MATCH --> CompositePtrCandidateT1T2MEt collection will NOT be produced !!";
-						std::auto_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());      
-						evt.put(emptyCompositePtrCandidateCollection);
+						std::unique_ptr<CompositePtrCandidateCollection> emptyCompositePtrCandidateCollection(new CompositePtrCandidateCollection());      
+						iEvent.put(std::move(emptyCompositePtrCandidateCollection),"");
 						return;
 					}
 
@@ -299,7 +299,7 @@ class CompositePtrCandidateT1T2MEtProducer : public edm::EDProducer
 		}
 
 		//--- add the collection of reconstructed CompositePtrCandidateT1T2MEts to the event
-		evt.put(compositePtrCandidateCollection);
+		iEvent.put(std::move(compositePtrCandidateCollection),"");
 	}
 
 	private:

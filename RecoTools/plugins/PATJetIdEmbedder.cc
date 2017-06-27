@@ -28,13 +28,13 @@ PATJetIdEmbedder::PATJetIdEmbedder(const edm::ParameterSet& pset) {
   produces<pat::JetCollection>();
 }
 
-void PATJetIdEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
-  std::auto_ptr<pat::JetCollection> output(new pat::JetCollection);
+void PATJetIdEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& es) {
+  std::unique_ptr<pat::JetCollection> out(new pat::JetCollection);
 
   edm::Handle<edm::View<pat::Jet> > input;
-  evt.getByLabel(src_, input);
+  iEvent.getByLabel(src_, input);
 
-  output->reserve(input->size());
+  out->reserve(input->size());
   for (size_t i = 0; i < input->size(); ++i) {
     pat::Jet jet = input->at(i);
     bool loose = true;
@@ -80,10 +80,10 @@ void PATJetIdEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
     jet.addUserFloat("idLoose", loose);
     jet.addUserFloat("idMedium", medium);
     jet.addUserFloat("idTight", tight);
-    output->push_back(jet);
+    out->push_back(jet);
   }
 
-  evt.put(output);
+  iEvent.put(std::move(out),"");    
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"

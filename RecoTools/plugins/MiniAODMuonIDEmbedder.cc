@@ -27,7 +27,7 @@ class MiniAODMuonIDEmbedder : public edm::EDProducer {
 	public:
 		explicit MiniAODMuonIDEmbedder(const edm::ParameterSet& pset);
 		virtual ~MiniAODMuonIDEmbedder(){}
-		void produce(edm::Event& evt, const edm::EventSetup& es);
+		void produce(edm::Event& iEvent, const edm::EventSetup& es);
 
 	private:
 		edm::EDGetTokenT<pat::MuonCollection> muonsCollection_;
@@ -43,12 +43,12 @@ MiniAODMuonIDEmbedder::MiniAODMuonIDEmbedder(const edm::ParameterSet& pset) {
 	produces<pat::MuonCollection>();
 }
 
-void MiniAODMuonIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) {
+void MiniAODMuonIDEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& es) {
 	edm::Handle<std::vector<pat::Muon>> muonsCollection;
-	evt.getByToken(muonsCollection_ , muonsCollection);
+	iEvent.getByToken(muonsCollection_ , muonsCollection);
 
 	edm::Handle<reco::VertexCollection> vertices;
-	evt.getByToken(vtxToken_, vertices);
+	iEvent.getByToken(vtxToken_, vertices);
 	if (vertices->empty()) return; // skip the event if no PV found
 	pv_ = vertices->front();
 
@@ -56,8 +56,8 @@ void MiniAODMuonIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) 
 
 	unsigned int nbMuon =  muons->size();
 
-	std::auto_ptr<pat::MuonCollection> output(new pat::MuonCollection);
-	output->reserve(nbMuon);
+	std::unique_ptr<pat::MuonCollection> out(new pat::MuonCollection);
+	out->reserve(nbMuon);
 
         //std::cout<<"NMuons: "<<nbMuon<<std::endl;
 	for(unsigned i = 0 ; i < nbMuon; i++){
@@ -98,10 +98,9 @@ void MiniAODMuonIDEmbedder::produce(edm::Event& evt, const edm::EventSetup& es) 
 		muon.addUserFloat("dBRelIso03",muIso03);
 		muon.addUserInt("mediumID",muId);
 
-		output->push_back(muon);
+		out->push_back(muon);
 	}
-
-	evt.put(output);
+	iEvent.put(std::move(out),"");    
 }
 
 // define plugin

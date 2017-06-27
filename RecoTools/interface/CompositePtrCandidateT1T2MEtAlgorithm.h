@@ -40,7 +40,6 @@
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/TrackerGeometryBuilder/interface/GluedGeomDet.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 
 #include <TFile.h>

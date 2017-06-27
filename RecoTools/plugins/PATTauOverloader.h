@@ -64,7 +64,7 @@ class PATTauOverloader : public edm::EDProducer {
   {
       using namespace edm;
       using namespace reco;
-      std::auto_ptr<pat::TauCollection> taus(new pat::TauCollection);
+      std::unique_ptr<pat::TauCollection> out(new pat::TauCollection);
       Handle<pat::TauCollection > cands;
       Handle<pat::MuonCollection > muons;
 
@@ -181,10 +181,10 @@ class PATTauOverloader : public edm::EDProducer {
               tau.addUserFloat("muonNMatchedSeg",nMatchedSegments);
               tau.addUserFloat("muonTauHadMatched",muonMatched);
 
-              taus->push_back(tau);
+              out->push_back(tau);
           }
       }
-      iEvent.put(taus);
+      iEvent.put(std::move(out),"");    
   } 
 
   // ----------member data ---------------------------

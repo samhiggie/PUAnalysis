@@ -29,7 +29,7 @@ ESTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	using namespace reco;
 
 	edm::Handle<pat::TauCollection > srcH;
-	std::auto_ptr<std::vector<pat::Tau> > out(new std::vector<pat::Tau> );
+	std::unique_ptr<std::vector<pat::Tau> > out(new std::vector<pat::Tau> );
 
 	edm::Handle<reco::GenParticleCollection> genParticleCollection;
 
@@ -99,7 +99,7 @@ ESTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 			out->push_back(object);
 		}
-	iEvent.put(out);
+	iEvent.put(std::move(out),"");    
 }
 
 

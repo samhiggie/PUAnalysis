@@ -65,7 +65,7 @@ class PATTauMatchSelector : public edm::EDProducer {
     
     Handle<edm::View<reco::Candidate> > ref;
     bool particlesExist = iEvent.getByLabel(ref_,ref);
-    std::auto_ptr<std::vector<T> > out(new std::vector<T>);
+    std::unique_ptr<std::vector<T> > out(new std::vector<T>);
 
     Handle<std::vector<T> > cands;
     if(iEvent.getByLabel(src_,cands)) 
@@ -76,8 +76,7 @@ class PATTauMatchSelector : public edm::EDProducer {
 	      out->push_back(cands->at(i));
       }
   
-    
-    iEvent.put(out);
+    iEvent.put(std::move(out),"");    
 
   } 
 
