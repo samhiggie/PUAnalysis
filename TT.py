@@ -20,7 +20,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-'file:VBFHttFXFX.root',
+'file:TauData.root'
+#'/store/data/Run2016D/Tau/MINIAOD/07Aug17-v1/10000/3208BBC1-52A3-E711-A21C-0242AC110008.root'
+#'file:VBFHttFXFX.root',
 #'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
 		),
 		inputCommands=cms.untracked.vstring(
@@ -39,7 +41,7 @@ process.source = cms.Source("PoolSource",
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
 from PUAnalysis.Configuration.tools.analysisTools import *
-defaultReconstructionMC(process,'HLT2',
+defaultReconstruction(process,'HLT2',
         [
         'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v2'
         ])
@@ -56,37 +58,6 @@ process.metCalibration.applyCalibration = cms.bool(False)
 #Name of the path in hTauTau_cff
 process.eventSelectionTT = cms.Path(process.selectionSequenceTT)
 
-#Specifies which gen particles we wish to keep, this collection is used in the
-#RecoTools/interface/CompositePtrCandidateT1T2MEtAlgorithm.h
-#Most of the algorithm tools are done in the composite ptr candidate algorithm 
-#module. 
-createGeneratedParticles(process,
-        'genDaughters',
-        [
-            "keep++ pdgId = {Z0}",
-            "keep pdgId = {tau+}",
-            "keep pdgId = {tau-}",
-            "keep pdgId = {mu+}",
-            "keep pdgId = {mu-}",
-            "keep pdgId = 6",
-            "keep pdgId = -6",
-            "keep pdgId = 11",
-            "keep pdgId = -11",
-            "keep pdgId = 25",
-            "keep pdgId = 35",
-            "keep pdgId = 37",
-            "keep pdgId = 36"
-            ]
-        )
-
-#TBH, I am not sure if this is currently used.
-createGeneratedParticles(process,
-        'genTauCands',
-        [
-            "keep pdgId = {tau+} & mother.pdgId()= {Z0}",
-            "keep pdgId = {tau-} & mother.pdgId() = {Z0}"
-            ]
-        )
 
 #Create the Ntuples, the name "analysis.root" is set here as well
 #This takes the output from the configuration sequence and fills
@@ -96,8 +67,10 @@ createGeneratedParticles(process,
 #in order to create two different trees, one with all the final selections
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
+addDiTauEventTree(process,'diTauEventTreeFinalLoose','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
 addDiTauEventTree(process,'diTauEventTree')
 addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
+
 
 #This event summary tells you how many objects pass each of the steps
 #in the configuration. It is extremely useful for debugging. 

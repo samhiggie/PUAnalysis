@@ -100,3 +100,4 @@ typedef StringBasedNtupleFiller<reco::MET> PATMETFiller;
 typedef StringBasedNtupleFiller<reco::PFMET> PATPFMETFiller;
 typedef StringBasedNtupleFiller<reco::GenMET> PATGenMETFiller;
 typedef StringBasedNtupleFiller<PATMuMuTauTauQuad> PATMuMuTauTauQuadFiller;
+typedef StringBasedNtupleFiller<PATMuPair> PATMuPairFiller;

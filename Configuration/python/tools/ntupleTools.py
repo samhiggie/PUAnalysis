@@ -368,7 +368,7 @@ def makeEleTauCSVShape(sourceDiTaus):
    return PSet
 
 
-def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT'):
+def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuons', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT2'):
    process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
@@ -400,21 +400,21 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                                    tag        = cms.string("vertices")
                               ),
                               diTauGenMCMatch = makeDiTauGenMatch(src),
-                              metfilter = cms.PSet(
-                                  pluginType = cms.string("TriggerFilterFiller"),
-                                  src = cms.InputTag(TriggerRes,"",TriggerFilter),
-                                  BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
-                                  BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter"),
-                                  paths      = cms.vstring(
-                                      "Flag_noBadMuons",
-                                      "Flag_HBHENoiseFilter",
-                                      "Flag_HBHENoiseIsoFilter",
-                                      "Flag_globalTightHalo2016Filter",
-                                      "Flag_goodVertices",
-                                      "Flag_eeBadScFilter",
-                                      "Flag_EcalDeadCellTriggerPrimitiveFilter"
-                                      )
-                              ),
+                              #metfilter = cms.PSet(
+                              #    pluginType = cms.string("TriggerFilterFiller"),
+                              #    src = cms.InputTag(TriggerRes,"",TriggerFilter),
+                              #    BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
+                              #    BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter"),
+                              #    paths      = cms.vstring(
+                              #        "Flag_noBadMuons",
+                              #        "Flag_HBHENoiseFilter",
+                              #        "Flag_HBHENoiseIsoFilter",
+                              #        "Flag_globalTightHalo2016Filter",
+                              #        "Flag_goodVertices",
+                              #        "Flag_eeBadScFilter",
+                              #        "Flag_EcalDeadCellTriggerPrimitiveFilter"
+                              #        )
+                              #),
                               diTauPt1 =  makeDiTauPair(src,"pt_1","leg1.pt"),
                               diTauPt2 =  makeDiTauPair(src,"pt_2","leg2.pt"), 
                               diTauEta1 = makeDiTauPair(src,"eta_1","leg1.eta"),
@@ -449,13 +449,13 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTaupfMT2 = makeDiTauPair(src,"pfmt_2","mt2MET"),#FILLED
                               
 
-			      #diTauMassLL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLmass","mass"),
-                              #diTauPt1LL =  makeLTauGeneric("PATMuPairFiller",srcLL,"LLpt_1","leg1.pt"), #FILLED
-                              #diTauPt2LL =  makeLTauGeneric("PATMuPairFiller",srcLL,"LLpt_2","leg2.pt"), #FILLED
-                              #diTauEta1LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLeta_1","leg1.eta"),#FILLED
-                              #diTauEta2LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLeta_2","leg2.eta"),#FILLED
-                              #diTauPhi1LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLphi_1","leg1.phi"),#FILLED
-                              #diTauPhi2LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLphi_2","leg2.phi"),#FILLED
+			      diTauMassLL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLmass","mass"),
+                              diTauPt1LL =  makeLTauGeneric("PATMuPairFiller",srcLL,"LLpt_1","leg1.pt"), #FILLED
+                              diTauPt2LL =  makeLTauGeneric("PATMuPairFiller",srcLL,"LLpt_2","leg2.pt"), #FILLED
+                              diTauEta1LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLeta_1","leg1.eta"),#FILLED
+                              diTauEta2LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLeta_2","leg2.eta"),#FILLED
+                              diTauPhi1LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLphi_1","leg1.phi"),#FILLED
+                              diTauPhi2LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLphi_2","leg2.phi"),#FILLED
                               #diTauEffCSV = makeDiTauEffCSV(src),  ##need to put csv eff back in
                               #diTauCSVShape = makeDiTauCSVShape(src), ## need to put csv shape back in
                               #diTauJES = makeDiTauVBFPair(src),#FILLED
@@ -476,10 +476,10 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauDecayModeLeg1 = makeDiTauPair(src,"decayMode_1",'leg1.decayMode()'),
                               diTauDecayModeLeg2 = makeDiTauPair(src,"decayMode_2",'leg2.decayMode()'),
 
-                              diTauHLTMatchHLTLeg1 = makeDiTauPair(src,"hltMed_1",'leg1.userFloat("hltDoublePFTau35TrackPt1MediumIsolationDz02Reg")'),
-                              diTauHLTMatchHLTCombLeg1 = makeDiTauPair(src,"hltMedComb_1",'leg1.userFloat("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg")'),
-                              diTauHLTMatchHLTLeg2 = makeDiTauPair(src,"hltMed_2",'leg2.userFloat("hltDoublePFTau35TrackPt1MediumIsolationDz02Reg")'),
-                              diTauHLTMatchHLTCombLeg2 = makeDiTauPair(src,"hltMedComb_2",'leg2.userFloat("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg")'),
+                              #diTauHLTMatchHLTLeg1 = makeDiTauPair(src,"hltMed_1",'leg1.userFloat("hltDoublePFTau35TrackPt1MediumIsolationDz02Reg")'),
+                              #diTauHLTMatchHLTCombLeg1 = makeDiTauPair(src,"hltMedComb_1",'leg1.userFloat("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg")'),
+                              #diTauHLTMatchHLTLeg2 = makeDiTauPair(src,"hltMed_2",'leg2.userFloat("hltDoublePFTau35TrackPt1MediumIsolationDz02Reg")'),
+                              #diTauHLTMatchHLTCombLeg2 = makeDiTauPair(src,"hltMedComb_2",'leg2.userFloat("hltDoublePFTau35TrackPt1MediumCombinedIsolationDz02Reg")'),
 
 
                               diTauAgainstMuonTight3Leg1 = makeDiTauPair(src,"againstMuonTight3_1",'leg1.tauID("againstMuonTight3")'),
@@ -563,10 +563,10 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               #diTauJetsPt30nbtagNoSf = makeDiTauJetCountPair(src,"nbtag30",'userFloat("isbtagged")&&pt()>30&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
                               diTauJetsPt30nbtag = makeDiTauJetCountPair(src,"nbtag30",'pt()>30&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
 
-                              diTauJetsPt30njets = makeDiTauJetCountPair(src,"njets",'pt()>30&&abs(eta)<4.7&&userFloat("idLoose")'),
-                              diTauJetsPt30njetsnopu = makeDiTauJetCountPair(src,"njetspuID",'pt()>30&&abs(eta)<4.7&&!userFloat("puIDLoose")'),
-                              diTauJetsPt20njets = makeDiTauJetCountPair(src,"njetspt20",'pt()>20&&abs(eta)<4.7&&userFloat("idLoose")'),
-                              diTauJetsPt20njetsnopu = makeDiTauJetCountPair(src,"njetspt20puID",'pt()>20&&abs(eta)<4.7&&!userFloat("puIDLoose")'),
+                              diTauJetsPt30njets = makeDiTauJetCountPair(src,"njets",'pt()>30&&abs(eta)<4.7'),
+                              diTauJetsPt30njetsnopu = makeDiTauJetCountPair(src,"njetspuID",'pt()>30&&abs(eta)<4.7'),
+                              diTauJetsPt20njets = makeDiTauJetCountPair(src,"njetspt20",'pt()>20&&abs(eta)<4.7'),
+                              diTauJetsPt20njetsnopu = makeDiTauJetCountPair(src,"njetspt20puID",'pt()>20&&abs(eta)<4.7'),
 
 
                               diTauJet1PtPtSort = makeDiTauPtPair(src,"jpt_1",'abs(eta())<4.7&&pt()>20','pt()',0),

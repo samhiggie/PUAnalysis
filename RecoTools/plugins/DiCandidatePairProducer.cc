@@ -6,7 +6,7 @@
 DEFINE_FWK_MODULE(DiCandidatePairProducer);
 //DEFINE_FWK_MODULE(PATJetPairProducer);
 DEFINE_FWK_MODULE(PATMuTauPairProducer);
-//DEFINE_FWK_MODULE(PATMuPairProducer);
+DEFINE_FWK_MODULE(PATMuPairProducer);
 DEFINE_FWK_MODULE(PATEleTauPairProducer);
 //DEFINE_FWK_MODULE(PATEleSCPairProducer);
 //DEFINE_FWK_MODULE(PATElePairProducer);
