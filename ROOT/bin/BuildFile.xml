@@ -1,0 +1,15 @@
+<use   name="root"/>
+<use   name="rootcore"/>
+<use   name="PhysicsTools/FWLite"/>
+<use   name="PhysicsTools/Utilities"/>
+<use   name="DataFormats/FWLite"/>
+<use   name="TauAnalysis/SVfitStandalone"/> 
+<use   name="roofit"/>
+<use   name="roostats"/>
+<use   name="HTT-utilities/RecoilCorrections"/>
+
+<!--<use   name="roottmva"/>0-->
+
+
+<bin   name="EventWeightsForEfficiencyTrigger2016" file="EventWeightsForEfficiencyTrigger2016.cc">
+</bin>
