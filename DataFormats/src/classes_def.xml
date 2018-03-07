@@ -1,4 +1,5 @@
 <lcgdict>
+  <class name="TH1Keys" />
   <!-- create dictionaries for CandidatePair objects -->
   <class name="CompositePtrCandidateT1T2MEt<reco::Candidate, reco::Candidate>"/>
   <class name="std::vector<CompositePtrCandidateT1T2MEt<reco::Candidate, reco::Candidate> >"/>

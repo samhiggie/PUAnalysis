@@ -9,6 +9,7 @@
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
+#include "PUAnalysis/DataFormats/interface/TH1Keys.h"
 
 namespace {
   struct UWanalysis_DataFormats_dictionary {

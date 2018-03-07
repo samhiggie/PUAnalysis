@@ -1,0 +1,243 @@
+#!/bin/sh
+preselection='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<5&&newCHIso18_2<5' 
+
+preselectionMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<5&&newCHIso3_2<5' 
+
+preselectionVBF='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&!(eta_1<1.54&&eta_1>1.35)&&!(eta_1>-1.54&&eta_1<-1.35)&&!(eta_2<1.54&&eta_2>1.35)&&!(eta_2>-1.54&&eta_2<-1.35)&&'\
+'mjj>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<5&&newCHIso18_2<5'
+#&&jpt_passid_veto_1>0&&jpt_passid_veto_2>0' 
+
+preselectionVBFMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&!(eta_1<1.54&&eta_1>1.35)&&!(eta_1>-1.54&&eta_1<-1.35)&&!(eta_2<1.54&&eta_2>1.35)&&!(eta_2>-1.54&&eta_2<-1.35)&&'\
+'mjj>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<5&&newCHIso3_2<5' 
+
+#preselectionVBF='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+#'mjj>400&&njets>=2&&(abs(jdeta)>2.5)&&'\
+#'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<2.5&&newCHIso18_2<2.5'
+
+#preselectionVBFMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+#'mjj>400&&njets>=2&&(abs(jdeta)>2.5)&&'\
+#'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<2.5&&newCHIso3_2<2.5' 
+
+#---------------------------------------
+qcdYieldLooseselectionVBF='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&'\
+'mjj>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<100&&newCHIso18_2<100'
+#&&jpt_passid_veto_1>0&&jpt_passid_veto_2>0' 
+
+qcdYieldLooseselectionVBFMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&'\
+'mjj>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<100&&newCHIso3_2<100' 
+#---------------------------------------
+qcdShapeLooseselectionVBF='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<100&&newCHIso18_2<100'
+#'mjj>200&&'\
+
+qcdShapeLooseselectionVBFMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<100&&newCHIso3_2<100' 
+#'mjj>200&&'\
+#---------------------------------------
+qcdShapeTightselectionVBF='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&!(eta_1<1.54&&eta_1>1.35)&&!(eta_1>-1.54&&eta_1<-1.35)&&!(eta_2<1.54&&eta_2>1.35)&&!(eta_2>-1.54&&eta_2<-1.35)&&'\
+'newCHIso18_1<10&&newCHIso18_2<10'
+
+#'mjj>200&&'\
+
+qcdShapeTightselectionVBFMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&!(eta_1<1.54&&eta_1>1.35)&&!(eta_1>-1.54&&eta_1<-1.35)&&!(eta_2<1.54&&eta_2>1.35)&&!(eta_2>-1.54&&eta_2<-1.35)&&'\
+'newCHIso3_1<4&&newCHIso3_2<4' 
+
+#'mjj>200&&'\
+#---------------------------------------
+preselectionBoosted='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+'higgsPt>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso18_1<5&&newCHIso18_2<5' 
+
+preselectionBoostedMTD='pt_1>20&&pt_2>20&&tightElectrons==0&&looseMuons==0&&charge==0&&'\
+'higgsPt>200&&'\
+'abs(eta_1)<3&&abs(eta_2)<3&&newCHIso3_1<5&&newCHIso3_2<5' 
+
+bselection='nbtag>=1'
+antibselection='nbtag==0'
+wselection='mt_1>70'
+signalselection='mt_1<40'
+qcdselection=$inclselection
+trigselection='pt_1>24' #only for MC
+topSF=0.1
+trigselectiondata='(HLT_IsoMu22_v_fired>0||HLT_IsoTkMu22_v_fired>0)' #only for Data
+relaxedSelection='pt_2>20&&npv>0&&iso_04>0.15&&iso_04<0.3&&tauIsoLoose>0.5'
+
+luminosity=100000 #pb
+
+#direc='/scratch/ojalvo/Htt_Sep22_200PU/'
+direc='/scratch/ojalvo/Htt_Oct6_200PU/'
+datadirec=$direc
+zttScale=1.0
+topWeight=1.0
+zWeight=1.0
+qcdfactor=1.0
+topSF=1.
+bins=30
+#DYJets.root  ggH125.root  QCD.root  ttBar.root vbfH125.root
+binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,100.,110.,120.,130.,150. binningHighStat=0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,250.,300.,350.' 
+mkdir diTauPlots
+############################FIX THE Higgs Scales################## now 1 in merger sep23
+#m_vis Madgraph
+outputDir='diTauPlots_VBF'
+mkdir $outputDir
+
+for var in "variable=decayMode_1  bins=12 min=0 max=12 outputFile=${outputDir}/tauTau_decayMode_1.root "\
+ "variable=decayMode_2  bins=12 min=0 max=12     outputFile=$outputDir/tauTau_decayMode_2.root"\
+ "variable=charge  bins=6 min=-3 max=3     outputFile=$outputDir/tauTau_charge.root"\
+ "variable=m_vis        bins=10 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
+ "variable=eta_1        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_eta_1.root"\
+ "variable=eta_2        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_eta_2.root"\
+ "variable=gen_match_1        bins=12 min=0 max=11 outputFile=$outputDir/tauTau_gen_match_1.root"\
+ "variable=gen_match_2        bins=12 min=0 max=11 outputFile=$outputDir/tauTau_gen_match_2.root"\
+ "variable=ht           bins=10 min=2    max=402 outputFile=$outputDir/tauTau_ht.root"\
+ "variable=m_1          bins=10 min=0    max=3   outputFile=$outputDir/tauTau_m_1.root"\
+ "variable=m_2          bins=10 min=0    max=3   outputFile=$outputDir/tauTau_m_2.root"\
+ "variable=energyJJ     bins=10 min=2    max=302 outputFile=$outputDir/tauTau_energyJJ.root"\
+ "variable=etaJJ        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_etaJJ.root"\
+ "variable=ptJJ         bins=10 min=2    max=302 outputFile=$outputDir/tauTau_ptJJ.root"\
+ "variable=jeta_1       bins=10 min=-4.7 max=4.7 outputFile=$outputDir/tauTau_jeta_1.root"\
+ "variable=jphi_1       bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jphi_1.root"\
+ "variable=jpt_1        bins=10 min=2    max=102 outputFile=$outputDir/tauTau_jpt_1.root"\
+ "variable=jeta_2       bins=10 min=-4.7 max=4.7 outputFile=$outputDir/tauTau_jeta_2.root"\
+ "variable=jphi_2       bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jphi_2.root"\
+ "variable=jpt_2        bins=10 min=2    max=102 outputFile=$outputDir/tauTau_jpt_2.root"\
+ "variable=jdeta        bins=10 min=0    max=10 outputFile=$outputDir/tauTau_jdeta.root"\
+ "variable=(jeta_1-gen_jeta_1)           bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdeta_1.root"\
+ "variable=(jphi_1-gen_jphi_1)           bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdphi_1.root"\
+ "variable=(jpt_1-gen_jpt_1)/gen_jpt_1   bins=10 min=-2   max=2   outputFile=$outputDir/tauTau_jpt_res_1.root"\
+ "variable=(jeta_2-gen_jeta_2)           bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdeta_2.root"\
+ "variable=(jphi_2-gen_jphi_2)           bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdphi_2.root"\
+ "variable=(jpt_2-gen_jpt_2)/gen_jpt_2   bins=10 min=-2   max=2   outputFile=$outputDir/tauTau_jpt_res_2.root"\
+ "variable=njetspt20    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetspt20.root"\
+ "variable=njets        bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njets.root"\
+ "variable=met          bins=10 min=2    max=402 outputFile=$outputDir/tauTau_met.root"\
+ "variable=metphi       bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_metphi.root"\
+ "variable=mJJ          bins=10 min=2    max=302 outputFile=$outputDir/tauTau_mJJ.root"\
+ "variable=phi_1        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_phi_1.root"\
+ "variable=phi_2        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_phi_2.root"\
+ "variable=pth          bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pth.root"\
+ "variable=pt_1         bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pt_1.root"\
+ "variable=pt_2         bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pt_2.root"\
+ "variable=isoMVARaw_1  bins=10 min=-1   max=1   outputFile=$outputDir/tauTau_isoMVARaw_1.root"\
+ "variable=isoMVARaw_2  bins=10 min=-1   max=1   outputFile=$outputDir/tauTau_isoMVARaw_2.root"\
+ "variable=njetingap20  bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap20.root"\
+ "variable=njetingap    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap.root"\
+ "variable=mjj          bins=20 min=2    max=300 outputFile=$outputDir/tauTau_mjj.root"\
+ "variable=pfmt_1       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_1.root"\
+ "variable=pfmt_2       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_2.root"
+do
+    echo $var
+    MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity  qcdYieldLooseselection=$qcdYieldLooseselectionVBF qcdShapeLooseselection=$qcdShapeLooseselectionVBF qcdShapeTightselection=$qcdShapeTightselectionVBF $var
+done
+
+outputDir='diTauPlots_VBF_MTD'
+mkdir $outputDir
+
+for var in "variable=decayMode_1  bins=12 min=0 max=12 outputFile=${outputDir}/tauTau_decayMode_1.root "\
+ "variable=decayMode_2  bins=12 min=0 max=12     outputFile=$outputDir/tauTau_decayMode_2.root"\
+ "variable=charge  bins=6 min=-3 max=3     outputFile=$outputDir/tauTau_charge.root"\
+ "variable=m_vis        bins=10 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
+ "variable=eta_1        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_eta_1.root"\
+ "variable=eta_2        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_eta_2.root"\
+ "variable=gen_match_1        bins=12 min=0 max=11 outputFile=$outputDir/tauTau_gen_match_1.root"\
+ "variable=gen_match_2        bins=12 min=0 max=11 outputFile=$outputDir/tauTau_gen_match_2.root"\
+ "variable=ht           bins=10 min=2    max=402 outputFile=$outputDir/tauTau_ht.root"\
+ "variable=m_1          bins=10 min=0    max=3   outputFile=$outputDir/tauTau_m_1.root"\
+ "variable=m_2          bins=10 min=0    max=3   outputFile=$outputDir/tauTau_m_2.root"\
+ "variable=energyJJ     bins=10 min=2    max=302 outputFile=$outputDir/tauTau_energyJJ.root"\
+ "variable=etaJJ        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_etaJJ.root"\
+ "variable=ptJJ         bins=10 min=2    max=302 outputFile=$outputDir/tauTau_ptJJ.root"\
+ "variable=jeta_1       bins=10 min=-4.7 max=4.7 outputFile=$outputDir/tauTau_jeta_1.root"\
+ "variable=jphi_1       bins=10 min=-3.7 max=3.4 outputFile=$outputDir/tauTau_jphi_1.root"\
+ "variable=jpt_1        bins=10 min=2    max=102 outputFile=$outputDir/tauTau_jpt_1.root"\
+ "variable=jeta_2       bins=10 min=-4.7 max=4.7 outputFile=$outputDir/tauTau_jeta_2.root"\
+ "variable=jphi_2       bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jphi_2.root"\
+ "variable=jpt_2        bins=10 min=2    max=102 outputFile=$outputDir/tauTau_jpt_2.root"\
+ "variable=jdeta        bins=10 min=0    max=10 outputFile=$outputDir/tauTau_jdeta.root"\
+ "variable=(jeta_1-gen_jeta_1)           bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdeta_1.root"\
+ "variable=(jphi_1-gen_jphi_1)           bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdphi_1.root"\
+ "variable=(jpt_1-gen_jpt_1)/gen_jpt_1   bins=10 min=-2   max=2   outputFile=$outputDir/tauTau_jpt_res_1.root"\
+ "variable=(jeta_2-gen_jeta_2)           bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdeta_2.root"\
+ "variable=(jphi_2-gen_jphi_2)           bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jdphi_2.root"\
+ "variable=(jpt_2-gen_jpt_2)/gen_jpt_2   bins=10 min=-2   max=2   outputFile=$outputDir/tauTau_jpt_res_2.root"\
+ "variable=njetspt20    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetspt20.root"\
+ "variable=njets        bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njets.root"\
+ "variable=met          bins=10 min=2    max=402 outputFile=$outputDir/tauTau_met.root"\
+ "variable=metphi       bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_metphi.root"\
+ "variable=mJJ          bins=10 min=2    max=302 outputFile=$outputDir/tauTau_mJJ.root"\
+ "variable=phi_1        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_phi_1.root"\
+ "variable=phi_2        bins=10 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_phi_2.root"\
+ "variable=pth          bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pth.root"\
+ "variable=pt_1         bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pt_1.root"\
+ "variable=pt_2         bins=10 min=2    max=102 outputFile=$outputDir/tauTau_pt_2.root"\
+ "variable=isoMVARaw_1  bins=10 min=-1   max=1   outputFile=$outputDir/tauTau_isoMVARaw_1.root"\
+ "variable=isoMVARaw_2  bins=10 min=-1   max=1   outputFile=$outputDir/tauTau_isoMVARaw_2.root"\
+ "variable=njetingap20  bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap20.root"\
+ "variable=njetingap    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap.root"\
+ "variable=mjj          bins=20 min=2    max=300 outputFile=$outputDir/tauTau_mjj.root"\
+ "variable=pfmt_1       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_1.root"\
+ "variable=pfmt_2       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_2.root"
+do
+    echo $var
+    MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBFMTD  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity  qcdYieldLooseselection=$qcdYieldLooseselectionVBFMTD qcdShapeLooseselection=$qcdShapeLooseselectionVBFMTD qcdShapeTightselection=$qcdShapeTightselectionVBFMTD  $var
+
+
+done
+
+
+
+preselectionVBF='pt_1>30&&pt_2>30&&'\
+'mjj>400&&njets>=2&&(abs(jdeta)>2.5)&&'\
+'abs(eta_1)<2.1&&abs(eta_2)<2.1&&newCHIso18_1<2.5&&newCHIso18_2<2.5' 
+
+preselectionVBFMTD='pt_1>30&&pt_2>30&&'\
+'mjj>400&&njets>=2&&(abs(jdeta)>2.5)&&'\
+'abs(eta_1)<2.1&&abs(eta_2)<2.1&&newCHIso3_1<2.5&&newCHIso3_2<2.5' 
+
+
+
+
+
+
+exit;
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity  variable='m_vis' bins=10 min=0 max=200 outputFile='diTauPlots_vbf/diTau_m_vis_vbf.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBFMTD  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity  variable='m_vis' bins=10 min=0 max=200 outputFile='diTauPlots/diTau_m_vis_vbf_mtd.root'  
+
+#mjj 
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity  variable='mjj' bins=10 min=0 max=200 outputFile='diTauPlots_vbf/diTau_mjj.root' 
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='mjj' bins=10 min=0 max=200 outputFile='diTauPlots_vbf_mtd/diTau_mjj.root' 
+
+#jpt1
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jpt_1' bins=20 min=0 max=200 outputFile='diTauPlots_vbf/diTau_jpt_1.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jpt_1' bins=20 min=0 max=200 outputFile='diTauPlots_vbf_mtd/diTau_jpt_1.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jpt_2' bins=20 min=0 max=200 outputFile='diTauPlots_vbf/diTau_jpt_2.root'  
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jpt_2' bins=20 min=0 max=200 outputFile='diTauPlots_vbf_mtd/diTau_jpt_2.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jeta_1' bins=20 min=-5 max=5 outputFile='diTauPlots_vbf/diTau_jeta_1.root'  
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jeta_1' bins=20 min=-5 max=5 outputFile='diTauPlots_vbf_mtd/diTau_jeta_1.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jeta_2' bins=20 min=-5 max=5 outputFile='diTauPlots_vbf/diTau_jeta_2.root'  
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='jeta_2' bins=20 min=-5 max=5 outputFile='diTauPlots_vbf_mtd/diTau_jeta_2.root'  
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='vertices' bins=30 min=0 max=60 outputFile='diTauPlots_vbf/diTau_vertices.root'
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='vertices' bins=30 min=0 max=60 outputFile='diTauPlots_vbf_mtd/diTau_vertices.root'
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='tauZIP' bins=30 min=0 max=60 outputFile='diTauPlots_vbf/diTau_tauZIP.root' 
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='tauZIP' bins=30 min=0 max=60 outputFile='diTauPlots_vbf_mtd/diTau_tauZIP.root' 
+
+variable='tauDecayMode' bins=12 min=0 max=12 outputFile='diTauPlots_vbf/diTau_tauDecayMode.root'
+variable='tauDecayMode' bins=12 min=0 max=12 outputFile='diTauPlots_vbf_mtd/diTau_tauDecayMode.root'
+
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='njets' bins=8 min=-0.5 max=7.5 outputFile='diTauPlots_vbf/diTau_njets.root' 
+MakeDataCardUpgrade channel='diTau' dataFile='none.root' qcdFile=$direc'QCD.root' zttFile=$direc'DYJets.root' zllFile=$direc'DYJets.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'ttBar.root' preselection=$preselectionVBF  wselection=$signalelection relaxedSelection=$signalSelection  signalselection=$signalselection   luminosityErr=0.045 qcdfactor=1 qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075 topSF=$topSF 	muID=1.00 muIDErr=0.01 eleID=0.0 eleIDErr=0.0 tauID=1.0 tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0 TTweight='1' Zweight='1' weight='__WEIGHT__'  luminosity=$luminosity variable='njets' bins=8 min=-0.5 max=7.5 outputFile='diTauPlots_vbf_mtd/diTau_njets.root' 
+
