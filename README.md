@@ -11,6 +11,8 @@ cmsenv
 git cms-init 
 git clone https://github.com/isobelojalvo/PUAnalysis.git   
 export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
+cd PUAnalysis
+bash recipe.sh #Note Recipe13TeV.sh should be the full recipe but we are keeping it simple for now
 scram b -j 8
 ```
 to run test
@@ -19,6 +21,25 @@ to run test
 cd PUAnalysis
 cmsRun TT-MC.py
 ```
+To create a plot there are main files used for running are:
+PUAnalysis/StatTools/data/sm_higgs_tautau/makeTauTauPlots_Published
+PUAnalysis/StatTools/data/sm_higgs_tautau/makeTemplatePlotsDiTau.C
+
+For Datacard creation:
+PUAnalysis/StatTools/interface/DataCardCreatorHThTh_2016.h
+PUAnalysis/StatTools/bin/MakeDataCardHThTh_2016.cc
+And for plotting: 
+PUAnalysis/ROOT/plotMacros/makePlotHThTh.C
+
+```
+cd PUAnalysis/StatTools/data/sm_higgs_tautau/
+##First check to see the $direc variable is sourced to a place that actually contains your root files!
+bash makeTauTauPlots_Published
+#wait...
+#Check to see where your files are being saved, I save to ~/www/ which is a private structure setup.
+root -l -b -q makeTemplatePlotsDiTau.C
+```
+
 The output file, analysis.root
 
 In general To see what needs to be fixed ``` grep -r FIXME *``` or ``` CHECKME```. 
