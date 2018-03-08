@@ -12,24 +12,29 @@ git cms-init
 git clone https://github.com/isobelojalvo/PUAnalysis.git   
 export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
 cd PUAnalysis
+git fetch origin
+git checkout devel_Htt_Mar_7
 bash recipe.sh #Note Recipe13TeV.sh should be the full recipe but we are keeping it simple for now
 scram b -j 8
 ```
-to run test
+to run test of analysis fw
 
 ```
 cd PUAnalysis
 cmsRun TT-MC.py
 ```
-To create a plot there are main files used for running are:
+
+__To create Htt plots, these are the main files used for running are:__
 PUAnalysis/StatTools/data/sm_higgs_tautau/makeTauTauPlots_Published
 PUAnalysis/StatTools/data/sm_higgs_tautau/makeTemplatePlotsDiTau.C
 
-For Datacard creation:
+__For Datacard creation:__
 PUAnalysis/StatTools/interface/DataCardCreatorHThTh_2016.h
 PUAnalysis/StatTools/bin/MakeDataCardHThTh_2016.cc
-And for plotting: 
+
+__And for plotting:__
 PUAnalysis/ROOT/plotMacros/makePlotHThTh.C
+
 
 ```
 cd PUAnalysis/StatTools/data/sm_higgs_tautau/
