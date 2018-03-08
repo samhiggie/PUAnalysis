@@ -23,6 +23,8 @@ to run test of analysis fw
 cd PUAnalysis
 cmsRun TT-MC.py
 ```
+The output ntuple is __analysis.root__
+
 
 __To create Htt plots, these are the main files used for running are:__
 PUAnalysis/StatTools/data/sm_higgs_tautau/makeTauTauPlots_Published
@@ -44,8 +46,6 @@ bash makeTauTauPlots_Published
 #Check to see where your files are being saved, I save to ~/www/ which is a private structure setup.
 root -l -b -q makeTemplatePlotsDiTau.C
 ```
-
-The output file, analysis.root
 
 In general To see what needs to be fixed ``` grep -r FIXME *``` or ``` CHECKME```. 
 
