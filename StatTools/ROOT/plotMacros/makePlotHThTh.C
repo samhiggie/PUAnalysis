@@ -87,9 +87,11 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	}
 
 	c->cd();
-	/*
+
+	TPad * ratioPad = new TPad("pad2","",0.0,0.0,1.0,0.29);
+	TPad * plotPad = new TPad("pad1","",0.0016,0.291,1.0,1.0);
 	if(doRatio){
-		TPad * plotPad = new TPad("pad1","",0.0016,0.291,1.0,1.0);
+
 		plotPad->SetTicks(0,0);
 		plotPad->SetLeftMargin  (L/W);
 		plotPad->SetRightMargin (R/W);
@@ -98,7 +100,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 		plotPad->SetFillColor(0);
 		plotPad->SetBottomMargin(0);
 
-		TPad * ratioPad = new TPad("pad2","",0.0,0.0,1.0,0.29);
+
 		ratioPad->SetLeftMargin  (L/W);
 		ratioPad->SetRightMargin (R/W);
 		ratioPad->SetTopMargin   (T_ratio/H);
@@ -108,25 +110,24 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 		ratioPad->SetFillColor(4000);
 
 	}
-	else{*/
-	TPad * plotPad = new TPad("pad1","",0.0,0.03,1.0,1.0);
+	else{
+	  plotPad = new TPad("pad1","",0.0,0.03,1.0,1.0);
 
 		plotPad->SetLeftMargin     (L/W);
 		plotPad->SetRightMargin    (R/W);
 		plotPad->SetTopMargin      (T/H);
 		plotPad->SetBottomMargin   (B/H);
-		//}
+	}
 
 	plotPad->Draw();
 	plotPad->cd();
-	std::cout<<"here0"<<std::endl;
 
 	TFile *f = new TFile(file);
 
 
-	//TH1F * data = (TH1F*)(f->Get(dir+"/data_obs"));
-	//if (dndm) convertToDNDM(data);
-	//applyDATAStyle(data);
+	TH1F * data = (TH1F*)(f->Get(dir+"/data_obs"));
+	if (dndm) convertToDNDM(data);
+	applyDATAStyle(data);
 
 	TH1F * QCD = (TH1F*)(f->Get(dir+"/QCD"));
 	if (dndm) convertToDNDM(QCD);
@@ -209,37 +210,97 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	//  else {
 	//  hs->Add(MSSM);
 
+	if(data->GetMaximum()*1.2+sqrt(data->GetMaximum())>hs->GetMaximum()) {
+		float max=0.0;
+		if(data->GetMaximum()>hs->GetMaximum())
+			max=data->GetMaximum();
+		else
+			max=hs->GetMaximum();
+
+		if(log) {
+			max*=10;
+			hs->SetMinimum(0.5);
+		}
+		hs->SetMaximum(max*1.5+sqrt(data->GetMaximum()));
+
+	}
+	else{
+		hs->SetMaximum(hs->GetMaximum()*1.8);
+	}
+	if(dndm)       hs->SetMinimum(0.001);
 
 
 	hs->Draw("HIST");
-	hs->SetMaximum(hs->GetMaximum()*1.8);
 
-	hs->Draw("HIST");
-
-	//if(doRatio){
-	//	hs->GetXaxis()->SetLabelSize(0);
-		//}
-		//else
-		//{
+	if(doRatio){
+		hs->GetXaxis()->SetLabelSize(0);
+	}
+	else
+	{
 		if(units!="")
 			hs->GetXaxis()->SetTitle(labelX+" ["+units+"]");
 		else
 			hs->GetXaxis()->SetTitle(labelX);
-		//}
+	}
 
 	hs->GetYaxis()->SetTitle("Events");
-	hs->GetYaxis()->SetTitleOffset(1.2);
-	
+	hs->GetYaxis()->SetTitleOffset(1);
+
 	if(dndm)
 		hs->GetYaxis()->SetTitle("dN/d"+labelX);
 
 	if(s>0)
 		signal->Draw("HIST,SAME");
 
-
+	data->Draw("e,SAME");
 
 
 	c->cd();
+
+	if(doRatio){
+		TH1F * data2 = (TH1F*)data->Clone("data");
+		TH1F * mc = (TH1F*)(ttbar);
+		mc->Add(QCD);
+		//mc->Add(EWK);
+		mc->Add(ZTT);
+		if (channel =="#tau_{e}#tau_{h}") mc->Add(ZEE);
+		if (channel =="#tau_{#mu}#tau_{h}") mc->Add(ZEE);
+
+		double xmin = mc->GetXaxis()->GetXmin();
+		double xmax = mc->GetXaxis()->GetXmax();
+		TLine *line = new TLine(xmin,1.0,xmax,1.0);
+		line->SetLineWidth(1);
+		line->SetLineColor(kBlack);
+
+		ratioPad->Draw();
+		ratioPad->cd();
+
+		data2->Divide(data2,mc);
+
+		data2->SetMarkerStyle(20);
+		data2->SetTitleSize  (0.12,"Y");
+		data2->SetTitleOffset(0.40,"Y");
+		data2->SetTitleSize  (0.12,"X");
+		data2->SetLabelSize  (0.10,"X");
+		data2->SetLabelSize  (0.08,"Y");
+		data2->GetYaxis()->SetRangeUser(0.62,1.38);
+		data2->GetYaxis()->SetNdivisions(305);
+		data2->GetYaxis()->SetTitle("Obs/Exp   ");
+
+		//What does this do
+		//->this affects the stat box style
+		//gStyle->SetOptTitle(0);
+
+
+		if (units!="")
+			data2->GetXaxis()->SetTitle(labelX+" ["+units+"]");
+		else
+			data2->GetXaxis()->SetTitle(labelX);
+
+		data2->Draw("P");
+		line->Draw();
+
+	}
 
 	c->cd();
 	plotPad->cd(); 

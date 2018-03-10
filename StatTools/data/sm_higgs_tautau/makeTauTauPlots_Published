@@ -44,9 +44,10 @@ wselection='mt_1>70'
 
 ## Trigger Selection
 trigselection='pt_1>24&&HLT_Any>0&&hltMedComb_1>0&&hltMedComb_2' #only for MC
-# This should be checked, I am not sure that there should be a difference between data and mc
+# Data does not have hltMedComb for the first 2/3rds, a medium working point was 
+# implemented during the 2016 Run, therefore we use HLT_Any for data and MC uses 
+# medium combined but with corrections that scale properly to the full dataset.
 trigselectiondata='HLT_Any>0' #only for Data 
-trigselectiondata=$trigselection
 
 luminosity=35870 #pb
 direc='/scratch/ojalvo/ztt_weighted_2016_SM/'
@@ -66,9 +67,10 @@ binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,
 mkdir $outputDir
 signalselection='pt_1>10'
 folder='tt_inclusive'
-for var in  "variable=m_vis          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
+for var in   "variable=m_sv          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_sv.root"\
  "variable=pt_1        bins=20 min=0 max=100 outputFile=$outputDir/tauTau_pt_1.root"\
  "variable=pt_2        bins=20 min=0 max=100 outputFile=$outputDir/tauTau_pt_2.root"\
+ "variable=m_vis          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
  "variable=decayMode_1  bins=12 min=0 max=12     outputFile=${outputDir}/tauTau_decayMode_1.root "\
  "variable=decayMode_2  bins=12 min=0 max=12     outputFile=$outputDir/tauTau_decayMode_2.root"\
  "variable=eta_1        bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_eta_1.root"\
