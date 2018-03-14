@@ -141,8 +141,9 @@ class CSVJetVarFiller : public NtupleFillerBase {
 
 typedef CSVJetVarFiller<PATDiTauPair> PATDiTauPairCSVJetVarFiller;
 typedef CSVJetVarFiller<PATMuTauPair> PATMuTauPairCSVJetVarFiller;
+typedef CSVJetVarFiller<PATMuTauPair> PATMuPaircsvjetvarfiller;
 typedef CSVJetVarFiller<PATElecTauPair> PATEleTauPairCSVJetVarFiller;
-
+typedef CSVJetVarFiller<PATMuPair> PATMuPairCSVJetVarFiller;
 
 
 

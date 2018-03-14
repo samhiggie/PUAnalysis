@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -20,7 +20,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-'file:VBFHttFXFX.root',
+        'file:event-21753.root'
+#'/store/mc/RunIISpring16MiniAODv1/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/10000/06A0B340-8025-E611-8262-B8CA3A708F98.root'
+#'file:VBFHttFXFX.root',
 #'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
 		),
 		inputCommands=cms.untracked.vstring(
@@ -39,9 +41,10 @@ process.source = cms.Source("PoolSource",
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
 from PUAnalysis.Configuration.tools.analysisTools import *
-defaultReconstructionMC(process,'HLT2',
+defaultReconstructionMC(process,'HLT',
         [
-        'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v2'
+        'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection
@@ -49,7 +52,7 @@ defaultReconstructionMC(process,'HLT2',
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")
+process.load("PUAnalysis.Configuration.hTauTau_cff")## Check me
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
@@ -95,9 +98,10 @@ createGeneratedParticles(process,
 #be replaced with any of the labled collections produced in htautau_cff.py
 #in order to create two different trees, one with all the final selections
 #and one with looser selections.
-from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
-addDiTauEventTree(process,'diTauEventTree')
-addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
+from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
+
+addDiTauEventTree(process,'diTauEventTree',triggerCollection='HLT')
+addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT')
 
 #This event summary tells you how many objects pass each of the steps
 #in the configuration. It is extremely useful for debugging. 

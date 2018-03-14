@@ -8,6 +8,8 @@
 #include "PUAnalysis/NtupleTools/interface/NtupleFillerBase.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "HTT-utilities/LepEffInterface/interface/ScaleFactor.h" //HTT Weights
+//#include "PUAnalysis/Configuration/data/fitfunc
 
 #include "CommonTools/Utils/interface/StringObjectFunction.h"
 #include "boost/filesystem.hpp"
@@ -52,6 +54,11 @@ class EventWeightFiller : public NtupleFillerBase {
 			std::cout<<"file exist: "<<fis<<std::endl;
 
 		}
+		myScaleFactorIso = new ScaleFactor();
+		myScaleFactorTrig = new ScaleFactor();
+
+		myScaleFactorIso->init_ScaleFactor(fileIso);
+		myScaleFactorTrig->init_ScaleFactor(fileTrig);
 
 	}
 
@@ -73,7 +80,14 @@ class EventWeightFiller : public NtupleFillerBase {
 				eta = handle->at(0).leg1()->eta();
 			}
 
+			//double efficiency_data = myScaleFactorIso->get_EfficiencyData(pt, eta);
+			//double efficiency_MC = myScaleFactorIso->get_EfficiencyMC(pt,eta);
+			double scaleFactorIso = myScaleFactorIso->get_ScaleFactor(pt,eta);
+			double scaleFactorTrig = myScaleFactorTrig->get_EfficiencyData(pt,eta);
 
+			value[0]=scaleFactorIso;
+			value[1]=scaleFactorTrig;
+			value[2]=(scaleFactorTrig*scaleFactorIso);
 		}
 
 
@@ -82,6 +96,8 @@ class EventWeightFiller : public NtupleFillerBase {
 		std::string tag_;
 		bool isMu_;
 		float* value;
+                ScaleFactor *myScaleFactorIso; 
+                ScaleFactor *myScaleFactorTrig;
 
 
 };
