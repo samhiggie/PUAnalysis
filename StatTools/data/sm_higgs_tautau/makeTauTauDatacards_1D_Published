@@ -9,7 +9,7 @@ nominalselection='isoTight_1>0.5&&isoTight_2>0.5&&'\
 tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&'\
 '(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.01)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))'
 
-preselection='isoTight_1>0.5&&isoTight_2>0.5&&'\
+preselection='isoMed_1>0.5&&isoMed_2>0.5&&'\
 'abs(eta_1)<2.1&&abs(eta_2)<2.1&&'\
 'againstMuonTight3_1>0&&againstMuonTight3_2>0&&'\
 'againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&'\
@@ -61,7 +61,7 @@ outputDir='diTauDatacards-2D-moriond'
 binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,100.,110.,120.,130.,150. binningHighStat=0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,250.,300.,350.' 
 
 #vbf
-signalselection='((njets>=2)&&(abs(jdeta)>2.5&&(pt_1+pt_2+met)>100))'
+signalselection='((njets>=2)&&(abs(jdeta)>2.5&&(fullPt)>100))'
 folder='tt_vbf'
 binningY='binningY=0.,40.,60.,70.,80.,90.,100.,110.,120.,130.,150.,200.,250.'
 binningX='binningX=0.,300.,500.,800.,100000.'
