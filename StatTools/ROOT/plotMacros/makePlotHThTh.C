@@ -45,7 +45,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	lumi_8TeV  = "19.1 fb^{-1}"; // default is "19.7 fb^{-1}"
 	lumi_7TeV  = "4.9 fb^{-1}";  // default is "5.1 fb^{-1}"
 	lumi_sqrtS = "13 TeV";
-	if (json=="Golden") lumi_13TeV = channel+"    100 fb^{-1}, 2016";
+	if (json=="Golden") lumi_13TeV = channel+"    36.1 fb^{-1}, 2016";
 
 	int iPeriod = 4;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV 
 
@@ -158,6 +158,12 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	if (dndm) convertToDNDM(ZTT);
 	applyStyle(ZTT,kOrange-4,1,1001);
 
+	TH1F * EWK = (TH1F*)(f->Get(dir+"/W"));
+	EWK->Add((TH1F*)(f->Get(dir+"/VV")));
+	if (dndm) convertToDNDM(EWK);
+	applyStyle(EWK,kRed-6,1,1001);
+
+
 	TH1F *signal=0;
 
 
@@ -190,7 +196,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
        	hs->Add(QCD);
 	std::cout<<"draw ttbar"<<std::endl;
 	hs->Add(ttbar);
-	//hs->Add(EWK);
+	hs->Add(EWK);
 
 	//if(channel == "#tau_{e}#tau_{h}") hs->Add(ZEE);
 	//if(channel == "#tau_{#mu}#tau_{h}") 
@@ -261,7 +267,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 		TH1F * data2 = (TH1F*)data->Clone("data");
 		TH1F * mc = (TH1F*)(ttbar);
 		mc->Add(QCD);
-		//mc->Add(EWK);
+		mc->Add(EWK);
 		mc->Add(ZTT);
 		if (channel =="#tau_{e}#tau_{h}") mc->Add(ZEE);
 		if (channel =="#tau_{#mu}#tau_{h}") mc->Add(ZEE);
@@ -313,7 +319,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	//if(channel == "#tau_{#mu}#tau_{h}") l->AddEntry(ZEE,"Z#rightarrow#mu#mu","F");
 	if(ZEE!=0)
 	  l->AddEntry(ZEE,"Z#rightarrowll","F");
-	//l->AddEntry(EWK,"Electroweak","F");
+	l->AddEntry(EWK,"Electroweak","F");
 	l->AddEntry(QCD,"QCD","F");
 	l->AddEntry(ttbar,"t#bar{t}","F");
 

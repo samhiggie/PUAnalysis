@@ -13,3 +13,21 @@
 
 <bin   name="EventWeightsForEfficiencyTrigger2016" file="EventWeightsForEfficiencyTrigger2016.cc">
 </bin>
+
+<bin   name="EventWeightsIterativeGen" file="EventWeightsIterativeGen.cc">
+</bin>
+
+<bin   name="EventWeightsIterativeWJets" file="EventWeightsIterativeWJets.cc">
+</bin>
+
+<bin   name="EventWeightsIterativeWJetsHT" file="EventWeightsIterativeWJetsHT.cc">
+</bin>
+
+<bin   name="EventWeightsIterativeZJets" file="EventWeightsIterativeZJets.cc">
+</bin>
+
+<bin   name="EventWeightsIterativeZPt" file="EventWeightsIterativeZPt.cc">
+</bin>
+
+
+

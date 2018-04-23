@@ -2,8 +2,9 @@
    gROOT->ProcessLine(".L ../../ROOT/plotMacros/makePlotHThTh.C");
 
    //void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,TString units = "GeV",bool left=false,TString channel = "",TString json = "Golden",bool log = false,bool dndm=false,bool doRatio = false)   
-   makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_m_sv","diTauPlots/tauTau_m_sv.root","tt_inclusive",3,"m(#tau#tau)","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
-   makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_eta_1","diTauPlots/tauTau_eta_1.root","tt_inclusive",3,"#eta #tau_{1}","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
+   makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_m_vis","diTauDatacards-2D-moriond/tauTautt_vbf_msv.root","tt_vbf",3,"m(#tau#tau)","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
+
+    makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_eta_1","diTauPlots/tauTau_eta_1.root","tt_inclusive",3,"#eta #tau_{1}","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
    makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_eta_2","diTauPlots/tauTau_eta_2.root","tt_inclusive",3,"#eta #tau_{1}","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
    
    makeDiTauStack("~/www/HTT_CP/diTau_2016/diTau_pt_1","diTauPlots/tauTau_pt_1.root","tt_inclusive",3,"p_{T} #tau_{1}","GeV",false,"#tau_{h}#tau_{h}","Golden",false,false,true);
