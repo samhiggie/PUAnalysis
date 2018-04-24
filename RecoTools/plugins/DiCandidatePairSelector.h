@@ -48,12 +48,12 @@ typedef SingleObjectSelector<
             StringCutObjectSelector<PATDiTauPair>
         > PATDiTauPairSelector;
 
-/*
+
 typedef SingleObjectSelector<
             std::vector<PATMuPair>,
             StringCutObjectSelector<PATMuPair>
         > PATMuPairSelector;
-*/
+
 typedef SingleObjectSelector<
             std::vector<PATElecTauPair>,
             StringCutObjectSelector<PATElecTauPair>
@@ -63,12 +63,12 @@ typedef SingleObjectSelector<
             std::vector<PATElecSCPair>,
             StringCutObjectSelector<PATElecSCPair>
         > PATEleSCPairSelector;
-
+*/
 typedef SingleObjectSelector<
             std::vector<PATElecPair>,
             StringCutObjectSelector<PATElecPair>
         > PATElePairSelector;
-
+/*
 
 typedef SingleObjectSelector<
             std::vector<PATElecMuPair>,

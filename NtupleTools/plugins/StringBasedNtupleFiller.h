@@ -96,6 +96,7 @@ typedef StringBasedNtupleFiller<PATMuTauPair> PATMuTauPairFiller;
 typedef StringBasedNtupleFiller<PATDiTauPair> PATDiTauPairFiller;
 typedef StringBasedNtupleFiller<PATElecTauPair> PATEleTauPairFiller;
 typedef StringBasedNtupleFiller<pat::Muon> PATMuonFiller;
+typedef StringBasedNtupleFiller<PATElecPair> PATElePairFiller;
 typedef StringBasedNtupleFiller<reco::MET> PATMETFiller;
 typedef StringBasedNtupleFiller<reco::PFMET> PATPFMETFiller;
 typedef StringBasedNtupleFiller<reco::GenMET> PATGenMETFiller;

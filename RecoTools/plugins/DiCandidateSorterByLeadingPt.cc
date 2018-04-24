@@ -7,9 +7,9 @@
 
 //typedef DiCandidateSorterByLeadingPt<PATJetPair> PATJetPairSorter;
 typedef DiCandidateSorterByLeadingPt<PATMuTauPair> PATMuTauPairSorter;
-//typedef DiCandidateSorterByLeadingPt<PATMuPair> PATMuPairSorter;
+typedef DiCandidateSorterByLeadingPt<PATMuPair> PATMuPairSorter;
 typedef DiCandidateSorterByLeadingPt<PATDiTauPair> PATDiTauPairSorter;
-//typedef DiCandidateSorterByLeadingPt<PATElecPair> PATElePairSorter;
+typedef DiCandidateSorterByLeadingPt<PATElecPair> PATElePairSorter;
 //typedef DiCandidateSorterByLeadingPt<PATElecSCPair> PATEleSCPairSorter;
 //typedef DiCandidateSorterByLeadingPt<PATMuTrackPair> PATMuTrackPairSorter;
 //typedef DiCandidateSorterByLeadingPt<PATMuJetPair> PATMuJetPairSorter;
@@ -32,10 +32,10 @@ typedef DiCandidateSorterByLeadingPt<PATMuMuTauTauQuad> PATMuMuTauTauQuadSorter;
 
 //DEFINE_FWK_MODULE(PATJetPairSorter);
 DEFINE_FWK_MODULE(PATMuTauPairSorter);
-//DEFINE_FWK_MODULE(PATMuPairSorter);
+DEFINE_FWK_MODULE(PATMuPairSorter);
 //DEFINE_FWK_MODULE(PATMuJetPairSorter);
 DEFINE_FWK_MODULE(PATDiTauPairSorter);
-//DEFINE_FWK_MODULE(PATElePairSorter);
+DEFINE_FWK_MODULE(PATElePairSorter);
 //DEFINE_FWK_MODULE(PATMuTrackPairSorter);
 //DEFINE_FWK_MODULE(PATEleTrackPairSorter);
 //DEFINE_FWK_MODULE(PATEleSCPairSorter);

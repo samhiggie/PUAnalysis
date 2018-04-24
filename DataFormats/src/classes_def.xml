@@ -33,6 +33,13 @@
   <!--<class name="edm::Ptr<reco::Track>"/-->
   <class name="edm::Ptr<reco::GsfTrack>"/>
 
+  <!-- create dictionaries for PATElecPair objects -->
+  <class name="CompositePtrCandidateT1T2MEt<pat::Electron, pat::Electron>"/>
+  <class name="std::vector<CompositePtrCandidateT1T2MEt<pat::Electron, pat::Electron> >"/>
+  <class name="edm::Wrapper<CompositePtrCandidateT1T2MEt<pat::Electron, pat::Electron> >"/>
+  <class name="edm::Wrapper<std::vector<CompositePtrCandidateT1T2MEt<pat::Electron, pat::Electron> > >"/>
+  <class name="edm::Ptr<CompositePtrCandidateT1T2MEt<pat::Electron, pat::Electron> >"/>
+
 
   <!-- create dictionaries for PATMuPair objects -->
   <class name="CompositePtrCandidateT1T2MEt<pat::Muon, pat::Muon>"/>

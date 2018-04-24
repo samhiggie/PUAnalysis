@@ -20,7 +20,7 @@ typedef CompositePtrCandidateT1T2MEtProducer<reco::Candidate, reco::Candidate> D
 //typedef CompositePtrCandidateT1T2MEtProducer<pat::Jet, pat::Jet> PATJetPairProducer;
 typedef CompositePtrCandidateT1T2MEtProducer<pat::Muon, pat::Tau> PATMuTauPairProducer;
 typedef CompositePtrCandidateT1T2MEtProducer<pat::Muon, pat::Muon> PATMuPairProducer;
-//typedef CompositePtrCandidateT1T2MEtProducer<pat::Electron, pat::Electron> PATElePairProducer;
+typedef CompositePtrCandidateT1T2MEtProducer<pat::Electron, pat::Electron> PATElePairProducer;
 //typedef CompositePtrCandidateT1T2MEtProducer<pat::Electron, pat::Muon> PATEleMuPairProducer;
 typedef CompositePtrCandidateT1T2MEtProducer<pat::Electron, pat::Tau> PATEleTauPairProducer;
 //typedef CompositePtrCandidateT1T2MEtProducer<pat::Electron, reco::RecoEcalCandidate> PATEleSCPairProducer;

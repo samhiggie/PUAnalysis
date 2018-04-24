@@ -41,14 +41,14 @@ namespace {
     edm::Ptr<PATJetPair> dummyPATJetPairPtr;
     */
 
-    /*
+    
     /// create dictionaries for PATElecPair objects
     PATElecPair dummyPATElecPair;
     edm::Wrapper<PATElecPair> dummyPATElecPairWrapper;
     PATElecPairCollection dummyPATElecPairCollection;
     edm::Wrapper<PATElecPairCollection> dummyPATElecPairCollectionWrapper;
     edm::Ptr<PATElecPair> dummyPATElecPairPtr;
-    */
+    
 
 
     /// create dictionaries for PATMuPair objects

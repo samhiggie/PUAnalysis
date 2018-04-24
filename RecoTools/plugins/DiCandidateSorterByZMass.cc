@@ -6,7 +6,7 @@
 #include "PUAnalysis/RecoTools/plugins/DiCandidateSorterByZMass.h"
 
 typedef DiCandidateSorterByZMass<PATMuTauPair> PATMuTauPairSorterByZMass;
-//typedef DiCandidateSorterByZMass<PATMuPair> PATMuPairSorterByZMass;
+typedef DiCandidateSorterByZMass<PATMuPair> PATMuPairSorterByZMass;
 //typedef DiCandidateSorterByZMass<PATElecPair> PATElePairSorterByZMass;
 //typedef DiCandidateSorterByZMass<PATMuTrackPair> PATMuTrackPairSorterByZMass;
 //typedef DiCandidateSorterByZMass<PATEleTrackPair> PATEleTrackPairSorterByZMass;
@@ -27,7 +27,7 @@ typedef DiCandidateSorterByZMass<PATMuMuTauTauQuad> PATMuMuTauTauQuadSorterByZMa
 
 
 DEFINE_FWK_MODULE(PATMuTauPairSorterByZMass);
-//DEFINE_FWK_MODULE(PATMuPairSorterByZMass);
+DEFINE_FWK_MODULE(PATMuPairSorterByZMass);
 //DEFINE_FWK_MODULE(PATElePairSorterByZMass);
 //DEFINE_FWK_MODULE(PATMuTrackPairSorterByZMass);
 //DEFINE_FWK_MODULE(PATEleTrackPairSorterByZMass);
