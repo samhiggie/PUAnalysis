@@ -61,35 +61,6 @@ process.load("PUAnalysis.Configuration.hTauTau_LTau_cff")
 process.eventSelectionMT = cms.Path(process.selectionSequenceMT)
 process.eventSelectionET = cms.Path(process.selectionSequenceET)
 
-createGeneratedParticles(process,
-        'genDaughters',
-        [
-            "keep++ pdgId = {Z0}",
-            "keep pdgId = {tau+}",
-            "keep pdgId = {tau-}",
-            "keep pdgId = {mu+}",
-            "keep pdgId = {mu-}",
-            "keep pdgId = 6",
-            "keep pdgId = -6",
-            "keep pdgId = 11",
-            "keep pdgId = -11",
-            "keep pdgId = 25",
-            "keep pdgId = 35",
-            "keep pdgId = 37",
-            "keep pdgId = 36"
-            ]
-        )
-
-
-createGeneratedParticles(process,
-        'genTauCands',
-        [
-            "keep pdgId = {tau+} & mother.pdgId()= {Z0}",
-            "keep pdgId = {tau-} & mother.pdgId() = {Z0}"
-            ]
-        )
-
-
 
 from PUAnalysis.Configuration.tools.ntupleTools_LTau import addMuTauEventTree
 addMuTauEventTree(process,'muTauEventTree')
