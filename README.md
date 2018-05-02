@@ -5,15 +5,15 @@ PUAnalysis
 #Set Up instructions:
 
 ```
-cmsrel CMSSW_8_0_29 #for 2016 analysis
-cd CMSSW_8_0_29/src/
+cmsrel CMSSW_9_4_0 #for 2017 analysis
+cd CMSSW_9_4_0/src/
 cmsenv
 git cms-init 
 git clone https://github.com/isobelojalvo/PUAnalysis.git   
 export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
 cd PUAnalysis
 git fetch origin
-git checkout devel_Htt_Mar_7
+git checkout 2017_devel
 bash recipe.sh #Note Recipe13TeV.sh should be the full recipe but we are keeping it simple for now
 scram b -j 8
 ```
