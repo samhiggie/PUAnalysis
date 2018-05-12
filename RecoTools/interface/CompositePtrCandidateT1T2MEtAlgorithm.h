@@ -14,7 +14,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/Math/interface/normalizedPhi.h"
-#include "FWCore/ParameterSet/interface/FileInPath.h"
+//#include "FWCore/ParameterSet/interface/FileInPath.h"
 
 #include "PUAnalysis/DataFormats/interface/CompositePtrCandidateT1T2MEt.h"
 

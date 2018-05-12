@@ -133,7 +133,7 @@ void MiniAODElectronVIDEmbedder::produce(edm::Event& iEvent, const edm::EventSet
 		out->back().addUserFloat("eleIsoSumPUPt", eptr->pfIsolationVariables().sumPUPt);
 
 		//electron conversion
-		if ((ei->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS))<=1&&ei->passConversionVeto()){
+		if ((ei->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS))<=1&&ei->passConversionVeto()){
 			out->back().addUserInt(eleConvLabel_, 0);
 		}
 		else{out->back().addUserInt(eleConvLabel_, 1);}

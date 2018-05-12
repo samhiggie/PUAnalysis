@@ -25,7 +25,7 @@ October 13 2013 12:21 AM
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "Utilities/General/interface/FileInPath.h"
+//#include "Utilities/General/interface/FileInPath.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "DataFormats/BTauReco/interface/TrackIPTagInfo.h"
 
