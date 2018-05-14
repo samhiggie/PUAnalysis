@@ -254,7 +254,6 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   #goodVertexFilter(process)  
   tauEffi(process,'slimmedTaus',True)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  #tauOverloading(process,'slimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
   
   triLeptons(process)
   #jetOverloading(process,"slimmedJets",True)
@@ -685,8 +684,7 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
                                             prescales = cms.InputTag("patTrigger"),
-                                            #objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
-                                            objects = cms.InputTag("selectedPatTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
                                             ptCut = cms.int32(10) #too low to affect anything
    )
                                             
@@ -717,8 +715,8 @@ def muonTriggerMatchMiniAOD(process,triggerProcess,HLT,srcMuon):
                                             bits = cms.InputTag(HLT,"",triggerProcess),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             prescales = cms.InputTag("patTrigger"),
-                                            #objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
-                                            objects = cms.InputTag("selectedPatTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
+                                            #objects = cms.InputTag("selectedPatTrigger"),
                                             ptCut = cms.int32(0) 
    )
    
@@ -744,8 +742,8 @@ def electronTriggerMatchMiniAOD(process,triggerProcess,HLT,srcEle):
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
                                             prescales = cms.InputTag("patTrigger"),
-                                            #objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
-                                            objects = cms.InputTag("selectedPatTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger"),#for 2017 analysis
+                                            #objects = cms.InputTag("selectedPatTrigger"),
                                             ptCut = cms.int32(0) 
    )
   

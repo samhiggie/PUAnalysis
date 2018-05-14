@@ -121,8 +121,8 @@ METRecalculator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       met.setP4(math::XYZTLorentzVector(newMET.px(),newMET.py(),0.0,sqrt(newMET.px()*newMET.px()+newMET.py()*newMET.py())));
       out->push_back(met);
     }
-
-    iEvent.put(std::move(out),"");    
+  
+  iEvent.put(std::move(out),"");    
 }
 
 

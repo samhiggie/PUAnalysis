@@ -43,7 +43,6 @@
 <use   name="RecoTauTag/TauTagTools"/>
 <use   name="RecoVertex/KalmanVertexFit"/>
 <use   name="PUAnalysis/DataFormats"/>
-<use   name="TauAnalysis/SVfitStandalone"/> 
 <use   name="JetMETCorrections/Objects"/> 
 <use   name="Geometry/CommonDetUnit"/>
 <use   name="Geometry/TrackerGeometryBuilder"/>
