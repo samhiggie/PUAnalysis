@@ -23,7 +23,9 @@ ETanalysisConfigurator.addSelector('diElectronsOS','PATElePairSelector','abs(leg
 ETanalysisConfigurator.addSorter('diElectronsOSSorted','PATElePairSorter')
 
 #Make DiTaus
-ETanalysisConfigurator.addDiCandidateModule('eleTaus','PATEleTauPairProducer','smearedElectronsET','smearedTausET','smearedMETET','smearedTausET','smearedJetsET',1,9999,text = 'AtLeastOneEleTau',leadingObjectsOnly = False,dR = 0.5,recoMode = "",genParticles='prunedGenParticles')
+#smearing is broken, likely an issue with LT-MC.py - to be checked
+#ETanalysisConfigurator.addDiCandidateModule('eleTaus','PATEleTauPairProducer','smearedElectronsET','smearedTausET','smearedMETET','smearedTausET','smearedJetsET',1,9999,text = 'AtLeastOneEleTau',leadingObjectsOnly = False,dR = 0.5,recoMode = "",genParticles='prunedGenParticles')
+ETanalysisConfigurator.addDiCandidateModule('eleTaus','PATEleTauPairProducer','triggeredPatElectrons','patOverloadedTaus','slimmedMETs','patOverloadedTaus','filteredJets',1,9999,text = 'AtLeastOneEleTau',leadingObjectsOnly = False,dR = 0.5,recoMode = "",genParticles='prunedGenParticles')
 
 ETanalysisConfigurator.addSelector('eleTausElePtEta','PATEleTauPairSelector','leg1.pt()>24&&abs(leg1.eta())<2.1','ETelectronPtEta',1)
 ETanalysisConfigurator.addSelector('eleTausTauPtEta','PATEleTauPairSelector','leg2.pt()>20&&abs(leg2.eta())<2.3','ETTauPtEta',1)

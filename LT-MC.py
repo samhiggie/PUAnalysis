@@ -48,7 +48,7 @@ process.load("PUAnalysis.Configuration.hTauTau_LTau_cff")
 
 
 process.eventSelectionMT = cms.Path(process.selectionSequenceMT)
-#process.eventSelectionET = cms.Path(process.selectionSequenceET)
+process.eventSelectionET = cms.Path(process.selectionSequenceET)
 
 createGeneratedParticles(process,
         'genDaughters',
@@ -84,12 +84,12 @@ from PUAnalysis.Configuration.tools.ntupleTools_LTau import addMuTauEventTree
 addMuTauEventTree(process,'muTauEventTree')
 addMuTauEventTree(process,'muTauEventTreeFinal','muTausOS','diMuonsOSSorted')
 
-#from PUAnalysis.Configuration.tools.ntupleTools_LTau import addEleTauEventTree
-#addEleTauEventTree(process,'eleTauEventTree')
-#addEleTauEventTree(process,'eleTauEventTreeFinal','eleTausOS','diElectronsOSSorted')
+from PUAnalysis.Configuration.tools.ntupleTools_LTau import addEleTauEventTree
+addEleTauEventTree(process,'eleTauEventTree')
+addEleTauEventTree(process,'eleTauEventTreeFinal','eleTausOS','diElectronsOSSorted')
 
 addEventSummary(process,True,'MT','eventSelectionMT')
-#addEventSummary(process,True,'ET','eventSelectionET')
+addEventSummary(process,True,'ET','eventSelectionET')
 
 
 
