@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+process.GlobalTag.globaltag = '94X_dataRun2_v6'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -20,16 +20,19 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-'file:TauData.root'
-#'/store/data/Run2016D/Tau/MINIAOD/07Aug17-v1/10000/3208BBC1-52A3-E711-A21C-0242AC110008.root'
-#'file:VBFHttFXFX.root',
-#'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
+        'file:singleMu.root'
+        #'/store/data/Run2016D/Tau/MINIAOD/07Aug17-v1/10000/3208BBC1-52A3-E711-A21C-0242AC110008.root'
+        #'file:VBFHttFXFX.root',
+        #'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
 		),
 		inputCommands=cms.untracked.vstring(
 						'keep *',
 						'keep *_l1extraParticles_*_*',
 		)
 )
+
+import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
+process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
 
 
 #Default Reconstruction from the analysTools.py config file
@@ -41,9 +44,10 @@ process.source = cms.Source("PoolSource",
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
 from PUAnalysis.Configuration.tools.analysisTools import *
-defaultReconstruction(process,'HLT2',
+defaultReconstruction(process,'HLT',
         [
-        'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v2'
+        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v'        
         ])
 
 #EventSelection
