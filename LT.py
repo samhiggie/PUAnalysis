@@ -42,14 +42,8 @@ process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/C
 from PUAnalysis.Configuration.tools.analysisTools_LTau import *
 defaultReconstruction(process,'HLT',
         [
-            'HLT_IsoMu20_v11',
-            'HLT_IsoMu24_eta2p1_v',
-            'HLT_IsoMu24_v', 
-            'HLT_IsoTkMu24_v', 
-            'HLT_IsoMu27_v',
-            'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v',
-            'HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v',
-            'HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v'
+            'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
+            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v'
             ])
 
 
