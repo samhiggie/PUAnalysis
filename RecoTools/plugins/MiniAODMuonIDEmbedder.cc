@@ -87,16 +87,31 @@ void MiniAODMuonIDEmbedder::produce(edm::Event& iEvent, const edm::EventSetup& e
 		//std::cout<<"muon "<<i<<" pt: "<<muon.pt()<<" medium ID: "<<muon.isMediumMuon()<<std::endl;
 		//std::cout<<"     iso_1: "<<muIso03<<std::endl;
 
-		int muId = 0; 
-		if (muon.isLooseMuon()&&muon.innerTrack()->validFraction()>0.49&&((muon.isGlobalMuon()&&muon.globalTrack()->normalizedChi2()<3&&muon.combinedQuality().chi2LocalPosition<12&&muon.combinedQuality().trkKink<20&&muon.segmentCompatibility()>0.303)||(muon.segmentCompatibility()>0.451)))
+		int muIdloose = 0; 
+		if(muon.isLooseMuon())
 		{
-			muId=1;
+			muIdloose=1;
+		}
+
+		int muIdmed = 0; 
+		if(muon.isMediumMuon())
+		{
+			muIdmed=1;
+		}
+
+		int muIdtight = 0; 
+		if(muon.isTightMuon(vertices->at(0)))
+		{
+			muIdtight=1;
 		}
 
 		muon.addUserFloat("dBRelIso",muIso);
 		muon.addUserFloat("iso",muIso);
 		muon.addUserFloat("dBRelIso03",muIso03);
-		muon.addUserInt("mediumID",muId);
+		muon.addUserInt("looseID",muIdloose);
+		muon.addUserInt("mediumID",muIdmed);
+		muon.addUserInt("tightID",muIdtight);
+		muon.addUserInt("looseID",muIdloose);
 
 		out->push_back(muon);
 	}
