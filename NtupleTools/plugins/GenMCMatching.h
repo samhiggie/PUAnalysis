@@ -9,6 +9,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
 #include "CommonTools/Utils/interface/StringObjectFunction.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "boost/filesystem.hpp"
 
 //
@@ -64,8 +65,12 @@ class GenMCMatching : public NtupleFillerBase {
 			  else if (handle->at(0).p4VisLeg1gen().pt()>15){genMatch1=5;}
 			  else {genMatch1=6;}
 			  */
-			  genMatch1 = handle->at(0).leg1()->userInt("gen_match");
 			  
+			  if(handle->at(0).leg1()->hasUserInt("gen_match"))
+			    genMatch1 = handle->at(0).leg1()->userInt("gen_match");
+			  else
+			    genMatch1 = 0;
+
 			  genMatch2 = handle->at(0).leg2()->userInt("gen_match");
 			  //std::cout<<" gen_match_1: "<<genMatch1<<std::endl;
 			  //std::cout<<" gen_match_2: "<<genMatch2<<std::endl;

@@ -512,7 +512,7 @@ def addMuTauEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorte
                               muTauPOG = makeMuTauPOGSF(src),
                               muTauEventWeight = makeMuTauEventWeight(src),
                               muTauEventWeightTmp = makeMuTauEventWeightTmp(src),
-                              #muTauGenMCMatch = makeMuTauGenMatch(src),
+                              muTauGenMCMatch = makeMuTauGenMatch(src),
                               muTauEffCSV = makeMuTauEffCSV(src),
                               muTauJES = makeMuTauVBFPair(src),
                               muTauCSVShape = makeMuTauCSVShape(src),
@@ -902,13 +902,14 @@ def addEleTauShortEventTree(process,name,src='eleTausSorted',srcLL='diElectronsO
                               eleTauTopGenPt = makeEleTauPair(src,"topGenPt","topGenPt"),#FIXME
                               eleTauAntiTopGenPt = makeEleTauPair(src,"antiTopGenPt","antiTopGenPt"),#FIXME
 
-                              eleTauEleTriggerMatch2016_25 = makeEleTauPair(src,"hltEle25erWPTightGsfTrackIsoFilter",'leg1.userFloat("hltEle25erWPTightGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch2 = makeEleTauPair(src,"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch3 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch4 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch5 = makeEleTauPair(src,"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20")'),
-                              eleTauEleTriggerMatch6 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20")'),
-                              eleTauEleTriggerMatch7 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30")'),
+                              #eleTauEleTriggerMatch2016_25 = makeEleTauPair(src,"hltEle25erWPTightGsfTrackIsoFilter",'leg1.userFloat("hltEle25erWPTightGsfTrackIsoFilter")'),
+                              eleTauEleTriggerMatch = makeEleTauPair(src,"hltEle24erWPTightGsfTrackIsoFilterForTau",'leg1.userFloat("hltEle24erWPTightGsfTrackIsoFilterForTau")'),
+                              eleTauEleTriggerMatch2 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30",'leg1.userFloat("hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30")'),
+                              #eleTauEleTriggerMatch3 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter")'),
+                              #eleTauEleTriggerMatch4 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter")'),
+                              #eleTauEleTriggerMatch5 = makeEleTauPair(src,"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20")'),
+                              #eleTauEleTriggerMatch6 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20")'),
+                              #eleTauEleTriggerMatch7 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30")'),
 
                               eleTauGenPt1 = makeEleTauPair(src,"genPt1",'p4Leg1gen().pt()'),
                               eleTauGenPt2 = makeEleTauPair(src,"genPt2",'p4Leg2gen().pt()'),
@@ -1113,13 +1114,13 @@ def addEleTauEventTree(process,name,src='eleTausSorted',srcLL='diElectronsOSSort
                               eleTauPZV = makeEleTauPair(src,"pzetavis",'pZetaVis'),#EO
 
                               #Trigger
-                              eleTauEleTriggerMatch = makeEleTauPair(src,"hltEle25erWPTightGsfTrackIsoFilter",'leg1.userFloat("hltEle25erWPTightGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch2 = makeEleTauPair(src,"hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch3 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch4 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter")'),
-                              eleTauEleTriggerMatch5 = makeEleTauPair(src,"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20")'),
-                              eleTauEleTriggerMatch6 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20")'),
-                              eleTauEleTriggerMatch7 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30")'),
+                              eleTauEleTriggerMatch = makeEleTauPair(src,"hltEle24erWPTightGsfTrackIsoFilterForTau",'leg1.userFloat("hltEle24erWPTightGsfTrackIsoFilterForTau")'),
+                              eleTauEleTriggerMatch2 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30",'leg1.userFloat("hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30")'),
+                              #eleTauEleTriggerMatch3 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter")'),
+                              #eleTauEleTriggerMatch4 = makeEleTauPair(src,"hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter",'leg1.userFloat("hltEle24WPLooseL1IsoEG22erIsoTau26erGsfTrackIsoFilter")'),
+                              #eleTauEleTriggerMatch5 = makeEleTauPair(src,"hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterSingleIsoEle24WPLooseGsfLooseIsoPFTau20")'),
+                              #eleTauEleTriggerMatch6 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20")'),
+                              #eleTauEleTriggerMatch7 = makeEleTauPair(src,"hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30",'leg2.userFloat("hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau30")'),
 
                               eleTauByOldDMMVAIsoRR1 = makeEleTauPair(src,"tau_idRaw2017v2",     'leg2.tauID("idRaw2017v2")'),
                               eleTauByOldDMMVAIsoRR2 = makeEleTauPair(src,"tau_idVVLoose2017v2", 'leg2.tauID("idVVLoose2017v2")'),
