@@ -1,15 +1,22 @@
 #!/bin/sh
 
-jobID=2017_Oct14
+jobID=2018_Jun25
 mkdir /nfs_scratch/$USER/${jobID}_weighted/
 cp /nfs_scratch/$USER/${jobID}_unweighted/* /nfs_scratch/$USER/${jobID}_weighted/.
 cd /nfs_scratch/$USER/${jobID}_weighted/
 
-weight=1;
+#echo "copying...."
+#mkdir /nfs_scratch/$USER/${jobID}_weighted/
+#cp /scratch/ojalvo/2017_Ntuples/rename/* /nfs_scratch/$USER/${jobID}_weighted/.
+#cd /nfs_scratch/$USER/${jobID}_weighted/.
+
+#echo "finishded copying...."
+
+weight=0;
 weightEWK=0;
 weightTriBoson=0;
-weightTT=1;
-weightH=1;
+weightTT=0;
+weightH=0;
 weightW=1;
 weightZ=1;
 weightZPt=0;
@@ -67,15 +74,15 @@ fi
 
 if [ $weightZ -eq 1 ]
     then
-
-    hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
-    nohup EventWeightsIterativeZSync    weight=1    histoName='MT/results' 
+    nohup EventWeightsIterativeZJets    weight=1    histoName='MT/results' 
+    hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root
 fi
 
 if [ $weightW -eq 1 ]
     then
-    hadd  WJETS.root WJets.root W1Jets.root W2Jets.root W3Jets.root W4Jets.root
+
     nohup EventWeightsIterativeWJets    weight=1    histoName='MT/results'  
+    hadd -f WJETS.root WJetsMLM.root W1Jets.root W2Jets.root W3Jets.root W4Jets.root
 fi
 
 
@@ -98,10 +105,18 @@ if [ $weight -eq 1 ]
     nohup EventWeightsIterativeGen outputFile='t_tW.root'        weight=38.09    histoName='MT/results' sumHistoName='sumweights/genWeights' &
     echo 'Weight tBar_tW'
     nohup EventWeightsIterativeGen outputFile='tBar_tW.root'     weight=38.09    histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    echo 'Weight St_antitop'
+    nohup EventWeightsIterativeGen outputFile='St_antitop.root'  weight=26.23  histoName='MT/results' sumHistoName='sumweights/genWeights' & #80.59 pb * 3*.108
+    echo 'Weight St_top'
+    nohup EventWeightsIterativeGen outputFile='St_top.root'      weight=44.07  histoName='MT/results' sumHistoName='sumweights/genWeights' & #136 * 3*.108
+    wait;
+    nohup EventWeightsIterativeGen outputFile='TT2L2Nu.root'    weight=87.31     histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    nohup EventWeightsIterativeGen outputFile='TTHadronic.root' weight=380.1     histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    nohup EventWeightsIterativeGen outputFile='TTSemiLep.root'  weight=364.4     histoName='MT/results' sumHistoName='sumweights/genWeights' &
     wait;
 
-    hadd -f DiBoson.root WW.root WZ.root ZZ.root tBar_tW.root t_tW.root 
-
+    hadd -f DiBoson.root WW.root WZ.root ZZ.root tBar_tW.root t_tW.root St_antitop.root St_top.root
+    hadd -f TT.root TT2L2Nu.root TTHadronic.root TTSemiLep.root
 
 fi
 
