@@ -29,7 +29,7 @@ int main (int argc, char* argv[])
 
  
    //TFile *w = new TFile("ZJets.root","UPDATE");
-   TFile *w = new TFile("ZJets_ext1.root","UPDATE");
+   TFile *w = new TFile("ZJets.root","UPDATE");
 
    TH1F* evC  = (TH1F*)w->Get(parser.stringValue("histoName").c_str());
    float evW = evC->GetBinContent(1);
@@ -54,13 +54,13 @@ int main (int argc, char* argv[])
    float evW3 = evC3->GetBinContent(1);
    
    w3->Close();
-
+   
    TFile *w4 = new TFile("Z4Jets.root","UPDATE");
 
    TH1F* evC4  = (TH1F*)w4->Get(parser.stringValue("histoName").c_str());
    float evW4 = evC4->GetBinContent(1);
    w4->Close();
- 
+   
    //TFile *w5 = new TFile("ZJets_150.root","UPDATE");
 
    //TH1F* evC5  = (TH1F*)w5->Get(parser.stringValue("histoName").c_str());
@@ -75,15 +75,14 @@ int main (int argc, char* argv[])
    printf("Found  %f Z+4Jet Events\n",evW4);
    //printf("Found  %f Z >150GeV Jet Events\n",evW5);
   
-   double LOtoNNLO=5765.4/4954.0;
+   double LOtoNNLO=6225.42/5343.0;
 
-   double DYLo=evW/(LOtoNNLO*4954.0);
-   double DYLo1=evW1/(LOtoNNLO*1012.5);
-   double DYLo2=evW2/(LOtoNNLO*332.8);
-   double DYLo3=evW3/(LOtoNNLO*101.8);
-   double DYLo4=evW4/(LOtoNNLO*54.8);
+   double DYLo=evW/(LOtoNNLO*5343.0);
+   double DYLo1=evW1/(LOtoNNLO*877.8);
+   double DYLo2=evW2/(LOtoNNLO*304.4);
+   double DYLo3=evW3/(LOtoNNLO*111.5);
+   double DYLo4=evW4/(LOtoNNLO*44.03);
    //double DYLo5=evW5/(LOtoNNLO*6.7);
-
  
    std::vector<float> ev;
    ev.push_back(DYLo);
@@ -93,7 +92,7 @@ int main (int argc, char* argv[])
    ev.push_back(DYLo4);
    //ev.push_back(DYLo5);
    
-   TFile *f0 = new TFile("ZJets_ext1.root","UPDATE");   
+   TFile *f0 = new TFile("ZJets.root","UPDATE");   
    //TFile *f0 = new TFile("ZJets.root","UPDATE");   
    readdir(f0,parser,ev);
    f0->Close();
@@ -110,9 +109,9 @@ int main (int argc, char* argv[])
    readdir(f3,parser,ev);
    f3->Close();
    
-   TFile *f4 = new TFile("Z4Jets.root","UPDATE");   
-   readdir(f4,parser,ev);
-   f4->Close();
+   //TFile *f4 = new TFile("Z4Jets.root","UPDATE");   
+   //readdir(f4,parser,ev);
+   //f4->Close();
  
    //TFile *f5 = new TFile("ZJets_150.root","UPDATE");   
    //readdir(f5,parser,ev);
