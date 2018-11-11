@@ -13,8 +13,8 @@ jobID='2018_Oct_2017Data_ALL_data_tau'
 
 
 mergedata=0;
-mergemc=1;
-mergeW=0;
+mergemc=0;
+mergeW=1;
 mergeZ=0;
 mergehiggs=0;
 #2018_Oct_2017Data_ALL_data_tau_F_tautau-SUB_Data/
@@ -76,8 +76,8 @@ if [ $mergeW -eq 1 ]
     hadd -f  W2Jets.root /hdfs/store/user/samuellh/${jobID}_W2J_lnu-SUB/* & 
     hadd -f  W3Jets.root /hdfs/store/user/samuellh/${jobID}_W3J_lnu-SUB/* & 
     hadd -f  W4Jets.root /hdfs/store/user/samuellh/${jobID}_W4J_lnu-SUB/* & 
-    hadd -f  WJets_ext.root /hdfs/store/user/samuellh/${jobID}_WJ_lnu_ext-SUB/* & 
-    hadd -f  WJets.root /hdfs/store/user/samuellh/${jobID}_WJ_lnu-SUB/* & 
+    #hadd -f  WJets_ext.root /hdfs/store/user/samuellh/${jobID}_WJ_lnu_ext-SUB/* & 
+    hadd -f  WJets.root /hdfs/store/user/samuellh/${jobID}_WJ_lnu*-SUB/* & 
     wait;
 fi 
 

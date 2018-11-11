@@ -28,7 +28,7 @@ int main (int argc, char* argv[])
    
 
  
-   TFile *w = new TFile("WJetsMLM.root","UPDATE");
+   TFile *w = new TFile("WJets.root","UPDATE");
 
    TH1F* evC  = (TH1F*)w->Get(parser.stringValue("histoName").c_str());
    float evW = evC->GetBinContent(1);
@@ -70,13 +70,13 @@ int main (int argc, char* argv[])
    printf("Found  %f W+3Jet Events\n",evW3);
    printf("Found  %f W+4Jet Events\n",evW4);
   
-   double LOtoNNLO=61526.7/50380;
+   double LOtoNNLO=61526.7/52940.0;
 
-   double WLo=evW/(LOtoNNLO*50380.0);
-   double WLo1=evW1/(LOtoNNLO*9644.5);
-   double WLo2=evW2/(LOtoNNLO*3144.5);
-   double WLo3=evW3/(LOtoNNLO*954.8);
-   double WLo4=evW4/(LOtoNNLO*485.6);
+   double WLo=evW/(LOtoNNLO*52940.0);
+   double WLo1=evW1/(LOtoNNLO*8104.0);
+   double WLo2=evW2/(LOtoNNLO*2793.0);
+   double WLo3=evW3/(LOtoNNLO*992.5);
+   double WLo4=evW4/(LOtoNNLO*544.3);
 
  
    std::vector<float> ev;
@@ -92,7 +92,7 @@ int main (int argc, char* argv[])
    printf("Found  %f W+4Jet Weight\n",1/(ev[0]+ev[4]));
    
 
-   TFile *f0 = new TFile("WJetsMLM.root","UPDATE");   
+   TFile *f0 = new TFile("WJets.root","UPDATE");   
    readdir(f0,parser,ev);
    f0->Close();
    

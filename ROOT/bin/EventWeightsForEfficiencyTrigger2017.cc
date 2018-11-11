@@ -108,18 +108,18 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       float weight = 1.0;
       float zPtWeight;
       float XSecLumiWeight;
-      float svFit;
-      float Higgs_Pt;
-      float m_sv;
-      float pt_sv;
+      //float svFit;
+      //float Higgs_Pt;
+      //float m_sv;
+      //float pt_sv;
 
       TBranch *newBranch     = t->Branch(parser.stringValue("branch").c_str(),&weight,(parser.stringValue("branch")+"/F").c_str());
       TBranch *newBranchLeg1 = t->Branch("trigweight_1",&weight_1,"trigweight_1/F");
       TBranch *newBranchLeg2 = t->Branch("trigweight_2",&weight_2,"trigweight_2/F");
       TBranch *newBranchZPt   = t->Branch("zPtWeight",&zPtWeight,"zPtWeight/F");
       TBranch *newBranchZXsec = t->Branch("XSecLumiWeight",&XSecLumiWeight,"XSecLumiWeight/F");
-      TBranch *newBranchm_sv  = t->Branch("m_sv",&svFit,"m_sv/F");
-      TBranch *newBranchpt_sv = t->Branch("pt_sv",&Higgs_Pt,"pt_sv/F");
+      //TBranch *newBranchm_sv  = t->Branch("m_sv",&svFit,"m_sv/F");
+      //TBranch *newBranchpt_sv = t->Branch("pt_sv",&Higgs_Pt,"pt_sv/F");
 
       float pt1;
       float eta1;
@@ -148,8 +148,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("isoMed_1",&isoMed1);
       t->SetBranchAddress("isoTight_1",&isoTight1);
       t->SetBranchAddress("isoVTight_1",&isoVTight1);
-      t->SetBranchAddress("svFit",&svFit);
-      t->SetBranchAddress("Higgs_Pt",&Higgs_Pt);
+      //t->SetBranchAddress("svFit",&svFit);
+      //t->SetBranchAddress("Higgs_Pt",&Higgs_Pt);
       
 
       t->SetBranchAddress("pt_2",&pt2);
@@ -162,7 +162,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       t->SetBranchAddress("isoVTight_2",&isoVTight2);
 
       t->SetBranchAddress("__WEIGHT__",&XSecLumiWeight);
-      t->SetBranchAddress("__ZWEIGHT__",&zPtWeight);
+      //t->SetBranchAddress("__ZWEIGHT__",&zPtWeight);
 
       t->SetBranchAddress("gen_match_1",&gen_match_1);
       t->SetBranchAddress("gen_match_2",&gen_match_2);
@@ -176,14 +176,22 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
       pt::ptree root;
       pt::ptree rootFakes;
 
+      std::string cmssw = std::getenv("CMSSW_BASE");
+      std::cout<<"cmssw area: "<<cmssw<<std::endl;
+
       // first read in the json file 
       //pt::read_json("/data/ojalvo/Htt_80X/CMSSW_8_0_20/src/UWAnalysis/ROOT/bin/triggerJSONs/triggerSF/di-tau/real_taus_binned.json", root);
       //pt::read_json("/data/ojalvo/Htt_80X/CMSSW_8_0_20/src/UWAnalysis/ROOT/bin/triggerJSONs/triggerSF/di-tau/same_sign_binned.json", rootFakes);
-      std::string inFile = "PUAnalysis/TauTriggerSFs2017/data/tauTriggerEfficiencies2017.root";
-      std::string inFileNew = "PUAnalysis/TauTriggerSFs2017/data/tauTriggerEfficiencies2017_New.root";
+      std::string inFile = cmssw+"/src/PUAnalysis/TauTriggerSFs2017/data/tauTriggerEfficiencies2017.root";
+      std::string inFileNew = cmssw+"/src/PUAnalysis/TauTriggerSFs2017/data/tauTriggerEfficiencies2017_New.root";
 
-      TauTriggerSFs2017 tauTriggerSFs(inFileNew, inFile, "medium", "MVA");
-
+      TauTriggerSFs2017 tauTriggerSFsVTight(inFileNew, inFile, "vtight", "MVA");
+      TauTriggerSFs2017 tauTriggerSFsTight(inFileNew,  inFile, "tight", "MVA");
+      TauTriggerSFs2017 tauTriggerSFsMedium(inFileNew, inFile, "medium", "MVA");
+      TauTriggerSFs2017 tauTriggerSFsLoose(inFileNew,  inFile, "loose", "MVA");
+      TauTriggerSFs2017 tauTriggerSFsVLoose(inFileNew, inFile, "vloose", "MVA");
+      //diTau_tight_MC
+      //
       printf("Found tree -> weighting\n");
       for(Int_t i=0;i<t->GetEntries();++i)
 	{
@@ -192,45 +200,47 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser, char TreeToUse[]
 	  weight_2=1.0;
 	  weight = 1.0;
 
-	  /*
-	  //iso WP          m0       sigma       alpha           n        norm
-	  //NoIso  3.86506E+01 5.81155E+00 5.82783E+00 3.38903E+00 9.33449E+00
-	  //iso WP          m0       sigma       alpha           n        norm
-	  //VTight 3.77850E+01 4.93611E+00 4.22634E+00 2.85533E+00 9.92196E-01
+	  if(isoVTight1 > 0.5)//iso v tight
+	    weight_1 = tauTriggerSFsVTight.getDiTauScaleFactor(pt1, eta1, phi1);
+	  else if(isoTight1 > 0.5)
+	    weight_1 = tauTriggerSFsTight.getDiTauScaleFactor(pt1, eta1, phi1);
+	  else if(isoMed1 > 0.5)
+	    weight_1 = tauTriggerSFsMedium.getDiTauScaleFactor(pt1, eta1, phi1);
+	  else if(isoLoose1 > 0.5)
+	    weight_1 = tauTriggerSFsLoose.getDiTauScaleFactor(pt1, eta1, phi1);
+	  else if(isoVLoose1 > 0.5)
+	    weight_1 = tauTriggerSFsVLoose.getDiTauScaleFactor(pt1, eta1, phi1);
 
-	  if(iso1 > 0.5)
-	    weight_1=efficiency(pt1,3.77850*10,4.93611,4.22634,2.85533,9.92196*0.1);//VTight
-	  else
-	    weight_1=efficiency(pt1,3.86506*10,5.81155,5.82783,3.38903,9.33449*0.1);//NoIso
+	  if(isoVTight2 > 0.5)//iso v tight
+	    weight_2 = tauTriggerSFsVTight.getDiTauScaleFactor(pt2, eta2, phi2);
+	  else if(isoTight2 > 0.5)
+	    weight_2 = tauTriggerSFsTight.getDiTauScaleFactor(pt2, eta2, phi2);
+	  else if(isoMed2 > 0.5)
+	    weight_2 = tauTriggerSFsMedium.getDiTauScaleFactor(pt2, eta2, phi2);
+	  else if(isoLoose2 > 0.5)
+	    weight_2 = tauTriggerSFsLoose.getDiTauScaleFactor(pt2, eta2, phi2);
+	  else if(isoVLoose2 > 0.5)
+	    weight_2 = tauTriggerSFsVLoose.getDiTauScaleFactor(pt2, eta2, phi2);
 
-	  if(iso2 > 0.5)
-	    weight_2 = efficiency(pt2,3.77850*10,4.93611,4.22634,2.85533,9.92196*0.1);//VTight
-	  else
-	    weight_2 = efficiency(pt2,3.86506*10,5.81155,5.82783,3.38903,9.33449*0.1);//NoIso
-	  */
-	  //double efficiency(double m, double m0, double sigma, double alpha, double n, double norm)
-
-
-	  weight_1 = tauTriggerSFs.getDiTauScaleFactor((double)pt1, (double)eta1, (double)phi1);
-	  weight_2 = tauTriggerSFs.getDiTauScaleFactor(pt2, eta2, phi2);
 	  weight = weight_1*weight_2;
+	  dirsav->cd();
 
-	  if(weight>1 || weight_1 > 1 || weight_2 > 1 || weight==0){
+	  //if(weight>1 || weight_1 > 1 || weight_2 > 1 || weight==0){
 	  //if(n<20){
-	    std::cout<<"something looks fishy...  weight: "<<weight<<" weight_1: "<<weight_1<<" weight_2: "<<weight_2<<std::endl;
-	    n++;
-	  }
+	  //std::cout<<"something looks fishy...  weight: "<<weight<<" weight_1: "<<weight_1<<" weight_2: "<<weight_2<<std::endl;
+	  //n++;
+	  //}
 
-	  if(n>20)
-	    exit(0);
+	  //if(n>20)
+	  //exit(0);
 	  newBranch->Fill();     
 	  newBranchLeg1->Fill(); 
 	  newBranchLeg2->Fill(); 
 	  newBranchZPt->Fill();  
 	  newBranchZXsec->Fill();
 	  newBranch->Fill();
-	  newBranchm_sv->Fill();
-	  newBranchpt_sv->Fill();
+	  //newBranchm_sv->Fill();
+	  //newBranchpt_sv->Fill();
 	}
 
 	t->Write("",TObject::kOverwrite);
