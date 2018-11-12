@@ -44,8 +44,8 @@ process.source = cms.Source("PoolSource",
 from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionMC(process,'HLT',
         [
-        'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
-        'HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v'
+        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v'        
         ])
 
 #EventSelection
@@ -101,7 +101,7 @@ createGeneratedParticles(process,
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
 
-addDiTauEventTree(process,'diTauEventTree',triggerCollection='HLT')
+addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
 addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT')
 
 #This event summary tells you how many objects pass each of the steps

@@ -71,8 +71,8 @@ process.eventSelectionTT = cms.Path(process.selectionSequenceTT)
 #in order to create two different trees, one with all the final selections
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
-addDiTauEventTree(process,'diTauEventTreeFinalLoose','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
-addDiTauEventTree(process,'diTauEventTree')
+
+addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
 addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
 
 
