@@ -29,7 +29,7 @@ ETanalysisConfigurator.addDiCandidateModule('eleTaus','PATEleTauPairProducer','t
 
 ETanalysisConfigurator.addSelector('eleTausElePtEta','PATEleTauPairSelector','leg1.pt()>24&&abs(leg1.eta())<2.1','ETelectronPtEta',1)
 ETanalysisConfigurator.addSelector('eleTausTauPtEta','PATEleTauPairSelector','leg2.pt()>20&&abs(leg2.eta())<2.3','ETTauPtEta',1)
-ETanalysisConfigurator.addSelector('eleTausEleID','PATEleTauPairSelector','leg1.userFloat("eleMVAIDnonTrig80")>0.5','ElectronID',1)
+ETanalysisConfigurator.addSelector('eleTausEleID','PATEleTauPairSelector','leg1.userFloat("eleMVAIDnonIso80")>0.5','ElectronID',1)
 ETanalysisConfigurator.addSelector('eleTausEleConvRej','PATEleTauPairSelector','leg1.userInt("eleConversion")==0','ETelectronConvRej',1)
 ETanalysisConfigurator.addSelector('eleTausEleVertices','PATEleTauPairSelector','abs(leg1.userFloat("dZ"))<0.2&&abs(leg1.userFloat("dXY"))<0.045','ETelectronVertices',1)
 ETanalysisConfigurator.addSelector('eleTausDecayFound','PATEleTauPairSelector','leg2.tauID("decayModeFinding")>0.5','ETTauDecayFound',1)

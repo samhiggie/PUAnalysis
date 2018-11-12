@@ -379,7 +379,7 @@ def makeEleTauCSVShape(sourceDiTaus):
 
 
 def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT'):
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_TauTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
                               coreCollections = cms.InputTag(src),

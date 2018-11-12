@@ -1,18 +1,6 @@
-<use   name="root"/>
-<use   name="rootcore"/>
 <use   name="PhysicsTools/FWLite"/>
-<use   name="PhysicsTools/Utilities"/>
 <use   name="DataFormats/FWLite"/>
-<use   name="PUAnalysis/TauTriggerSFs2017">
-<use   name="roofit"/>
-<use   name="roostats"/>
-<use   name="HTT-utilities/RecoilCorrections"/>
-
-<!--<use   name="roottmva"/>0-->
-
-<bin name="TrainMethods" file="TrainMethods.cc">
-</bin>
-
+<use   name="PUAnalysis/TauTriggerSFs2017"/>
 <bin   name="EventWeightsForEfficiencyTrigger2017" file="EventWeightsForEfficiencyTrigger2017.cc">
 </bin>
 
