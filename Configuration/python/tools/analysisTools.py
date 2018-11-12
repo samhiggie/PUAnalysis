@@ -11,6 +11,7 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 from PhysicsTools.PatAlgos.tools.trigTools import *
 from CondCore.DBCommon.CondDBSetup_cfi import *
 
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 import sys
 import os 
 
@@ -405,35 +406,25 @@ def MiniAODMuonIDEmbedder(process,muons):
 
 def MiniAODEleVIDEmbedder(process, eles):
   #Turn on versioned cut-based ID
-  from PhysicsTools.SelectorUtils.tools.vid_id_tools import setupAllVIDIdsInModule, setupVIDElectronSelection, switchOnVIDElectronIdProducer, DataFormat, setupVIDSelection
-  #from PhysicsTools.SelectorUtils.tools.vid_id_tools import  setupAllVIDIdsInModule, setupVIDElectronSelection, switchOnVIDElectronIdProducer, DataFormat
-  switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-  process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
-  process.egmGsfElectronIDs.physicsObjectaus = cms.InputTag(eles)
-  from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
-  #egmGsfElectronIDSequence should already be defined in egmGsfElectronIDs_cfi 
-  #process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
-  process.egmGsfElectronIDSequence = cms.Sequence(process.electronMVAValueMapProducer+process.egmGsfElectronIDs)
-  id_modules = [
-      'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
-      'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff',
-      'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
-      'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
-      'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff']
-  for idmod in id_modules:
+  from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+  dataFormat = DataFormat.MiniAOD
+  switchOnVIDElectronIdProducer(process, dataFormat)
+  my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff', 
+                   'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff']
+  for idmod in my_id_modules:
       setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection,None,False)
-  
-  IDLabels = ["eleMVAIDnonTrig80", "eleMVAIDnonTrig90","CBID","CBIDVeto", "CBIDLoose", "CBIDMedium", "CBIDTight","eleHEEPid"] # keys of based id user floats
+
+  IDLabels = ["eleMVAIDnonIso80", "eleMVAIDnonIso90","eleMVAnonIsoLoose","eleMVAIso90", "eleMVAIso80", "eleMVAIsoLoose", "eleMVAwpHZZ"] # keys of based id user floats
   IDTags = [
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp90'),
-          cms.InputTag('egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1'),
-          cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto'),
-          cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose'),
-          cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium'),
-          cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight'),
-          cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV60')
-  ]
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp80'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp90'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wpLoose'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp90'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp80'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpLoose'),
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpHZZ')
+          ]
+
   # Embed cut-based VIDs
   process.miniAODElectronVID = cms.EDProducer(
       "MiniAODElectronVIDEmbedder",
@@ -572,7 +563,7 @@ def triLeptons(process):
 
   process.TightElectrons = cms.EDFilter("PATElectronSelector",
   							src = cms.InputTag("miniAODElectronVID"),
-  							cut = cms.string('pt>10&&abs(eta)<2.5&&abs(userFloat("dZ"))<0.2&&abs(userFloat("dXY"))<0.045&&userFloat("dBRelIso03")<0.3&&userFloat("eleMVAIDnonTrig90")>0&&userInt("eleConversion")==0'),
+  							cut = cms.string('pt>10&&abs(eta)<2.5&&abs(userFloat("dZ"))<0.2&&abs(userFloat("dXY"))<0.045&&userFloat("dBRelIso03")<0.3&&userFloat("eleMVAIDnonIso90")>0&&userInt("eleConversion")==0'),
   							filter = cms.bool(False)
   						)
   						
@@ -614,7 +605,7 @@ def applyDefaultSelectionsPT(process):#FIXME THISWILL HVAE TO CHANGE-- not curee
   										)  
   process.selectedPatElectrons = cms.EDFilter("PATElectronSelector",
                                            src = cms.InputTag("miniAODElectronVID"),
-                                           cut = cms.string('pt>10&&userFloat("eleMVAIDnonTrig90")>0&&userFloat("dBRelIso03")<0.3'),
+                                           cut = cms.string('pt>10&&userFloat("eleMVAIDnonIso90")>0&&userFloat("dBRelIso03")<0.3'),
                                            filter = cms.bool(False)
   										)
   process.selectedPatMuons = cms.EDFilter("PATMuonSelector",
@@ -758,7 +749,7 @@ def getAllEventCounters(process,path,onSkim = False):
 
 def addEventSummary(process,onSkim = False,name = 'summary',path = 'eventSelection'):
     
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_TauTau.root") )
 
    summary = cms.EDAnalyzer('EventSummary',
                             src =getAllEventCounters(process,getattr(process,path),onSkim)

@@ -286,7 +286,7 @@ def makeEleTauCSVShape(sourceDiTaus):
 
 
 def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
                               coreCollections = cms.InputTag(src),
@@ -461,7 +461,7 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
 
 
 def addMuTauEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
                               coreCollections = cms.InputTag(src),
@@ -796,7 +796,7 @@ def addMuTauEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorte
 
 
 def addEleTauShortEventTree(process,name,src='eleTausSorted',srcLL='diElectronsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
                               coreCollections = cms.InputTag(src),
@@ -959,7 +959,7 @@ def addEleTauShortEventTree(process,name,src='eleTausSorted',srcLL='diElectronsO
 
 #Tree for e+tau + MET final state
 def addEleTauEventTree(process,name,src='eleTausSorted',srcLL='diElectronsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
                               coreCollections = cms.InputTag(src),
@@ -1180,8 +1180,8 @@ def addEleTauEventTree(process,name,src='eleTausSorted',srcLL='diElectronsOSSort
                               eleTaufootprintCorrection = makeEleTauPair(src,"footprintCorrection_2",'leg2.tauID("footprintCorrection")'),
                               eleTaufootprintCorrectiondR03 = makeEleTauPair(src,"footprintCorrectiondR03_2",'leg2.tauID("footprintCorrectiondR03")'),
 
-                              eleTauMVANonTrig80 = makeEleTauPair(src,"id_e_mva_nt_80_1",'leg1.userFloat("MVA_iso_WP80")'),#CHECKME #rename
-                              eleTauMVANonTrig90 = makeEleTauPair(src,"id_e_mva_nt_90_1",'leg1.userFloat("MVA_iso_WP90")'),#CHECKME #rename
+                              eleTauMVANonTrig80 = makeEleTauPair(src,"id_e_mva_nt_80_1",'leg1.userFloat("eleMVAIDnonIso80")'),#CHECKME #rename
+                              eleTauMVANonTrig90 = makeEleTauPair(src,"id_e_mva_nt_90_1",'leg1.userFloat("eleMVAIDnonIso90")'),#CHECKME #rename
                               #eleTauCBIDVeto = makeEleTauPair(src,"id_e_cut_veto_1",'leg1.userFloat("CBIDVeto")'),#CHECKME #rename
                               #eleTauCBIDLoose = makeEleTauPair(src,"id_e_cut_loose_1",'leg1.userFloat("CBIDLoose")'),#CHECKME #rename
                               #eleTauCBIDMedium = makeEleTauPair(src,"id_e_cut_medium_1",'leg1.userFloat("CBIDMedium")'),#CHECKME #rename
