@@ -28,7 +28,6 @@ namespace {
 
 
     /// create dictionaries for 
-    edm::Ptr<reco::GenParticle> dummyGenParticlePtr;
 
     edm::Ptr<reco::GsfTrack> dummyGsfTrackPtr;
 

@@ -26,7 +26,6 @@
 
   <!-- create dictionaries for edm::Ptr<reco::GenParticle>
        as these dictionaries are not yet created in DataFormats/HepMCCandidate/src/classes.h -->
-  <class name="edm::Ptr<reco::GenParticle>"/>
 
   <!-- create dictionaries for edm::Ptr<reco::Track> and edm::Ptr<reco::GsfTrack>
        as these dictionaries are not yet created in DataFormats/TrackReco/src/classes.h (DataFormats/GsfTrackReco/src/classes.h) -->
