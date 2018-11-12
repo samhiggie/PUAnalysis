@@ -5,8 +5,8 @@ PUAnalysis
 #Set Up instructions:
 
 ```
-cmsrel CMSSW_9_4_0 #for 2017 analysis
-cd CMSSW_9_4_0/src/
+cmsrel CMSSW_9_4_11 #for 2017 analysis
+cd CMSSW_9_4_1/src/
 cmsenv
 git cms-init 
 git clone https://github.com/isobelojalvo/PUAnalysis.git   
