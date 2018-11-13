@@ -20,3 +20,19 @@ cd $CMSSW_BASE/src
 
 #METSignificance
 #git cms-addpkg RecoMET/METProducers
+
+
+#MELA
+git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
+cd ZZMatrixElement/
+bash setup.sh -j 12
+
+cd $CMSSW_BASE/src
+
+#SV-fit and TauAnalysis Tools
+git clone https://github.com/SVfit/ClassicSVfit TauAnalysis/ClassicSVfit #### for fast mtt use this branch -b fastMTT_21_06_2018
+git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF
+pushd $CMSSW_BASE/src
+
+cd $CMSSW_BASE/src
+
