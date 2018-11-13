@@ -53,12 +53,13 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
 
   muonTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODMuonID") 
   electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID") 
-  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
+  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
 
   reRunTaus(process,'slimmedTaus')
   #Build good vertex collection
+  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
 
-  tauEffi(process,'rerunSlimmedTaus',True)
+  tauEffi(process,'triggeredPatTaus',True)
 
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
   
@@ -414,15 +415,16 @@ def MiniAODEleVIDEmbedder(process, eles):
   for idmod in my_id_modules:
       setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection,None,False)
 
-  IDLabels = ["eleMVAIDnonIso80", "eleMVAIDnonIso90","eleMVAnonIsoLoose","eleMVAIso90", "eleMVAIso80", "eleMVAIsoLoose", "eleMVAwpHZZ"] # keys of based id user floats
+#  IDLabels = ["eleMVAIDnonIso80", "eleMVAIDnonIso90","eleMVAnonIsoLoose","eleMVAIso90", "eleMVAIso80", "eleMVAIsoLoose", "eleMVAwpHZZ"] # keys of based id user floats
+  IDLabels = ["eleMVAIDnonIso80", "eleMVAIDnonIso90"] # keys of based id user floats
   IDTags = [
           cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp80'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp90'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wpLoose'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp90'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp80'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpLoose'),
-          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpHZZ')
+          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp90')
+#          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wpLoose'),
+#          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp90'),
+#          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp80'),
+#          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpLoose'),
+#          cms.InputTag('egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpHZZ')
           ]
 
   # Embed cut-based VIDs

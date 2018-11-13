@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_dataRun2_v6'
+process.GlobalTag.globaltag = '94X_dataRun2_v10'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -21,7 +21,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:singleMu.root'
+        ''
+        #'file:singleMu.root'
         #'/store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/40000/0021369B-9BD8-E711-BFE9-FA163EAA42CB.root'
         #"/store/data/Run2016D/SingleMuon/MINIAOD/PromptReco-v2/000/276/384/00000/AAEA15A0-FE46-E611-A7BA-02163E012368.root"
         #'file:event-21753.root'
@@ -42,8 +43,12 @@ process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/C
 from PUAnalysis.Configuration.tools.analysisTools_LTau import *
 defaultReconstruction(process,'HLT',
         [
+            'HLT_IsoMu24_v',
+            'HLT_IsoMu27_v',
             'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
-            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v'
+            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v',
+            'HLT_Ele32_WPTight_Gsf_v',
+            'HLT_Ele35_WPTight_Gsf_v'
             ])
 
 
