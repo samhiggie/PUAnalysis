@@ -20,10 +20,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:singleMu.root'
-        #'/store/data/Run2016D/Tau/MINIAOD/07Aug17-v1/10000/3208BBC1-52A3-E711-A21C-0242AC110008.root'
-        #'file:VBFHttFXFX.root',
-        #'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
+        '/store/data/Run2017B/Tau/MINIAOD/31Mar2018-v1/00000/005D8BAB-7C37-E811-B1D9-001E67E6F90E.root'
 		),
 		inputCommands=cms.untracked.vstring(
 						'keep *',
