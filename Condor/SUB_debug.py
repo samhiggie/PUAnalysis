@@ -10,7 +10,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(-1)
 )
 
 
@@ -20,8 +20,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-                "/store/mc/RunIIFall17MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D84ED2D3-5B42-E811-B73B-0CC47A745294.root"
-                #"/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10-v1/00000/0293A280-B5F3-E711-8303-3417EBE33927.root"
+                ##inputFileNames
+                "file:281FD2EA-FEA8-E811-BC5A-FA163EC45A20.root"
+                #"file:3C6508FF-FAA8-E811-B253-FA163E0746BB.root"
+                ##"/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10-v1/00000/0293A280-B5F3-E711-8303-3417EBE33927.root"
         #'file:event-21753.root'
 #'/store/mc/RunIISpring16MiniAODv1/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/10000/06A0B340-8025-E611-8262-B8CA3A708F98.root'
 #'file:VBFHttFXFX.root',
@@ -45,8 +47,8 @@ process.source = cms.Source("PoolSource",
 from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionMC(process,'HLT',
         [
-        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v'        
+        'HLT_DoubleMediumIsoPFTau35_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleMediumCombinedIsoPFTau35_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection
@@ -102,7 +104,7 @@ createGeneratedParticles(process,
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
+addDiTauEventTree(process,'diTauEventTree',triggerCollection='HLT')
 addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT')
 
 #This event summary tells you how many objects pass each of the steps
@@ -110,3 +112,21 @@ addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HL
 #Normally does not need to be touched. :) 
 addEventSummary(process,True,'TT','eventSelectionTT')
 
+process.source = cms.Source("PoolSource",
+        fileNames = cms.untracked.vstring(
+            $inputFileNames
+            ),
+        inputCommands=cms.untracked.vstring(
+            'keep *',
+            )
+        )
+
+process.maxEvents = cms.untracked.PSet(
+        input = cms.untracked.int32(-1)
+        )
+
+#process.TFileService.fileName=cms.string("$outputFileName")
+process.TFileService = cms.Service(
+        "TFileService",
+        fileName = cms.string("$outputFileName")
+        )

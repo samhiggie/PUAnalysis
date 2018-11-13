@@ -406,7 +406,8 @@ def MiniAODMuonIDEmbedder(process,muons):
 
 def MiniAODEleVIDEmbedder(process, eles):
   #Turn on versioned cut-based ID
-  from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+  #from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+  from PhysicsTools.SelectorUtils.tools.vid_id_tools import setupAllVIDIdsInModule, setupVIDElectronSelection, switchOnVIDElectronIdProducer, DataFormat, setupVIDSelection
   dataFormat = DataFormat.MiniAOD
   switchOnVIDElectronIdProducer(process, dataFormat)
   my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff', 
@@ -510,9 +511,11 @@ def reapplyPUJetID(process, srcJets = cms.InputTag("slimmedJets")):
 
 def recorrectJets(process, isData = False, src = "slimmedJets"):
     print 'recorrecting the jets'
-    JECTag = 'Summer16_23Sep2016V4_MC'
+    #JECTag = 'Summer16_23Sep2016V4_MC'
+    JECTag = 'Fall17_17Nov2017_V6_MC'
     if(isData):
-      JECTag = 'Summer16_23Sep2016AllV4_DATA'
+      #JECTag = 'Summer16_23Sep2016AllV4_DATA'
+      JECTag = 'Fall17_17Nov2017BCDEF_V6_DATA'
     cmssw_base = os.environ['CMSSW_BASE']
 ## getting the JEC from the DB
     process.load("CondCore.CondDB.CondDB_cfi")
@@ -524,6 +527,7 @@ def recorrectJets(process, isData = False, src = "slimmedJets"):
                                                           label  = cms.untracked.string('AK4PFchs')
                                                           )
                                                  ), 
+                               #connect = cms.string('sqlite_fip:PUAnalysis/Configuration/data/'+JECTag+'.db')
                                connect = cms.string('sqlite:////'+cmssw_base+'/src/PUAnalysis/Configuration/data/'+JECTag+'.db')
                                )
    
