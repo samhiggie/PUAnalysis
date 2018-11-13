@@ -4,9 +4,9 @@ newdirname='ztt_weighted_Nov13'
 mkdir /scratch/$USER/$newdirname
 cd /scratch/$USER/$newdirname
 
-weight=0;
+weight=1;
 weightH=0;
-weightW=1;
+weightW=0;
 weightZ=0;
 
 #cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.

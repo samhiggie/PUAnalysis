@@ -109,9 +109,9 @@ int main (int argc, char* argv[])
    readdir(f3,parser,ev);
    f3->Close();
    
-   //TFile *f4 = new TFile("Z4Jets.root","UPDATE");   
-   //readdir(f4,parser,ev);
-   //f4->Close();
+   TFile *f4 = new TFile("Z4Jets.root","UPDATE");   
+   readdir(f4,parser,ev);
+   f4->Close();
  
    //TFile *f5 = new TFile("ZJets_150.root","UPDATE");   
    //readdir(f5,parser,ev);
