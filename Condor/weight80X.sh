@@ -1,6 +1,6 @@
 #!/bin/sh
-olddirname='ztt_unweighted_Apr7_svFit'
-newdirname='ztt_weighted_Apr7_svFit'
+olddirname='ztt_unweighted_Nov13'
+newdirname='ztt_weighted_Nov13'
 mkdir /scratch/$USER/$newdirname
 cd /scratch/$USER/$newdirname
 
@@ -53,9 +53,9 @@ if [ $weightZ -eq 1 ]
 	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
     done 
     #make sure Zpt root file is around!!!
-    cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
+    #cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
     EventWeightsIterativeZJets    weight=1    histoName='TT/results' 
-    hadd -f ZJETS.root ZJets_ext1.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
+    hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
      
 fi
 

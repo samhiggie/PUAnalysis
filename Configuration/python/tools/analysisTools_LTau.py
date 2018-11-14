@@ -651,14 +651,15 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
                                             src = cms.InputTag(srcTau),
                                             trigEvent = cms.InputTag(HLT),
                                             filtersAND = cms.vstring(
-                                                'hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched',
-                                                'hltPFTau20TrackLooseChargedIsoAgainstMuon',
-                                                'hltOverlapFilterIsoMu24LooseChargedIsoPFTau20'
+                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07'
+                                                #'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded'
                                             ),
                                             filters = cms.vstring(
+                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07',
+                                                'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded',
                                                 'hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched',
-                                                'hltPFTau20TrackLooseChargedIsoAgainstMuon',
-                                                'hltOverlapFilterIsoMu24LooseChargedIsoPFTau20'
+                                                'hltSelectedPFTau30LooseChargedIsolationL1HLTMatched',
+                                                'hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30'
                                             ),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
@@ -670,10 +671,10 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
    #process.analysisSequence=cms.Sequence(process.analysisSequence*process.preTriggeredPatTaus*process.triggeredPatTaus)
    process.analysisSequence=cms.Sequence(process.analysisSequence*process.triggeredPatTaus)
 
-#'hltL3crIsoL1sSingleMu22erL1f0L2f10QL3f24QL3trkIsoFiltered0p07',
-#'hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p07',
-#'hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07',
-#'hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07'     
+#
+#
+#
+#
 def muonTriggerMatchMiniAOD(process,triggerProcess,HLT,srcMuon):
 
    process.triggeredPatMuons = cms.EDProducer("MuonTriggerMatcherMiniAOD",
@@ -681,14 +682,18 @@ def muonTriggerMatchMiniAOD(process,triggerProcess,HLT,srcMuon):
                                             trigEvent = cms.InputTag(HLT),
                                             filters = cms.vstring(
                                                 'hltL3crIsoL1sSingleMu22erL1f0L2f10QL3f24QL3trkIsoFiltered0p07',
-                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07',
-                                                'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded'
+                                                'hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p07',        
+                                                'hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07',  
+                                                'hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07',
+                                                'hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched',
+                                                'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded',
+                                                "hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07"
                                             ),
 					    filtersAND = cms.vstring(
-
-                                                'hltL3crIsoL1sSingleMu22erL1f0L2f10QL3f24QL3trkIsoFiltered0p07',
-                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07',
-                                                'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded'
+                                                'hltL3crIsoL1sSingleMu22erL1f0L2f10QL3f24QL3trkIsoFiltered0p07'
+                                                #'hltL3crIsoL1sMu18L1f0L2f10QL3f20QL3trkIsoFiltered0p07',        
+                                                #'hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07',  
+                                                #'hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07'     
 					    ),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
@@ -706,12 +711,16 @@ def electronTriggerMatchMiniAOD(process,triggerProcess,HLT,srcEle):
                                             src = cms.InputTag(srcEle),#"miniAODElectronVID"
                                             trigEvent = cms.InputTag(HLT),#unused
                                             filters = cms.vstring(
+                                                'hltEle32WPTightGsfTrackIsoFilter',
                                                 'hltEle24erWPTightGsfTrackIsoFilterForTau',
+                                                'hltEle35noerWPTightGsfTrackIsoFilter',
                                                 'hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30'
                                             ),
 					    filtersAND = cms.vstring(
-                                                'hltEle24erWPTightGsfTrackIsoFilterForTau',
-                                                'hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30'
+                                                'hltEle32WPTightGsfTrackIsoFilter'
+                                                #'hltEle24erWPTightGsfTrackIsoFilterForTau',
+                                                #'hltEle35noerWPTightGsfTrackIsoFilter',
+                                                #'hltOverlapFilterIsoEle24WPTightGsfLooseIsoPFTau30'
 					    ),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),

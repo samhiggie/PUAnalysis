@@ -2,7 +2,7 @@
 
 pushd $CMSSW_BASE/src
 cd PUAnalysis
-git clone -b tauTriggers2017_reMiniaod_test git@github.com:truggles/TauTriggerSFs2017.git TauTriggerSFs2017
+git clone -b tauTriggers2017_reMiniaod_test  https://github.com/truggles/TauTriggerSFs2017.git TauTriggerSFs2017
 
 pushd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/LeptonEff-interface.git HTT-utilities

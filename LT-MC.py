@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_mc2017_realistic_v13'
+process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
 
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
@@ -36,8 +36,10 @@ process.source = cms.Source("PoolSource",
 from PUAnalysis.Configuration.tools.analysisTools_LTau import *
 defaultReconstructionMC(process,'HLT',
         [
+            'HLT_IsoMu24_v',
             'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
-            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v'
+            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v',
+            'HLT_Ele32_WPTight_Gsf_v'
             ])
 
 

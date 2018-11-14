@@ -6,7 +6,7 @@ PUAnalysis
 
 ```
 cmsrel CMSSW_9_4_11 #for 2017 analysis
-cd CMSSW_9_4_1/src/
+cd CMSSW_9_4_11/src/
 cmsenv
 git cms-init 
 git clone https://github.com/isobelojalvo/PUAnalysis.git   
@@ -27,8 +27,8 @@ The output ntuple is __analysis.root__
 
 
 __To create Htt plots, these are the main files used for running are:__
-PUAnalysis/StatTools/data/sm_higgs_tautau/makeTauTauPlots_Published
-PUAnalysis/StatTools/data/sm_higgs_tautau/makeTemplatePlotsDiTau.C
+PUAnalysis/StatTools/data/sm_higgs_tautau_2017/makeTauTauPlots_Published
+PUAnalysis/StatTools/data/sm_higgs_tautau_2017/makeTemplatePlotsDiTau.C
 
 __For Datacard creation:__
 PUAnalysis/StatTools/interface/DataCardCreatorHThTh_2016.h
