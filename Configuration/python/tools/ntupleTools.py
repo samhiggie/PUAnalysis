@@ -105,6 +105,38 @@ def makeDiTauEventWeight(sourceDiTaus):
    )
    return PSet
 
+def makeEmbeddedEventSF(sourceDiTaus,isEmbedded,tag,genPt1,genEta1,genPt2,genEta2):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairEmbeddedSFFiller"),
+         src         = cms.InputTag(sourceDiTaus),
+         isEmbedded  = cms.bool(isEmbedded),
+         tag         = cms.string(tag),
+         pt1          = cms.string(genPt1),
+         eta1         = cms.string(genEta1),
+         pt2          = cms.string(genPt2),
+         eta2         = cms.string(genEta2)
+
+   )
+   return PSet
+
+def makeEmbeddedTriggerMatch(sourceDiTaus,isEmbedded,genPt1,genEta1,genPhi1,genPt2,genEta2,genPhi2,triggerfilter):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairEmbeddedTriggerFilterFiller"),
+         src         = cms.InputTag(sourceDiTaus),
+         isEmbedded  = cms.bool(isEmbedded),
+         pt_1          = cms.string(genPt1),
+         eta_1         = cms.string(genEta1),
+         phi_1          = cms.string(genPhi1),
+         pt_2          = cms.string(genPt2),
+         eta_2         = cms.string(genEta2),
+         phi_2          = cms.string(genPhi2),
+         triggerFilter  = cms.string(triggerfilter), 
+         triggerBits   = cms.InputTag("TriggerResults","","SIMembedding"),
+         objects = cms.InputTag("slimmedPatTrigger")
+
+   )
+   return PSet
+
 def makeDiTauGenMatch(sourceDiTaus):
    PSet = cms.PSet(
          pluginType  = cms.string("PATDiTauPairGenMCMatching"),
@@ -252,12 +284,6 @@ def makeMuTauCSVShape(sourceDiTaus):
    )
    return PSet
 
-
-
-
-
-
-
 def makeMuTauJetCountPair(sourceDiTaus,tagName,methodName,leadingOnly=True):
    PSet = cms.PSet(
          pluginType  = cms.string("PATMuTauPairJetCountFiller"),
@@ -378,7 +404,7 @@ def makeEleTauCSVShape(sourceDiTaus):
    return PSet
 
 
-def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT'):
+def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT', isEmbedded=False):
    process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_TauTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
@@ -492,10 +518,14 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauDecayModeLeg1 = makeDiTauPair(src,"decayMode_1",'leg1.decayMode()'),
                               diTauDecayModeLeg2 = makeDiTauPair(src,"decayMode_2",'leg2.decayMode()'),
 
-                              diTauHLTMatchHLTLeg1     = makeDiTauPair(src,"hltTight35_1",'leg1.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
-                              diTauHLTMatchHLTCombLeg1 = makeDiTauPair(src,"hltMed40_1",'leg1.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
-                              diTauHLTMatchHLTLeg2     = makeDiTauPair(src,"hltTight35_2",'leg2.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
-                              diTauHLTMatchHLTCombLeg2 = makeDiTauPair(src,"hltMed40_2",'leg2.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTLeg1     = makeDiTauPair(src,"hltTight35_1",
+                                                                       methodName = "1" if isEmbedded else 'leg1.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTCombLeg1 = makeDiTauPair(src,"hltMed40_1",
+                                                                       methodName = "1" if isEmbedded else 'leg1.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTLeg2     = makeDiTauPair(src,"hltTight35_2",
+                                                                       methodName = "1" if isEmbedded else'leg2.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTCombLeg2 = makeDiTauPair(src,"hltMed40_2",
+                                                                       methodName = "1" if isEmbedded else 'leg2.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
 
                               diTauAgainstMuonTight3Leg1 = makeDiTauPair(src,"againstMuonTight3_1",'leg1.tauID("againstMuonTight3")'),
                               diTauAgainstMuonTight3Leg2 = makeDiTauPair(src,"againstMuonTight3_2",'leg2.tauID("againstMuonTight3")'),
@@ -544,8 +574,14 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauByOldDMMVAIsoRR8_2 = makeDiTauPair(src,"idVVTight2017v2_2", 'leg2.tauID("idVVTight2017v2")'),
 
 ####Rerun
+###Embedded option
+                              diTauEmbeddedSF  = makeEmbeddedEventSF(src, isEmbedded, "embedded_trig_sf", 'p4Leg1gen().pt()','p4Leg1gen().eta()','p4Leg2gen().pt()','p4Leg2gen().eta()'),
+                              diTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src, isEmbedded, 'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+
                               diTauGenPt1 = makeDiTauPair(src,"genPt1",'p4Leg1gen().pt()'),
                               diTauGenPt2 = makeDiTauPair(src,"genPt2",'p4Leg2gen().pt()'),
+                              diTauGenEta1 = makeDiTauPair(src,"genEta1",'p4Leg1gen().eta()'),
+                              diTauGenEta2 = makeDiTauPair(src,"genEta2",'p4Leg2gen().eta()'),
                               diTauPdg1 = makeDiTauPair(src,"pdg1",'genPdg1()'),
                               diTauPdg2 = makeDiTauPair(src,"pdg2",'genPdg2()'),
                               diTauVisGenPt1 = makeDiTauPair(src,"genVisPt1",'p4VisLeg1gen().pt()'),

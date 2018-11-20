@@ -75,6 +75,67 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
 
 
+def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='PAT'):
+  process.load("PUAnalysis.Configuration.startUpSequence_cff")
+  process.load("Configuration.StandardSequences.Services_cff")
+  process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
+  process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+  process.load("DQMServices.Core.DQM_cfg")
+  process.load("DQMServices.Components.DQMEnvironment_cfi")
+  process.load('Configuration.StandardSequences.Services_cff')
+  process.load('Configuration.EventContent.EventContent_cff')
+  process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+  process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+  process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+  process.load('Configuration.StandardSequences.EndOfProcess_cff')
+ 
+  #Make the TriggerPaths Global variable to be accesed by the ntuples
+  global TriggerPaths
+  TriggerPaths= triggerPaths
+  global TriggerProcess
+  TriggerProcess= triggerProcess
+  global TriggerRes
+  TriggerRes=HLT 
+  global TriggerFilter
+  TriggerFilter=triggerFilter
+  
+  process.analysisSequence = cms.Sequence()
+
+  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
+  MiniAODMuonIDEmbedder(process,"slimmedMuons")  
+
+  MiniAODMETfilter(process)
+
+  recorrectJets(process, True) #adds patJetsReapplyJEC
+
+  reRunMET(process,True)
+  metSignificance(process) 
+
+  muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODMuonID") 
+  electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODElectronVID") 
+  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
+
+  reRunTaus(process,'slimmedTaus')
+  genmatchtaus(process) 
+
+  #Note, no tau trigger matching here as this is an embedded sample, triggering on muons.
+
+  #tauEffi(process,'rerunSlimmedTaus',True)
+
+  tauOverloading(process,'rerunSlimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
+  
+  triLeptons(process)
+
+  #Now for the jet overloading and filtering 
+  jetOverloading(process,"patJetsReapplyJEC",True)
+  jetFilter(process,"patOverloadedJets")
+
+  #Default selections for systematics
+  applyDefaultSelectionsPT(process)
+
+  process.runAnalysisSequence = cms.Path(process.analysisSequence)
+
+
 
 
 def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_dummy'],HLT = 'TriggerResults',triggerFilter='RECO'):
@@ -695,6 +756,45 @@ def electronTriggerMatchMiniAOD(process,triggerProcess,HLT,srcEle):
 					    ),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
+                                            prescales = cms.InputTag("patTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger"),
+                                            ptCut = cms.int32(0) 
+   )
+  
+   process.analysisSequence*= process.triggeredPatElectrons
+
+
+
+def muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcMuon):
+
+   process.triggeredPatMuons = cms.EDProducer("MuonTriggerMatcherMiniAOD",
+                                            src = cms.InputTag(srcMuon),
+                                            trigEvent = cms.InputTag(HLT),
+                                            filters = cms.vstring(
+                                            #'hltDoubleL2IsoTau26eta2p2'
+                                            ),
+					    filtersAND = cms.vstring(
+                                            #'hltDoubleL2IsoTau26eta2p2'
+					    ),
+                                            bits = cms.InputTag("TriggerResults","","SIMembedding"),
+                                            prescales = cms.InputTag("patTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger"),
+                                            ptCut = cms.int32(0) 
+   )
+  
+   process.analysisSequence*= process.triggeredPatMuons
+
+##this module does not do anything but is used to make sure the sequence stays the same beteween emb and non-emb
+def electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcEle):
+
+   process.triggeredPatElectrons = cms.EDProducer("ElectronTriggerMatcherMiniAOD",
+                                            src = cms.InputTag(srcEle),#"miniAODElectronVID"
+                                            trigEvent = cms.InputTag(HLT),#unused
+                                            filters = cms.vstring(
+                                            ),
+					    filtersAND = cms.vstring(
+					    ),
+                                            bits = cms.InputTag("TriggerResults","","SIMembedding"),
                                             prescales = cms.InputTag("patTrigger"),
                                             objects = cms.InputTag("slimmedPatTrigger"),
                                             ptCut = cms.int32(0) 
