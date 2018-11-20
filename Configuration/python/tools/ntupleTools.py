@@ -105,6 +105,17 @@ def makeDiTauEventWeight(sourceDiTaus):
    )
    return PSet
 
+def makeDiTauPairZPTReweight(sourceDiTaus,tag,genMassZ,genPtZ):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairZWeightFiller"),
+         src         = cms.InputTag(sourceDiTaus),
+         tag         = cms.string(tag),
+         massZ       = cms.string(genMassZ),
+         ptZ         = cms.string(genPtZ)
+   )
+   return PSet
+
+
 def makeEmbeddedEventSF(sourceDiTaus,isEmbedded,tag,genPt1,genEta1,genPt2,genEta2):
    PSet = cms.PSet(
          pluginType  = cms.string("PATDiTauPairEmbeddedSFFiller"),
@@ -522,10 +533,14 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                                                                        methodName = "1" if isEmbedded else 'leg1.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
                               diTauHLTMatchHLTCombLeg1 = makeDiTauPair(src,"hltMed40_1",
                                                                        methodName = "1" if isEmbedded else 'leg1.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTTight40Leg1 = makeDiTauPair(src,"hltTight40_1",
+                                                                       methodName = "1" if isEmbedded else 'leg1.userFloat("hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg")'),
                               diTauHLTMatchHLTLeg2     = makeDiTauPair(src,"hltTight35_2",
                                                                        methodName = "1" if isEmbedded else'leg2.userFloat("hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
                               diTauHLTMatchHLTCombLeg2 = makeDiTauPair(src,"hltMed40_2",
                                                                        methodName = "1" if isEmbedded else 'leg2.userFloat("hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg")'),
+                              diTauHLTMatchHLTTight40Leg2 = makeDiTauPair(src,"hltTight40_2",
+                                                                       methodName = "1" if isEmbedded else 'leg2.userFloat("hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg")'),
 
                               diTauAgainstMuonTight3Leg1 = makeDiTauPair(src,"againstMuonTight3_1",'leg1.tauID("againstMuonTight3")'),
                               diTauAgainstMuonTight3Leg2 = makeDiTauPair(src,"againstMuonTight3_2",'leg2.tauID("againstMuonTight3")'),
@@ -595,6 +610,8 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauGenBosonPy = makeDiTauPair(src,"genpY",'p4GenBoson().py()'),
                               diTauGenBosonVisPx = makeDiTauPair(src,"vispX",'p4GenBosonVis().px()'),
                               diTauGenBosonVisPy = makeDiTauPair(src,"vispY",'p4GenBosonVis().py()'),
+
+                              diTauGenZPTReweight = makeDiTauPairZPTReweight(src,'_zweight_','p4GenBoson().M()','p4GenBoson().pt()'),
                               #Jets
                               diTauMJJReg = makeDiTauPair(src,"mJJReg","mJJReg"),#FIXME
                               diTauMJJ    = makeDiTauPair(src,"mJJ","mJJ"),#FILLED
@@ -613,9 +630,10 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               #diTauJetsPt30nbtagNoSf = makeDiTauJetCountPair(src,"nbtag30",'userFloat("isbtagged")&&pt()>30&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
                               diTauJetsPt30nbtag = makeDiTauJetCountPair(src,"nbtag30",'pt()>30&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
 
-                              diTauJetsPt30njets = makeDiTauJetCountPair(src,"njets",'pt()>30&&abs(eta)<4.7&&userFloat("idLoose")'),
+                              diTauJetsPt30njets = makeDiTauJetCountPair(src,"njets_2016",'pt()>30&&abs(eta)<4.7&&userFloat("idTight")'),
+                              diTauJetsPt30njetsVetoLowpt = makeDiTauJetCountPair(src,"njets",'pt()>30&&abs(eta)<4.7&&userFloat("idTight")&&!(pt()<50&&(abs(eta)<3.139&&abs(eta)>2.65))'),
                               diTauJetsPt30njetsnopu = makeDiTauJetCountPair(src,"njetspuID",'pt()>30&&abs(eta)<4.7&&!userFloat("puIDLoose")'),
-                              diTauJetsPt20njets = makeDiTauJetCountPair(src,"njetspt20",'pt()>20&&abs(eta)<4.7&&userFloat("idLoose")'),
+                              diTauJetsPt20njets = makeDiTauJetCountPair(src,"njetspt20",'pt()>20&&abs(eta)<4.7&&userFloat("idTight")'),
                               diTauJetsPt20njetsnopu = makeDiTauJetCountPair(src,"njetspt20puID",'pt()>20&&abs(eta)<4.7&&!userFloat("puIDLoose")'),
 
 
@@ -674,4 +692,3 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
    setattr(process, name, eventTree)
    p = cms.Path(getattr(process,name))
    setattr(process, name+'Path', p)
-

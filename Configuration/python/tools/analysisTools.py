@@ -299,12 +299,17 @@ def MiniAODMETfilter(process):
     process.analysisSequence*=process.BadMuon
 
 def reRunMET(process, runOnData):
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+ 
+  runMetCorAndUncFromMiniAOD (
+        process,
+        isData=runOnData,
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+        )
 
-    runMetCorAndUncFromMiniAOD(process,
-            isData=runOnData
-            )
-    process.analysisSequence *= process.fullPatMetSequence
+  process.analysisSequence *=process.fullPatMetSequenceModifiedMET 
 
 
 def reRunTaus(process,taus='slimmedTaus'):
@@ -699,11 +704,13 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
                                             trigEvent = cms.InputTag(HLT),
                                             filtersAND = cms.vstring(
                                                 'hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg'
+                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg'
                                             ),
                                             filters = cms.vstring(
                                                 'hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg'
+                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg'
                                             ),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
