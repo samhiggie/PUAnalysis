@@ -200,58 +200,54 @@ class DataCardCreatorHThTh_2016_2D {
 
 			pair<float,float> tmp;
 			float legCorr=1.0;
-			legCorr = tauID_;
+			legCorr = tauID_*tauID_;
+
+			bool h120130 = false;
 
                         cout<<"Make Higgs Shape"<<endl;
 			std::string fullselection = "("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_;
-			tmp= createHistogramAndShifts(dir_+"ggH120.root","ggH120",(fullselection),luminosity_*legCorr*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH125",(fullselection),luminosity_*legCorr*legCorr,prefix);
-			if(doSys_>0)
-			  createShiftsTES("ggH125",dir_+"ggH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_,weight_,luminosity_*legCorr,prefix,tmp);
-			tmp= createHistogramAndShifts(dir_+"ggH130.root","ggH130",(fullselection),luminosity_*legCorr*legCorr,prefix);
-
-			tmp= createHistogramAndShifts(dir_+"vbfH120.root","qqH120",(fullselection),luminosity_*legCorr*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH125",(fullselection),luminosity_*legCorr*legCorr,prefix);
-			if(doSys_>0)
-			  createShiftsTES("qqH125",dir_+"vbfH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_,weight_,luminosity_*legCorr,prefix,tmp);
-			tmp= createHistogramAndShifts(dir_+"vbfH130.root","qqH130",(fullselection),luminosity_*legCorr*legCorr,prefix);
-
-			tmp= createHistogramAndShifts(dir_+"ZH120.root","ZH120",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"ZH125.root","ZH125",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"ZH130.root","ZH130",(fullselection),luminosity_*legCorr,prefix);
-
-			if(doSys_>0)
-			  createShiftsTES("ZH125",dir_+"ZH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_,weight_,luminosity_*legCorr,prefix,tmp);
-
-			tmp= createHistogramAndShifts(dir_+"WpH120.root","WpH120",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"WpH125.root","WpH125",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"WpH130.root","WpH130",(fullselection),luminosity_*legCorr,prefix);
-
-			tmp= createHistogramAndShifts(dir_+"WmH120.root","WmH120",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"WmH125.root","WmH125",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"WmH130.root","WmH130",(fullselection),luminosity_*legCorr,prefix);
-
-			if(doSys_>0)
-			  createShiftsTES("WH125",dir_+"WH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_,weight_,luminosity_*legCorr,prefix,tmp);
-
-			tmp= createHistogramAndShifts(dir_+"ttH120.root","ttH120",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"ttH125.root","ttH125",(fullselection),luminosity_*legCorr,prefix);
-			tmp= createHistogramAndShifts(dir_+"ttH130.root","ttH130",(fullselection),luminosity_*legCorr,prefix);
-
-			if(doSys_>0)
-			  createShiftsTES("ttH125",dir_+"ttH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_,weight_,luminosity_*legCorr,prefix,tmp);
 			
-			addHistogram(filelabel_+prefix,"WpH120","WmH120");
-			addHistogram(filelabel_+prefix,"WpH125","WmH125");
-			addHistogram(filelabel_+prefix,"WpH130","WmH130");
-			renameHist( filelabel_+prefix, "WH120","WpH120");
-			renameHist( filelabel_+prefix, "WH125","WpH125");
-			renameHist( filelabel_+prefix, "WH130","WpH130");
+			tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH125",(fullselection),luminosity_*legCorr,prefix);
+			tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH125",(fullselection),luminosity_*legCorr,prefix);
+			tmp= createHistogramAndShifts(dir_+"ZH125.root","ZH125",(fullselection),luminosity_*legCorr,prefix);
+			tmp= createHistogramAndShifts(dir_+"WpH125.root","WpH125",(fullselection),luminosity_*legCorr,prefix);
+			tmp= createHistogramAndShifts(dir_+"WmH125.root","WmH125",(fullselection),luminosity_*legCorr,prefix);
+			tmp= createHistogramAndShifts(dir_+"ttH125.root","ttH125",(fullselection),luminosity_*legCorr,prefix);
+			addHistogram(filelabel_+prefix, "WpH125","WmH125");
+			renameHist(  filelabel_+prefix, "WH125", "WpH125");
 
-			std::cout<<"creating met systematics Higgs"<<std::endl;
-			createMETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
-			std::cout<<"creating jet systematics Higgs"<<std::endl;
-			createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
+			if(doSys_>0){
+			  createShiftsTES("ggH125",dir_+"ggH125.root", categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("qqH125",dir_+"vbfH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("ZH125", dir_+"ZH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("WH125", dir_+"WH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("ttH125",dir_+"ttH125.root", categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  std::cout<<"creating met systematics Higgs"<<std::endl;
+			  createMETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
+			  std::cout<<"creating jet systematics Higgs"<<std::endl;
+			  createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
+			}			
+
+
+			if(h120130){
+			  tmp= createHistogramAndShifts(dir_+"ggH120.root", "ggH120",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"ggH130.root", "ggH130",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"vbfH120.root","qqH120",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"vbfH130.root","qqH130",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"ZH120.root",  "ZH120", (fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"ZH130.root",  "ZH130", (fullselection),luminosity_*legCorr,prefix);			
+			  tmp= createHistogramAndShifts(dir_+"WpH120.root", "WpH120",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"WpH130.root", "WpH130",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"WmH120.root", "WmH120",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"WmH130.root", "WmH130",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"ttH120.root", "ttH120",(fullselection),luminosity_*legCorr,prefix);
+			  tmp= createHistogramAndShifts(dir_+"ttH130.root", "ttH130",(fullselection),luminosity_*legCorr,prefix);
+			  addHistogram(filelabel_+prefix,"WpH120","WmH120");
+			  renameHist( filelabel_+prefix, "WH120","WpH120");
+			  addHistogram(filelabel_+prefix,"WpH130","WmH130");
+			  renameHist( filelabel_+prefix, "WH130","WpH130");
+			}
+
 		}
 
 
