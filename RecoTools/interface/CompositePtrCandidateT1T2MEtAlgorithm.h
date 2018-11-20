@@ -327,12 +327,12 @@ class CompositePtrCandidateT1T2MEtAlgorithm
 
           std::vector<int> pdgIdsEMU;
 
-	  pdgIdsEMU.push_back(13);
-	  pdgIdsEMU.push_back(-13);
-	  pdgIdsEMU.push_back(-11);
-	  pdgIdsEMU.push_back(11);
-	  //pdgIdsEMU.push_back(-15);
-	  //pdgIdsEMU.push_back(15);
+	  //pdgIdsEMU.push_back(13);
+	  //pdgIdsEMU.push_back(-13);
+	  //pdgIdsEMU.push_back(-11);
+	  //pdgIdsEMU.push_back(11);
+	  pdgIdsEMU.push_back(-15);
+	  pdgIdsEMU.push_back(15);
 
 	  const reco::GenParticle* genLeg1 = findGenParticle(compositePtrCandidate.leg1()->p4(), *genParticles, 0.2, -1,&pdgIdsEMU,true);
 
@@ -340,7 +340,7 @@ class CompositePtrCandidateT1T2MEtAlgorithm
 	  //std::cout<<"finding genleg 1"<<std::endl;
 	  const reco::GenParticle* genTau1 = findGenParticle(compositePtrCandidate.leg1()->p4(), *genParticles, 0.2, -1,&pdgIds,true);
 
-	  //std::cout<<"genTau1 "<<genTau1<<std::endl;
+	  //std::cout<<" genTau1 "<<genTau1<<std::endl;
 
 	  //if(genTau1!=0)
 	  //std::cout<<"finished finding genleg 1, bestmatch pdgID "<< genTau1->pdgId() <<std::endl;
@@ -378,7 +378,7 @@ class CompositePtrCandidateT1T2MEtAlgorithm
 	  if ( genLeg2 ) {
 		  //  std::cout << "genLeg2: Pt = " << genLeg2->pt() << ", eta = " << genLeg2->eta() << ", pdgId = " << genLeg2->pdgId() << std::endl;
 		  //	  << " phi = " << genLeg2->phi()*180./TMath::Pi() << std::endl;
-		  compositePtrCandidate.setP4Leg2gen(genLeg2->p4());
+	          compositePtrCandidate.setP4Leg2gen(genLeg2->p4());
 		  compositePtrCandidate.setPdg2(genLeg2->pdgId());
 		  compositePtrCandidate.setIsPrompt2(genLeg2->statusFlags().isPrompt());
 		  compositePtrCandidate.setIsPromptFS2(genLeg2->isPromptFinalState());
