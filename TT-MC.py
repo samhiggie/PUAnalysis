@@ -10,7 +10,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(20000)
 )
 
 
@@ -45,7 +45,8 @@ from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionMC(process,'HLT',
         [
         'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v'        
+        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection

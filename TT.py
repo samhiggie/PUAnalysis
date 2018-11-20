@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_dataRun2_v6'
+process.GlobalTag.globaltag = '94X_dataRun2_v10'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -44,7 +44,8 @@ from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstruction(process,'HLT',
         [
         'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v'        
+        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection
