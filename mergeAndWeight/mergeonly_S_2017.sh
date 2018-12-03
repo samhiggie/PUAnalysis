@@ -4,16 +4,16 @@
 #to see if finished running check 'top' and tail below
 #tail -f merge.log
 
-mkdir /scratch/$USER/ztt_unweighted_Nov13
-cd /scratch/$USER/ztt_unweighted_Nov13
-jobID='2018_Nov13_data_tau'
+mkdir /scratch/$USER/ztt_unweighted_Nov21
+cd /scratch/$USER/ztt_unweighted_Nov21
+jobID='2018_Nov21_data_tau'
 
 user=ojalvo
-mergedata=0;
-mergemc=0;
+mergedata=1;
+mergemc=1;
 mergeW=1;
 mergeZ=1;
-mergehiggs=0;
+mergehiggs=1;
 
 if [ $mergedata -eq 1 ]
     then
@@ -26,7 +26,7 @@ if [ $mergedata -eq 1 ]
     hadd -f tauDATA.root tauDATA-B.root tauDATA-C.root tauDATA-D.root tauDATA-E.root tauDATA-F.root
 fi
 
-jobID='2018_Nov12_tautau'
+jobID='2018_Nov21_tautau'
 #2018_Oct_2017MC_ggH_ggHtautau_125-SUB/
 if [ $mergehiggs -eq 1 ]
     then #ggHtautau_125
@@ -62,7 +62,7 @@ fi
 
 if [ $mergeW -eq 1 ]
     then
-    hadd -f  W1Jets.root /hdfs/store/user/$user/${jobID}i_W1J_lnu-SUB_MC/* & 
+    hadd -f  W1Jets.root /hdfs/store/user/$user/${jobID}_W1J_lnu-SUB_MC/* & 
     hadd -f  W2Jets.root /hdfs/store/user/$user/${jobID}_W2J_lnu-SUB_MC/* & 
     hadd -f  W3Jets.root /hdfs/store/user/$user/${jobID}_W3J_lnu-SUB_MC/* & 
     hadd -f  W4Jets.root /hdfs/store/user/$user/${jobID}_W4J_lnu-SUB_MC/* & 
@@ -110,7 +110,7 @@ if [ $mergemc -eq 1 ]
     hadd -f   EWKWp2j.root      /hdfs/store/user/$user/${jobID}_EWKWPlus2j-SUB_MC/* &
     hadd -f   EWKWm2j.root      /hdfs/store/user/$user/${jobID}_EWKWminus2j-SUB_MC/* &
     hadd -f   EWKZ2l.root       /hdfs/store/user/$user/${jobID}_EWKZ2j_2l-SUB_MC/* &
-    hadd -f   EWKZ2Nu.root      /hdfs/store/user/$user/${jobID}_EWKZ2j_2nu-SUB_MC* &
+    hadd -f   EWKZ2Nu.root      /hdfs/store/user/$user/${jobID}_EWKZ2j_2nu-SUB_MC/* &
 
     wait;
     #hadd     	--reuse-cache-files ZJets1050.root	/hdfs/store/user/$user/${jobID}_ZJets1050-SUB-MC 
