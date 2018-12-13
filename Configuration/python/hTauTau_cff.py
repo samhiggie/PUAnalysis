@@ -11,7 +11,7 @@ TTanalysisConfigurator = CutSequenceProducer(initialCounter  = 'initialEventsTT'
 
 TTanalysisConfigurator.addSmearing('patOverloadedTaus','miniAODMuonID','miniAODElectronVID','filteredJets','slimmedMETsModifiedMET','TT')
 #Create di muon pairs for veto purposes
-TTanalysisConfigurator.addDiCandidateModule('diMuons','PATMuPairProducer','miniAODMuonID','miniAODMuonID','slimmedMETsModifiedMET','','patOverloadedJets',0,9999,text = '',leadingObjectsOnly = False,dR = 0.15,recoMode = "",genParticles='prunedGenParticles')
+TTanalysisConfigurator.addDiCandidateModule('diMuons','PATMuPairProducer','miniAODMuonID','miniAODMuonID','slimmedMETsModifiedMET','','filteredJets',0,9999,text = '',leadingObjectsOnly = False,dR = 0.15,recoMode = "",genParticles='prunedGenParticles')
 #veto possible second zpeak
 #TTanalysisConfigurator.addSelector('diMuonsOS','PATMuPairSelector','leg1.isPFMuon&&leg2.isPFMuon&&abs(leg1.eta())<3&&abs(leg2.eta())<3&&abs(leg1.userFloat("dZ"))<0.2&&abs(leg2.userFloat("dZ"))<0.2&&abs(leg2.userFloat("dXY"))<0.045&&abs(leg2.userFloat("dXY"))<0.045&&charge==0&&leg1.isGlobalMuon&&leg2.isGlobalMuon&&leg1.pt()>7&&leg2.pt()>7&&leg1.userFloat("dBRelIso")<0.5 &&leg2.userFloat("dBRelIso")<0.5','DiMuonCreation',0,100)
 #TTanalysisConfigurator.addSorter('diMuonsOSSorted','PATMuPairSorter')

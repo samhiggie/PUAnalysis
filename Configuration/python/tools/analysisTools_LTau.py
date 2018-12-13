@@ -43,7 +43,7 @@ def defaultReconstructionBCDEF(process,triggerProcess = 'HLT',triggerPaths = ['H
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons",True) #is HIP  
 
-  recorrectJets(process, True) #adds patJetsReapplyJEC  
+  recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
   reRunMET(process,True)
 
 
@@ -105,7 +105,7 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons", False) #is HIP  
 
-  recorrectJets(process, True) #adds patJetsReapplyJEC  
+  recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
   reRunMET(process,True)
 
   #mvaMet2(process, True) #isData
@@ -163,17 +163,13 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   #Apply Tau Energy Scale Changes
   #EScaledTaus(process,False)
 
-
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
 
   #BadMuonFilter(process)
-  MiniAODMETfilter(process)
 
-  recorrectJets(process, False) #adds patJetsReapplyJEC
-  reRunMET(process,False)
+  recorrectJetsSQL(process, False) #adds patJetsReapplyJEC
 
-  metSignificance(process)
 
   muonTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODMuonID")#NEW
   electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID")#NEW
@@ -193,6 +189,13 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
 
   MiniAODJES(process,"patOverloadedJets")
   jetFilter(process,"jetsEmbedJES")
+
+  #NOTE: As of Nov 30 2018 this must go after jet corrections or the jets will break
+  #This is due to met features which try to automatically reapply jet corrections
+  reRunMET(process,False)
+  MiniAODMETfilter(process)
+  metSignificance(process)
+
 
   GenSumWeights(process)
   GenHTCalculator(process)
@@ -233,7 +236,7 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons") #is not HIP, use standard ID   
 
-  recorrectJets(process, True) #adds patJetsReapplyJEC  
+  recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
   reRunMET(process,True)
 
   #mvaMet2(process, True) #isData
@@ -485,14 +488,25 @@ def metSignificance(process):
    )
    process.analysisSequence *= process.METSignificance
 
-
 def reRunMET(process, runOnData):
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+ 
+  runMetCorAndUncFromMiniAOD (
+        process,
+        isData=runOnData,
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+        )
+  process.analysisSequence +=(process.fullPatMetSequenceModifiedMET)
 
-    runMetCorAndUncFromMiniAOD(process,
-            isData=runOnData
-            )
-    process.analysisSequence *= process.fullPatMetSequence
+#def reRunMET(process, runOnData):
+#    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#
+#    runMetCorAndUncFromMiniAOD(process,
+#            isData=runOnData
+#            )
+#    process.analysisSequence *= process.fullPatMetSequence
 
 
 
@@ -506,9 +520,9 @@ def reapplyPUJetID(process, srcJets = cms.InputTag("slimmedJets")):
     process.analysisSequence *= process.pileupJetIdUpdated
    
 def recorrectJetsSQL(process, isData = False):
-    JECTag = 'Summer16_23Sep2016V3_MC'
+    JECTag = 'Fall17_17Nov2017_V32_94X_MC'
     if(isData):
-      JECTag = 'Summer16_23Sep2016AllV3_DATA'
+      JECTag = 'Fall17_17Nov2017_V32_94X_DATA'
     #cmssw_base = os.environ['CMSSW_BASE']
     ## getting the JEC from the DB
     #process.load("CondCore.CondDB.CondDB_cfi")
@@ -541,7 +555,7 @@ def recorrectJetsSQL(process, isData = False):
       )
     if(isData):
         process.patJetCorrFactorsReapplyJEC.levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
-    process.analysisSequence *= process.patJetCorrFactorsReapplyJEC
+    process.analysisSequence *= (process.patJetCorrFactorsReapplyJEC+process.patJetsReapplyJEC)
 
 
 def recorrectJets(process, isData = False):

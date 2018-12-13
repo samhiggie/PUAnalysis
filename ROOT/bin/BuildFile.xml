@@ -1,6 +1,10 @@
 <use   name="PhysicsTools/FWLite"/>
 <use   name="DataFormats/FWLite"/>
 <use   name="PUAnalysis/TauTriggerSFs2017"/>
+<use   name="ZZMatrixElement/MELA"/>
+<use   name="HTT-utilities/RecoilCorrections"/>
+<use   name="TauAnalysis/ClassicSVfit"/>
+<use   name="TauAnalysis/SVfitTF"/>
 <bin   name="EventWeightsForEfficiencyTrigger2017" file="EventWeightsForEfficiencyTrigger2017.cc">
 </bin>
 
@@ -22,5 +26,5 @@
 <bin   name="EventWeightsIterativeZPt" file="EventWeightsIterativeZPt.cc">
 </bin>
 
-
-
+<bin   name="produceMELABranches" file="produceMELABranches.cc">
+</bin>

@@ -73,6 +73,7 @@ class DataCardCreatorHThTh_2016 {
 			}
 
 			//read input files
+			embFile_  = parser.stringValue("embFile");
 			zttFile_  = parser.stringValue("zttFile");
 			zllFile_  = parser.stringValue("zllFile");
 			wFile_    = parser.stringValue("wFile");
@@ -143,6 +144,7 @@ class DataCardCreatorHThTh_2016 {
 			tauID_         = parser.doubleValue("tauID");
 			tauIDHigh_     = parser.doubleValue("tauIDHigh");
 			tauIDErr_      = parser.doubleValue("tauIDErr");
+			embScale_      = parser.doubleValue("embScale");
 			zttScale_      = parser.doubleValue("zttScale");
 			zttScaleErr_   = parser.doubleValue("zttScaleErr");
 			vvScale_       = parser.doubleValue("VVScale");
@@ -264,6 +266,7 @@ class DataCardCreatorHThTh_2016 {
 			printf("Tau ID Scale Factor is %.3f \n",tauID_);
 
                         cout<<"Create Data"<<endl;
+			string fullSelectionEmb  = preSelection+"&&"+osSignalSelection_;
 			string fullSelection     = preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_;
 			string fullSelectionData = preSelectionData_+"&&"+trigSelectionData_+"&&"+osSignalSelection_;
 			cout<<"      Data Selection: "<<fullSelectionData<<endl;
@@ -350,6 +353,8 @@ class DataCardCreatorHThTh_2016 {
                         cout<<"Create ZTT"<<endl;
 			pair<float,float> ZTT    = createHistogramAndShifts(zttFile_,"ZTT",("("+fullSelection+"&&"+ZTT_genTauSel_+")*"+weight_+"*"+Zweight_),luminosity_*tauIDCorr*zttScale_,prefix);    
 
+			cout<<"Create Embedded"<<endl;
+			pair<float,float> ZTTembedded  = createHistogramAndShifts(embFile_,"embedded",("("+fullSelectionEmb+"&&"+ZTT_genTauSel_+")*"+embWeight_),embScale_,prefix);    
 
 			output.ZTT  = ZTT.first;
 			output.dZTT = ZTT.second;
@@ -407,7 +412,8 @@ class DataCardCreatorHThTh_2016 {
 			cout<<"ZLFT: "<< output.ZLFT<<endl;
 			cout<<"ZJFT: "<< output.ZJFT<<endl;
 			cout<<"ZTT: " << output.ZTT <<endl;
-			
+			cout<<"Embedded: "<<ZTTembedded.first<<endl;
+
 			float background    = output.QCD  + output.W  + output.TOP  + output.VV  + output.ZLFT  + output.ZJFT  + output.ZTT;
 			float backgroundErr = sqrt( pow(output.dQCD,2) + pow(output.dW,2) + pow(output.dTOP,2) + pow(output.dVV,2) + pow(output.dZLFT,2) + pow(output.dZJFT,2) + pow(output.dZTT,2));
 			
@@ -1841,6 +1847,7 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		//files
 		TFile *fout_;
 		int verbose_;
+		string embFile_;
 		string zttFile_;
 		string zllFile_;
 		string wFile_;
@@ -1892,8 +1899,9 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		float tauID_  ;
 		float tauIDHigh_;      
 		float tauIDErr_;     
-		float vvScale_;     
-		float zttScale_;     
+		float vvScale_; 
+		float embScale_;
+		float zttScale_;	       
 		float zttScaleErr_;  
 
 		float scaleUp_;

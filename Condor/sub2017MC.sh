@@ -1,7 +1,7 @@
 cat $CMSSW_BASE/src/PUAnalysis/TT-MC.py > SUB_MC.py
 cat submit.py >>SUB_MC.py
 
-jobID=2018_Nov12
+jobID=2018_Nov21
 
 
 
@@ -33,7 +33,7 @@ farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM ${jobID}_tautau_TT_sl  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM ${jobID}_tautau_WJ_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v2/MINIAODSIM ${jobID}_tautau_WJ_lnu_ext  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
-farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM ${jobID}_tautaui_W1J_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
+farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM ${jobID}_tautau_W1J_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v4/MINIAODSIM ${jobID}_tautau_W2J_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM ${jobID}_tautau_W3J_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
 farmoutAnalysisJobs  --site-requirements='OpSysAndVer == "SL6"'  --vsize-limit=8000 --assume-input-files-exist --input-files-per-job=1 --input-dbs-path=/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM ${jobID}_tautau_W4J_lnu  $CMSSW_BASE $CMSSW_BASE/src/PUAnalysis/Condor/SUB_MC.py
