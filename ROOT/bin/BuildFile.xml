@@ -33,5 +33,11 @@
 <bin   name="SVFitStandAlonePUATauDM" file="SVFitStandAlonePUATauDM.cc">
 </bin>
 
+<bin   name="MELA_StandAlone" file="MELA_StandAlone.cc">
+</bin>
+<bin   name="MELA_StandAlone_SM_AC" file="MELA_StandAlone_SM_AC.cc">
+</bin>
+<bin   name="MELA_StandAlone_Sys" file="MELA_StandAlone_Sys.cc">
+</bin>
 <bin   name="produceMELABranches" file="produceMELABranches.cc">
 </bin>
