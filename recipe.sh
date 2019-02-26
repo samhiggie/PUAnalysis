@@ -20,6 +20,7 @@ cd $CMSSW_BASE/src
 
 #METSignificance
 #git cms-addpkg RecoMET/METProducers
+git cms-merge-topic cms-met:METFixEE2017_949_v2
 
 
 #MELA

@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
+process.GlobalTag.globaltag = '94X_dataRun2_v10'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -20,18 +20,16 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-                "/store/mc/RunIIFall17MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D84ED2D3-5B42-E811-B73B-0CC47A745294.root"
-                #"/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10-v1/00000/0293A280-B5F3-E711-8303-3417EBE33927.root"
-        #'file:event-21753.root'
-#'/store/mc/RunIISpring16MiniAODv1/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/10000/06A0B340-8025-E611-8262-B8CA3A708F98.root'
-#'file:VBFHttFXFX.root',
-#'/store/mc/RunIISummer16MiniAODv2/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/02810E61-F5C5-E611-A78A-002590FD5A78.root'
+        '/store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/99/merged_998.root_'
 		),
 		inputCommands=cms.untracked.vstring(
 						'keep *',
 						'keep *_l1extraParticles_*_*',
 		)
 )
+
+import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
+process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
 
 
 #Default Reconstruction from the analysTools.py config file
@@ -43,56 +41,26 @@ process.source = cms.Source("PoolSource",
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
 from PUAnalysis.Configuration.tools.analysisTools import *
-defaultReconstructionMC(process,'HLT',
-        [
-        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
-        ])
+defaultReconstructionEMB(process,'HLT',
+                         [
+                          'HLT_Mu17_TkMu8',
+                          'HLT_Mu17_Mu8'        
+                          ],
+                         HLT = 'TriggerResults',
+                         triggerFilter='SIMembedding')
 
 #EventSelection
 #Most of the selections for the analysis go in hTauTau_cff
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")## Check me
+process.load("PUAnalysis.Configuration.hTauTau_cff")
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
 #Name of the path in hTauTau_cff
 process.eventSelectionTT = cms.Path(process.selectionSequenceTT)
 
-#Specifies which gen particles we wish to keep, this collection is used in the
-#RecoTools/interface/CompositePtrCandidateT1T2MEtAlgorithm.h
-#Most of the algorithm tools are done in the composite ptr candidate algorithm 
-#module. 
-createGeneratedParticles(process,
-        'genDaughters',
-        [
-            "keep++ pdgId = {Z0}",
-            "keep pdgId = {tau+}",
-            "keep pdgId = {tau-}",
-            "keep pdgId = {mu+}",
-            "keep pdgId = {mu-}",
-            "keep pdgId = 6",
-            "keep pdgId = -6",
-            "keep pdgId = 11",
-            "keep pdgId = -11",
-            "keep pdgId = 25",
-            "keep pdgId = 35",
-            "keep pdgId = 37",
-            "keep pdgId = 36"
-            ]
-        )
-
-#TBH, I am not sure if this is currently used.
-createGeneratedParticles(process,
-        'genTauCands',
-        [
-            "keep pdgId = {tau+} & mother.pdgId()= {Z0}",
-            "keep pdgId = {tau-} & mother.pdgId() = {Z0}"
-            ]
-        )
 
 #Create the Ntuples, the name "analysis.root" is set here as well
 #This takes the output from the configuration sequence and fills
@@ -101,10 +69,11 @@ createGeneratedParticles(process,
 #be replaced with any of the labled collections produced in htautau_cff.py
 #in order to create two different trees, one with all the final selections
 #and one with looser selections.
-from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
+from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
-addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT')
+addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='SIMembedding',isEmbedded=True)
+#addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
+
 
 #This event summary tells you how many objects pass each of the steps
 #in the configuration. It is extremely useful for debugging. 
