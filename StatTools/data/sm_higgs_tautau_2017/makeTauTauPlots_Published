@@ -69,6 +69,29 @@ binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,
 mkdir $outputDir
 signalselection='pt_1>10'
 folder='tt_inclusive'
+
+for var in    "variable=m_vis          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
+ "variable=energyJJ     bins=20 min=2    max=302 outputFile=$outputDir/tauTau_energyJJ.root"\
+ "variable=etaJJ        bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_etaJJ.root"\
+ "variable=ptJJ         bins=20 min=2    max=302 outputFile=$outputDir/tauTau_ptJJ.root"\
+ "variable=jeta_2       bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jeta_2.root"\
+ "variable=jphi_2       bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_jphi_2.root"\
+ "variable=jpt_2        bins=20 min=2    max=102 outputFile=$outputDir/tauTau_jpt_2.root"\
+ "variable=njets        bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njets.root"\
+ "variable=met          bins=20 min=2    max=402 outputFile=$outputDir/tauTau_met.root"\
+ "variable=metphi       bins=20 min=-3.4 max=3.4 outputFile=$outputDir/tauTau_metphi.root"\
+ "variable=mJJ          bins=20 min=2    max=302 outputFile=$outputDir/tauTau_mJJ.root"\
+ "variable=njetingap20  bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap20.root"\
+ "variable=njetingap    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap.root"\
+ "variable=mjj          bins=30 min=2    max=300 outputFile=$outputDir/tauTau_mjj.root"\
+do
+    echo $var
+
+    MakeDataCardHThTh_2016 channel='diTau'  folder=$folder  dataFile=$direc'tauDATA.root' qcdFile=$direc'tauDATA.root' zttFile=$direc'ZJETS.root' zllFile=$direc'ZJETS.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'TT.root' preselection=$preselectionmc preselectionUp=$preselection preselectionDown=$preselection nominalselection=$nominalselection preselectiondata=$preselectiondata  wselection=$wselection  relaxedSelection=$relaxedSelection trigSelection=$trigselection trigSelectionData=$trigselection  signalselection=$signalselection qcdselectionmax=$qcdselectionmax  qcdselection=$qcdselection'&&njets>1' qcdselectiondata=$qcdselectiondata'&&njets>1' luminosityErr=0.045 qcdfactor=$qcdfactor qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075  topSF=$topSF  tauID=$tauID tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0  weight='__WEIGHT__*GENWEIGHT*puweight' Zweight='1' vvScale=$vvScale TTweight=$topWeight  luminosity=$luminosity $var
+done
+
+
+
 #"variable=m_sv          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_sv.root"\
 for var in    "variable=m_vis          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
  "variable=pt_1        bins=20 min=50 max=100 outputFile=$outputDir/tauTau_pt_1.root"\

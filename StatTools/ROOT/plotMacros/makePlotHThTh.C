@@ -155,7 +155,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	std::cout<<"here 3"<<std::endl;
 
 	//FIXME
-	TH1F * ZTT = (TH1F*)(f->Get(dir+"/ZTT"));
+	TH1F * ZTT = (TH1F*)(f->Get(dir+"/embedded"));
 	if (dndm) convertToDNDM(ZTT);
 	applyStyle(ZTT,kOrange-4,1,1001);
 

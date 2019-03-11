@@ -191,7 +191,7 @@ class PATJetOverloader : public edm::EDProducer {
                             loose = false;
                             tight = false;
                         }
-                        if (jet.neutralEmEnergyFraction() >= 0.90){
+                        if (jet.neutralEmEnergyFraction() >= 0.90 || jet.neutralEmEnergyFraction()<= 0.02){
                             loose = false;
                             tight = false;
                         }
@@ -203,6 +203,10 @@ class PATJetOverloader : public edm::EDProducer {
                             medium = false;
                             tight = false;
                         }
+                        if (jet.neutralHadronEnergyFraction() <= 0.02){
+                            tight = false;
+                        }
+
                         if (jet.neutralMultiplicity() <= 10) {
                             loose = false;
                             medium = false;

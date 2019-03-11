@@ -15,8 +15,12 @@ git clone https://github.com/CMS-HTT/RecoilCorrections.git  HTT-utilities/Recoil
 pushd $CMSSW_BASE/src
 
 git cms-merge-topic guitargeek:EgammaID_9_4_X
+pushd $CMSSW_BASE/src
+
+git cms-merge-topic cms-met:METFixEE2017_949_v2
 
 cd $CMSSW_BASE/src
+
 
 #METSignificance
 #git cms-addpkg RecoMET/METProducers

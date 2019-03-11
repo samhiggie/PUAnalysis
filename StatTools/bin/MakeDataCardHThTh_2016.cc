@@ -12,7 +12,7 @@ int main (int argc, char* argv[])
 	parser.addOption("channel",optutl::CommandLineParser::kString,"Channel  ","mutau");
 	parser.addOption("shifts",optutl::CommandLineParser::kStringVector,"Systematic Shifts(Supported Tau,Jet,Unc and whatever else in the tree) ");
 	parser.addOption("zttFile",optutl::CommandLineParser::kString,"File with the ZTT","ZTT.root");
-	parser.addOption("zEmbeddedSample",optutl::CommandLineParser::kString,"File with the ZTT+2jets","");
+	parser.addOption("embFile",optutl::CommandLineParser::kString,"File with the Embedded Sample","");
 	parser.addOption("zllFile",optutl::CommandLineParser::kString,"File with the ZLL","ZLL.root");
 	parser.addOption("wFile",optutl::CommandLineParser::kString,"File with the W","W.root");
 	parser.addOption("vvFile",optutl::CommandLineParser::kString,"File with the VV","VV.root");
@@ -74,6 +74,7 @@ int main (int argc, char* argv[])
 	parser.addOption("zLFTFactor",optutl::CommandLineParser::kDouble,"Z Muon fakes tau error",1.0);
 	parser.addOption("zJFTErr",optutl::CommandLineParser::kDouble,"Z Jet fakes tau Error",0.2);
 	parser.addOption("zttScale",optutl::CommandLineParser::kDouble,"Z tau tau scale",1.00);
+	parser.addOption("embScale",optutl::CommandLineParser::kDouble,"emb scale",1.00);
 	parser.addOption("zttScaleErr",optutl::CommandLineParser::kDouble,"Z tau tau scale error",0.033);
 	parser.addOption("vvScale",optutl::CommandLineParser::kDouble,"VV scale",1.00);
 	parser.addOption("muID",optutl::CommandLineParser::kDouble,"Mu ID",1.0);
@@ -117,7 +118,7 @@ int main (int argc, char* argv[])
 		std::string inclSel = parser.stringValue("preselection"); //signalselection  has mt_cut
 		std::string foldername = parser.stringValue("folder");
                 std::cout<<"using preselection: "<<inclSel<<std::endl;
-		BkgOutput output = creator.runOSLSMT(inclSel,foldername,parser.stringValue("zEmbeddedSample"),parser.doubleValue("topSF"));
+		BkgOutput output = creator.runOSLSMT(inclSel,foldername,"",parser.doubleValue("topSF"));
 		creator.makeHiggsShape(inclSel,inclSel,foldername);
 	
        

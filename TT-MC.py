@@ -10,7 +10,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(20000)
 )
 
 

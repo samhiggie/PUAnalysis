@@ -5,7 +5,6 @@
 <use   name="HTT-utilities/RecoilCorrections"/>
 <use   name="TauAnalysis/ClassicSVfit"/>
 <use   name="TauAnalysis/SVfitTF"/>
-
 <bin   name="EventWeightsForEfficiencyTrigger2017" file="EventWeightsForEfficiencyTrigger2017.cc">
 </bin>
 
