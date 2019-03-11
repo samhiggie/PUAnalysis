@@ -52,6 +52,12 @@ def makeDiTauVBFPair(sourceDiTaus):
          src         = cms.InputTag(sourceDiTaus)
    )
    return PSet
+def makeDiTauVBFPair_FSA(sourceDiTaus):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairVBFVariableFiller_FSA"),
+         src         = cms.InputTag(sourceDiTaus)
+   )
+   return PSet
 
 def makeDiTauPair(sourceDiTaus,tagName,methodName,leadingOnly=True):
    PSet = cms.PSet(
@@ -511,7 +517,8 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauPhi2LL = makeLTauGeneric("PATMuPairFiller",srcLL,"LLphi_2","leg2.phi"),#FILLED
                               #diTauEffCSV = makeDiTauEffCSV(src),  ##need to put csv eff back in
                               #diTauCSVShape = makeDiTauCSVShape(src), ## need to put csv shape back in
-                              diTauJES = makeDiTauVBFPair(src),#FILLED
+                              #diTauJES = makeDiTauVBFPair(src),#FILLED
+                              diTauJES_FSA = makeDiTauVBFPair_FSA(src),#FILLED
 
                               diTauSize = makeCollSize(src,"nCands"),
                               diTauOS = makeCollSizeOS(src,0,"os"),
@@ -628,7 +635,7 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               diTauVBFJets20 = makeDiTauPair(src,"njetingap20","vbfNJetsGap20"),
                               diTauVBFJets30 = makeDiTauPair(src,"njetingap","vbfNJetsGap30"),
                               ##FIX ME apply loose ID
-                              #diTauJetsPt20nbtag = makeDiTauJetCountPair(src,"nbtag",'userFloat("isbtagged")&&pt()>20&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
+                              diTauJetsPt20nbtag = makeDiTauJetCountPair(src,"nbtag",'userFloat("isbtagged")&&pt()>20&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
                               diTauJetsPt20nbtagLoose = makeDiTauJetCountPair(src,"nbtagLooseNoSF",'pt()>20&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.46'),
                               diTauJetsPt20nbtagNoSF = makeDiTauJetCountPair(src,"nbtagNoSF",'pt()>20&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
                               #diTauJetsPt30nbtagNoSf = makeDiTauJetCountPair(src,"nbtag30",'userFloat("isbtagged")&&pt()>30&&abs(eta)<2.4&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484'),
@@ -649,54 +656,54 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                               #diTauJet2PUIDPtSort = makeDiTauPtPair(src,"jpuid_2",'abs(eta())<4.7&&pt()>20','userFloat("puID")',1),
                               #diTauJet1MVAPtSort = makeDiTauPtPair(src,"jmva_1",'abs(eta())<4.7&&pt()>20',"userFloat('pileupJetId:fullDiscriminant')",0),
                               #diTauJet2MVAPtSort = makeDiTauPtPair(src,"jmva_2",'abs(eta())<4.7&&pt()>20',"userFloat('pileupJetId:fullDiscriminant')",1),
-                              diTauJet1EtaPtSort = makeDiTauPtPair(src,"jeta_1",'abs(eta())<4.7&&pt()>20','eta()',0),
-                              diTauJet2EtaPtSort = makeDiTauPtPair(src,"jeta_2",'abs(eta())<4.7&&pt()>20','eta()',1),
-                              diTauJet1PhiPtSort = makeDiTauPtPair(src,"jphi_1",'abs(eta())<4.7&&pt()>20','phi()',0),
-                              diTauJet2PhiPtSort = makeDiTauPtPair(src,"jphi_2",'abs(eta())<4.7&&pt()>20','phi()',1),
-                              diTauJet1CSVPtSort = makeDiTauPtPair(src,"jcsv_1",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',0),
-                              diTauJet2CSVPtSort = makeDiTauPtPair(src,"jcsv_2",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',1),
+                              #diTauJet1EtaPtSort = makeDiTauPtPair(src,"jeta_1",'abs(eta())<4.7&&pt()>20','eta()',0),
+                              #diTauJet2EtaPtSort = makeDiTauPtPair(src,"jeta_2",'abs(eta())<4.7&&pt()>20','eta()',1),
+                              #diTauJet1PhiPtSort = makeDiTauPtPair(src,"jphi_1",'abs(eta())<4.7&&pt()>20','phi()',0),
+                              #diTauJet2PhiPtSort = makeDiTauPtPair(src,"jphi_2",'abs(eta())<4.7&&pt()>20','phi()',1),
+                              #diTauJet1CSVPtSort = makeDiTauPtPair(src,"jcsv_1",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',0),
+                              #diTauJet2CSVPtSort = makeDiTauPtPair(src,"jcsv_2",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',1),
 
-                              diTauDeepJet1EtaPtSort = makeDiTauPtPair(src,"jdeepeta_1",'abs(eta())<4.7&&pt()>20','eta()',0),
-                              diTauDeepJet2EtaPtSort = makeDiTauPtPair(src,"jdeepeta_2",'abs(eta())<4.7&&pt()>20','eta()',1),
-                              diTauDeepJet1PhiPtSort = makeDiTauPtPair(src,"jdeepphi_1",'abs(eta())<4.7&&pt()>20','phi()',0),
-                              diTauDeepJet2PhiPtSort = makeDiTauPtPair(src,"jdeepphi_2",'abs(eta())<4.7&&pt()>20','phi()',1),
-                              diTauDeepJet1CSVPtSort = makeDiTauPtPair(src,"jdeepcsv_1",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',0),
-                              diTauDeepJet2CSVPtSort = makeDiTauPtPair(src,"jdeepcsv_2",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',1),
+                              diTauDeepJet1EtaPtSort = makeDiTauPtPair(src,"jeta_1",'abs(eta())<4.7&&pt()>20','eta()',0),
+                              diTauDeepJet2EtaPtSort = makeDiTauPtPair(src,"jeta_2",'abs(eta())<4.7&&pt()>20','eta()',1),
+                              diTauDeepJet1PhiPtSort = makeDiTauPtPair(src,"jphi_1",'abs(eta())<4.7&&pt()>20','phi()',0),
+                              diTauDeepJet2PhiPtSort = makeDiTauPtPair(src,"jphi_2",'abs(eta())<4.7&&pt()>20','phi()',1),
+                              diTauDeepJet1CSVPtSort = makeDiTauPtPair(src,"jcsv_1",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',0),
+                              diTauDeepJet2CSVPtSort = makeDiTauPtPair(src,"jcsv_2",'abs(eta())<2.4&&pt()>20','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',1),
                               #diTauJet1MedIdPtSort = makeDiTauPtPair(src,"jtlvID_1",'','userFloat("idTightLepVeto")',0),
                               #diTauJet2MedIdPtSort = makeDiTauPtPair(src,"jtlvID_2",'','userFloat("idTightLepVeto")',1),
                               #diTauJet1TightIdPtSort = makeDiTauPtPair(src,"jtightID_1",'','userFloat("idTight")',0),
                               #diTauJet2TightIdPtSort = makeDiTauPtPair(src,"jtightID_2",'','userFloat("idTight")',1),
 
-                              diTauDeepBJet1PtPtSort = makeDiTauPtPair(src,"bdeeppt_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','pt()',0),
-                              diTauDeepBJet2PtPtSort = makeDiTauPtPair(src,"bdeeppt_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','pt()',1),
+                              diTauDeepBJet1PtPtSort = makeDiTauPtPair(src,"bpt_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','pt()',0),
+                              diTauDeepBJet2PtPtSort = makeDiTauPtPair(src,"bpt_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','pt()',1),
                               #diTauBJet1MVAPtSort = makeDiTauPtPair(src,"bmva_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484',"userFloat('pileupJetId:fullDiscriminant')",0),
                               #diTauBJet2MVAPtSort = makeDiTauPtPair(src,"bmva_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484',"userFloat('pileupJetId:fullDiscriminant')",1),
                               #diTauBJet1PFIDPtSort = makeDiTauPtPair(src,"bpfid_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','userFloat("idLoose")',0),
                               #diTauBJet2PFIDPtSort = makeDiTauPtPair(src,"bpfid_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','userFloat("idLoose")',1),
                               #diTauBJet1PUIDPtSort = makeDiTauPtPair(src,"bpuid_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','userFloat("puID")',0),
                               #diTauBJet2PUIDPtSort = makeDiTauPtPair(src,"bpuid_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','userFloat("puID")',1),
-                              diTauBJet1EtaPtSort = makeDiTauPtPair(src,"beta_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','eta()',0),
-                              diTauBJet2EtaPtSort = makeDiTauPtPair(src,"beta_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','eta()',1),
-                              diTauBJet1PhiPtSort = makeDiTauPtPair(src,"bphi_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','phi()',0),
-                              diTauBJet2PhiPtSort = makeDiTauPtPair(src,"bphi_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','phi()',1),
-                              diTauBJet1CSVPtSort = makeDiTauPtPair(src,"bcsv_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',0),
-                              diTauBJet2CSVPtSort = makeDiTauPtPair(src,"bcsv_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',1),
+                              #diTauBJet1EtaPtSort = makeDiTauPtPair(src,"beta_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','eta()',0),
+                              #diTauBJet2EtaPtSort = makeDiTauPtPair(src,"beta_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','eta()',1),
+                              #diTauBJet1PhiPtSort = makeDiTauPtPair(src,"bphi_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','phi()',0),
+                              #diTauBJet2PhiPtSort = makeDiTauPtPair(src,"bphi_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.8484','phi()',1),
+                              #diTauBJet1CSVPtSort = makeDiTauPtPair(src,"bcsv_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',0),
+                              #diTauBJet2CSVPtSort = makeDiTauPtPair(src,"bcsv_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>.8484','bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")',1),
 
                               diTauJetsPt20TagMatch = makeDiTauJetCountPair(src,"nTaggableJetsPt20Matched",'pt()>20&&abs(eta)<2.4&&abs(partonFlavour)==5'),
                               diTauJetsPt20TagNoMatch = makeDiTauJetCountPair(src,"nTaggableJetsPt20NotMatched",'pt()>30&&abs(eta)<2.4&&abs(partonFlavour)!=5'),
                               #diTauFirstJetShape = makeLTauGeneric("PATDiTauPairHighestPtJetVarFiller",src,"highestJetShape",'userFloat("ptRMS")'),
-                              diTauFirstJetCSV = makeLTauGeneric("PATDiTauPairHighestPtJetVarFiller",src,"highestJetBTagCSV",'bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")'),
+                              #diTauFirstJetCSV = makeLTauGeneric("PATDiTauPairHighestPtJetVarFiller",src,"highestJetBTagCSV",'bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")'),
 
-                              diTauDeepBJet1EtaPtSort = makeDiTauPtPair(src,"bdeepeta_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','eta()',0),
-                              diTauDeepBJet2EtaPtSort = makeDiTauPtPair(src,"bdeepeta_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','eta()',1),
-                              diTauDeepBJet1PhiPtSort = makeDiTauPtPair(src,"bdeepphi_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','phi()',0),
-                              diTauDeepBJet2PhiPtSort = makeDiTauPtPair(src,"bdeepphi_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','phi()',1),
-                              diTauDeepBJet1CSVPtSort = makeDiTauPtPair(src,"bdeepcsv_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',0),
-                              diTauDeepBJet2CSVPtSort = makeDiTauPtPair(src,"bdeepcsv_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',1),
+                              diTauDeepBJet1EtaPtSort = makeDiTauPtPair(src,"beta_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','eta()',0),
+                              diTauDeepBJet2EtaPtSort = makeDiTauPtPair(src,"beta_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','eta()',1),
+                              diTauDeepBJet1PhiPtSort = makeDiTauPtPair(src,"bphi_1",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','phi()',0),
+                              diTauDeepBJet2PhiPtSort = makeDiTauPtPair(src,"bphi_2",'abs(eta())<2.4&&pt>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','phi()',1),
+                              diTauDeepBJet1CSVPtSort = makeDiTauPtPair(src,"bcsv_1",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',0),
+                              diTauDeepBJet2CSVPtSort = makeDiTauPtPair(src,"bcsv_2",'abs(eta())<2.4&&pt()>20&&bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")>0.4941','bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")',1),
 
                               diTauDeepJetsPt20TagMatch = makeDiTauJetCountPair(src,"nTaggableJetsPt20Matched",'pt()>20&&abs(eta)<2.4&&abs(partonFlavour)==5'),
                               diTauDeepJetsPt20TagNoMatch = makeDiTauJetCountPair(src,"nTaggableJetsPt20NotMatched",'pt()>30&&abs(eta)<2.4&&abs(partonFlavour)!=5'),
-                              diTauDeepFirstJetCSV = makeLTauGeneric("PATDiTauPairHighestPtJetVarFiller",src,"highestJetBTagDEEPCSV",'bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")'),
+                              diTauDeepFirstJetCSV = makeLTauGeneric("PATDiTauPairHighestPtJetVarFiller",src,"highestJetBTagCSV",'bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll")'),
 
                               higgsPt = cms.PSet(
                                   pluginType = cms.string("PATGenParticleFiller"),

@@ -194,7 +194,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
 
   jetOverloading(process,"patJetsReapplyJEC",False)
   #jetOverloading(process,"slimmedJets",False)
-  MiniAODJES(process,"patOverloadedJets")
+  MiniAODJES_FSA(process,"patOverloadedJets")
+  #MiniAODJES(process,"patOverloadedJets")
 
   jetFilter(process,"JESJets")
 
@@ -323,6 +324,16 @@ def genmatchtaus(process):
     process.analysisSequence*=process.buildGenTaus
 
 
+
+def MiniAODJES_FSA(process, jSrc="slimmedJets"):
+    process.JESJets = cms.EDProducer(
+            "MiniAODJetFullSystematicsEmbedder_FSA",
+            src = cms.InputTag(jSrc),
+            corrLabel = cms.string('AK4PFchs'),
+            fName = cms.string("Fall17_17Nov2017F_V6_DATA_UncertaintySources_AK4PFchs.txt")
+            )
+
+    process.analysisSequence*=process.JESJets
 
 def MiniAODJES(process, jSrc="slimmedJets"):
     process.JESJets = cms.EDProducer(

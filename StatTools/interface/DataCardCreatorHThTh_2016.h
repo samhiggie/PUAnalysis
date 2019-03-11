@@ -847,6 +847,8 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		    
 		    pair<float,float> ZTTYieldJetUp      = createHistogramAndShifts(  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
 		    pair<float,float> ZTTYieldJetDown    = createHistogramAndShifts(  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
+            std::cout<<"ZTT Yield Up for "+newSelectionUp+" is "<<ZTTYieldJetUp.first<<std::endl;
+            std::cout<<"ZTT Yield Down for "+newSelectionDown+" is "<<ZTTYieldJetDown.first<<std::endl;
 		    
 		    pair<float,float> zlftYieldJetUp     = createHistogramAndShifts(  zllFile_, "ZL_CMS_scale_j_"    +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);
 		    pair<float,float> zlftYieldJetDown   = createHistogramAndShifts(  zllFile_, "ZL_CMS_scale_j_"    +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);

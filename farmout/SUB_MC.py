@@ -20,8 +20,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-                "/store/mc/RunIIFall17MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D84ED2D3-5B42-E811-B73B-0CC47A745294.root"
                 #"/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10-v1/00000/0293A280-B5F3-E711-8303-3417EBE33927.root"
+                "/store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D092A5CA-B343-E811-96EB-002590E7D7C2.root"
         #'file:event-21753.root'
 #'/store/mc/RunIISpring16MiniAODv1/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/10000/06A0B340-8025-E611-8262-B8CA3A708F98.root'
 #'file:VBFHttFXFX.root',
@@ -55,7 +55,7 @@ defaultReconstructionMC(process,'HLT',
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")## Check me
+process.load("PUAnalysis.Configuration.hTauTau_Sync_cff")## Check me
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
@@ -103,11 +103,28 @@ createGeneratedParticles(process,
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT',isEmbedded=False,isJHU=False)
-addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT',isEmbedded=False,isJHU=False)
+addDiTauEventTree(process,'diTauEventTree','diTausSync','TightMuons','TightElectrons',triggerCollection='HLT')
 
 #This event summary tells you how many objects pass each of the steps
 #in the configuration. It is extremely useful for debugging. 
 #Normally does not need to be touched. :) 
 addEventSummary(process,True,'TT','eventSelectionTT')
 
+process.source = cms.Source("PoolSource",
+        fileNames = cms.untracked.vstring(
+            $inputFileNames
+            ),
+        inputCommands=cms.untracked.vstring(
+            'keep *',
+            )
+        )
+
+process.maxEvents = cms.untracked.PSet(
+        input = cms.untracked.int32(-1)
+        )
+
+#process.TFileService.fileName=cms.string("$outputFileName")
+process.TFileService = cms.Service(
+        "TFileService",
+        fileName = cms.string("$outputFileName")
+        )
