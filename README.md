@@ -13,11 +13,11 @@ git clone https://github.com/isobelojalvo/PUAnalysis.git
 export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
 cd PUAnalysis
 git fetch origin
-git checkout 2017_devel
+git checkout htt_2017_sam
 bash recipe.sh #Note Recipe13TeV.sh should be the full recipe but we are keeping it simple for now
 scram b -j 8
 ```
-to run test of analysis fw
+to run test of analysis fw - that is going from miniAOD sample to ntuple
 
 ```
 cd PUAnalysis
@@ -53,9 +53,10 @@ In general To see what needs to be fixed ``` grep -r FIXME *``` or ``` CHECKME``
 | Kind Of Issue  | Issue Detail |
 | ------------- | ------------- |
 | ES Scaling    | Put me back?  |
+| PU reweight   | need to update? |
 | Cut Sequence Producer | Can still be reduced |
-| Farmout/Crab tools | need to be updated, not currently checked|
-| configuration sequence | check me |
 | ntuple tools | reduce tree size |
-| 4 lepton final state| still needs to be finished for 2017 analyses |
+| Fix FF fractions | FF fractions currently hardcoded |
+| Settle on JES | Merge the JES in a consistent way |
+| JES plotter | Make tools more friendly for JES studies |
 

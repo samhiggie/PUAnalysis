@@ -9,7 +9,8 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.PatAlgos.tools.metTools import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 from PhysicsTools.PatAlgos.tools.trigTools import *
-from CondCore.DBCommon.CondDBSetup_cfi import *
+#from CondCore.DBCommon.CondDBSetup_cfi import *
+from CondCore.CondDB.CondDB_cfi import *
 
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 import sys
@@ -65,8 +66,9 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   
   triLeptons(process)
 
-  #Now for the jet overloading and filtering 
+  #Now for the jet overloading systematics and filtering 
   jetOverloading(process,"patJetsReapplyJEC",True)
+  MiniAODJES_FSA(process,"patOverloadedJets")
   jetFilter(process,"patOverloadedJets")
 
   #Default selections for systematics
@@ -126,8 +128,9 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   
   triLeptons(process)
 
-  #Now for the jet overloading and filtering 
+  #Now for the jet overloading systematics and filtering 
   jetOverloading(process,"patJetsReapplyJEC",True)
+  MiniAODJES_FSA(process,"patOverloadedJets")
   jetFilter(process,"patOverloadedJets")
 
   #Default selections for systematics
@@ -662,10 +665,10 @@ def recorrectJetsSQL(process, isData = False):
     JECTag = 'Fall17_17Nov2017_V32_94X_MC'
     if(isData):
       JECTag = 'Fall17_17Nov2017_V32_94X_DATA'
-    #cmssw_base = os.environ['CMSSW_BASE']
+    cmssw_base = os.environ['CMSSW_BASE']
     ## getting the JEC from the DB
-    #process.load("CondCore.CondDB.CondDB_cfi")
-    process.load("CondCore.DBCommon.CondDBCommon_cfi")
+    process.load("CondCore.CondDB.CondDB_cfi")
+    #process.load("CondCore.DBCommon.CondDBCommon_cfi")
     process.jec = cms.ESSource("PoolDBESSource",
                                DBParameters = cms.PSet( messageLevel = cms.untracked.int32(1)),
                                timetype = cms.string('runnumber'),

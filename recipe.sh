@@ -33,7 +33,14 @@ cd ZZMatrixElement/
 bash setup.sh -j 12
 
 cd $CMSSW_BASE/src
-
+#FakeFactor methods
+git clone https://github.com/CMS-HTT/Jet2TauFakes.git HTTutilities/Jet2TauFakes
+cd HTTutilities/Jet2TauFakes
+git checkout v0.2.2
+scram b
+mkdir data
+git clone -b 2017 ssh://git@gitlab.cern.ch:7999/cms-htt/Jet2TauFakesFiles.git data
+cd $CMSSW_BASE/src
 #SV-fit and TauAnalysis Tools
 git clone -b fastMTT_21_06_2018 https://github.com/SVfit/ClassicSVfit TauAnalysis/ClassicSVfit #### for fast mtt use this branch -b fastMTT_21_06_2018
 git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF

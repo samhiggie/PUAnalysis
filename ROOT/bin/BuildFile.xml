@@ -3,8 +3,10 @@
 <use   name="PUAnalysis/TauTriggerSFs2017"/>
 <use   name="ZZMatrixElement/MELA"/>
 <use   name="HTT-utilities/RecoilCorrections"/>
+<use   name="HTTutilities/Jet2TauFakes"/>
 <use   name="TauAnalysis/ClassicSVfit"/>
 <use   name="TauAnalysis/SVfitTF"/>
+
 <bin   name="EventWeightsForEfficiencyTrigger2017" file="EventWeightsForEfficiencyTrigger2017.cc">
 </bin>
 
@@ -29,14 +31,18 @@
 
 <bin   name="MELA_HTT_PUA_2" file="MELA_HTT_PUA_2.cc">
 </bin>
-<!--<bin   name="SVFitStandAlonePUATauDM" file="SVFitStandAlonePUATauDM.cc">
-</bin>-->
+<bin   name="FakeFactorSA" file="FakeFactorSA.cc">
+</bin>
+<bin   name="FastMTTStandAlonePUATauDM" file="FastMTTStandAlonePUATauDM.cc">
+</bin>
 
 <bin   name="MELA_StandAlone" file="MELA_StandAlone.cc">
 </bin>
 <bin   name="MELA_StandAlone_SM_AC" file="MELA_StandAlone_SM_AC.cc">
 </bin>
-<bin   name="MELA_StandAlone_Sys" file="MELA_StandAlone_Sys.cc">
+<!--<bin   name="MELA_StandAlone_Sys" file="MELA_StandAlone_Sys.cc">
+</bin>
+<bin   name="SVFitStandAlonePUATauDM" file="SVFitStandAlonePUATauDM.cc">
 </bin>
 <bin   name="produceMELABranches" file="produceMELABranches.cc">
-</bin>
+</bin>-->
