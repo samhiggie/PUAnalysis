@@ -1,13 +1,13 @@
 #!/bin/sh
-olddirname='ztt_unweighted_Nov10'
-newdirname='ztt_weighted_Nov10'
-mkdir /scratch/$USER/$newdirname
-cd /scratch/$USER/$newdirname
+olddirname='2019_Mar_2017_ntuples_pileup'
+newdirname='2019_Mar_2017_ntuples_ZJETs'
+mkdir /nfs_scratch/$USER/$newdirname
+cd /nfs_scratch/$USER/$newdirname
 
-weight=1;
+weight=0;
 weightH=0;
 weightW=0;
-weightZ=0;
+weightZ=1;
 
 #cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.
 
@@ -51,12 +51,13 @@ if [ $weightZ -eq 1 ]
     then
     for dir in ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/.
     done 
     #make sure Zpt root file is around!!!
-    cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
+    #cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
+    cp $CMSSW_BASE/src/PUAnalysis/Configuration/data/htt_scalefactors_2017_v2.root /scratch/$USER/$newdirname/.
     EventWeightsIterativeZJets    weight=1    histoName='TT/results' 
-    hadd -f ZJETS.root ZJets_ext1.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
+    hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
      
 fi
 

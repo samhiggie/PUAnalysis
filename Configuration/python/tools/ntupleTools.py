@@ -436,6 +436,7 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                                    pluginType = cms.string("PUFiller"),
                                    src        = cms.InputTag("slimmedAddPileupInfo"),
                                    tag        = cms.string("pu")
+                                   #samplename        = cms.string(sampleName)
                                ),
                                cov = cms.PSet(
                                    pluginType = cms.string("METSignificanceFiller"),

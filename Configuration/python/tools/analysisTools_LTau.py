@@ -917,9 +917,9 @@ def getAllEventCounters(process,path,onSkim = False):
         
         return cms.untracked.vstring(stringList)
 
-def addEventSummary(process,onSkim = False,name = 'summary',path = 'eventSelection'):
+def addEventSummary(process,onSkim = False,name = 'summary',path = 'eventSelection',fileout="analysis_ltau.root"):
     
-   process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
+   process.TFileService = cms.Service("TFileService", fileName = cms.string(fileout) )
 
    summary = cms.EDAnalyzer('EventSummary',
                             src =getAllEventCounters(process,getattr(process,path),onSkim)

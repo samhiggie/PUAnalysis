@@ -4,14 +4,18 @@
 #to see if finished running check 'top' and tail below
 #tail -f merge.log
 
-mkdir /scratch/$USER/ztt_unweighted_Nov13
-cd /scratch/$USER/ztt_unweighted_Nov13
+#mkdir /scratch/$USER/ztt_unweighted_Nov13
+#mkdir /hdfs/store/user/shigginb/2019_Mar_2017_ntuples
+#cd /hdfs/store/user/shigginb/2019_Mar_2017_ntuples
+mkdir /nfs_scratch/samuellh/2019_Mar_2017_ntuples
+cd /nfs_scratch/samuellh/2019_Mar_2017_ntuples
+#cd /scratch/$USER/ztt_unweighted_Nov13
 jobID='2018_Nov13_data_tau'
 
-user=ojalvo
+user=samuellh
 mergedata=0;
 mergemc=0;
-mergeW=1;
+mergeW=0;
 mergeZ=1;
 mergehiggs=0;
 
@@ -26,7 +30,7 @@ if [ $mergedata -eq 1 ]
     hadd -f tauDATA.root tauDATA-B.root tauDATA-C.root tauDATA-D.root tauDATA-E.root tauDATA-F.root
 fi
 
-jobID='2018_Nov12_tautau'
+jobID='2019_Mar18_tautau'
 #2018_Oct_2017MC_ggH_ggHtautau_125-SUB/
 if [ $mergehiggs -eq 1 ]
     then #ggHtautau_125
@@ -62,7 +66,8 @@ fi
 
 if [ $mergeW -eq 1 ]
     then
-    hadd -f  W1Jets.root /hdfs/store/user/$user/${jobID}i_W1J_lnu-SUB_MC/* & 
+    #hadd -f  W1Jets.root /hdfs/store/user/$user/${jobID}i_W1J_lnu-SUB_MC/* & 
+    hadd -f  W1Jets.root /hdfs/store/user/$user/${jobID}_W1J_lnu-SUB_MC/* & 
     hadd -f  W2Jets.root /hdfs/store/user/$user/${jobID}_W2J_lnu-SUB_MC/* & 
     hadd -f  W3Jets.root /hdfs/store/user/$user/${jobID}_W3J_lnu-SUB_MC/* & 
     hadd -f  W4Jets.root /hdfs/store/user/$user/${jobID}_W4J_lnu-SUB_MC/* & 

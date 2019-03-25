@@ -26,7 +26,8 @@ int main (int argc, char* argv[])
    
    
  
-   TFile *fZpt    = new TFile("zpt_weights_2016.root","UPDATE");
+   //TFile *fZpt    = new TFile("zpt_weights_2016.root","UPDATE");
+   TFile *fZpt    = new TFile("htt_scalefactors_2017_v2.root","UPDATE");
    TH2D* hZpt = 0;
    if(fZpt!=0 && fZpt->IsOpen()) {
      hZpt = (TH2D*)fZpt->Get("zptmass_histo");;

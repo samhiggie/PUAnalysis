@@ -28,6 +28,8 @@
 <bin   name="EventWeightsIterativeZPt" file="EventWeightsIterativeZPt.cc">
 </bin>
 
+<bin   name="PileUpReweight" file="PileUpReweight.cc">
+</bin>
 
 <bin   name="MELA_HTT_PUA_2" file="MELA_HTT_PUA_2.cc">
 </bin>

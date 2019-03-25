@@ -29,7 +29,7 @@ process.source = cms.Source("PoolSource",
 )
 
 import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
-process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
+process.source.lumisToProcess = LumiList.LumiList(filename = 'Configuration/data/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
 
 
 #Default Reconstruction from the analysTools.py config file
@@ -53,7 +53,7 @@ defaultReconstruction(process,'HLT',
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")
+process.load("PUAnalysis.Configuration.hTauTau_Sync_cff")
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
@@ -70,8 +70,7 @@ process.eventSelectionTT = cms.Path(process.selectionSequenceTT)
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT')
-addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
+addDiTauEventTree(process,'diTauEventTree','diTausSync','TightMuons','TightElectrons',triggerCollection='HLT')
 
 
 #This event summary tells you how many objects pass each of the steps

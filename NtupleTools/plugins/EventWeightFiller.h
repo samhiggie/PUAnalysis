@@ -35,10 +35,10 @@ class EventWeightFiller : public NtupleFillerBase {
 		t->Branch("trigweight_1",&value[1],"trigweight_1/F");
 		t->Branch((tag_+"EffWeight").c_str(),&value[2],(tag_+"EffWeight/F").c_str());
 		std::string base = std::getenv("CMSSW_BASE");
-		std::string fMuonIsolation =   "/src/HTT-utilities/LepEffInterface/data/Muon/Run2016BCD/Muon_IdIso0p15_eff.root";
-		std::string fMuonTrigger =   "/src/HTT-utilities/LepEffInterface/data/Muon/Run2016BCD/Muon_IsoMu22_OR_TkIsoMu22_eff.root";
-		std::string fEleIsolation =   "/src/HTT-utilities/LepEffInterface/data/Electron/Run2016BCD/Electron_IdIso0p10_eff.root";
-		std::string fEleTrigger =   "/src/HTT-utilities/LepEffInterface/data/Electron/Run2016BCD/Electron_Ele25eta2p1WPTight_eff.root";
+		std::string fMuonIsolation =   "/src/HTT-utilities/LepEffInterface/data/Muon/Run2018/Muon_Run2018_IdIso.root";
+		std::string fMuonTrigger =   "/src/HTT-utilities/LepEffInterface/data/Muon/Run2018/Muon_Run2018_IsoMu24orIsoMu27.root";
+		std::string fEleIsolation =   "/src/HTT-utilities/LepEffInterface/data/Electron/Run2018/Electron_Run2018_IdIso.root";
+		std::string fEleTrigger =   "/src/HTT-utilities/LepEffInterface/data/Electron/Run2018/Electron_Run2018_Ele32orEle35.root";
 		std::string fileIso;
 		std::string fileTrig;
 		if (isMu_) {
