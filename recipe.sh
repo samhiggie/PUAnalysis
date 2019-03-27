@@ -14,10 +14,10 @@ pushd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/RecoilCorrections.git  HTT-utilities/RecoilCorrections 
 pushd $CMSSW_BASE/src
 
-git cms-merge-topic guitargeek:EgammaID_9_4_X
-pushd $CMSSW_BASE/src
-
-git cms-merge-topic cms-met:METFixEE2017_949_v2
+#git cms-merge-topic guitargeek:EgammaID_9_4_X
+#pushd $CMSSW_BASE/src
+#
+#git cms-merge-topic cms-met:METFixEE2017_949_v2
 
 cd $CMSSW_BASE/src
 
@@ -28,9 +28,9 @@ cd $CMSSW_BASE/src
 
 
 #MELA
-git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
-cd ZZMatrixElement/
-bash setup.sh -j 12
+#git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
+#cd ZZMatrixElement/
+#bash setup.sh -j 12
 
 cd $CMSSW_BASE/src
 #FakeFactor methods

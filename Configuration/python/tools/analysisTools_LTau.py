@@ -927,7 +927,7 @@ def addEventSummary(process,onSkim = False,name = 'summary',path = 'eventSelecti
 
    setattr(process,name,summary)
    if onSkim:
-        process.EDMtoMEConverter = cms.EDAnalyzer("EDMtoMEConverter",
+        process.EDMtoMEConverter = cms.EDProducer("EDMtoMEConverter",
                                                   Name = cms.untracked.string('EDMtoMEConverter'),
                                                   Verbosity = cms.untracked.int32(1), # 0 provides no output
                                                   # 1 provides basic output
