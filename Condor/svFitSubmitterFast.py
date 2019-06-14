@@ -52,7 +52,7 @@ def main(argv=None):
     '''
     print "svfit standalone submit"
     #MELA necessary library 
-    os.system("cp  $CMSSW_BASE/src/ZZMatrixElement/MELA/data/$SCRAM_ARCH/libmcfm_705.so $CMSSW_BASE/lib/$SCRAM_ARCH")
+    #os.system("cp  $CMSSW_BASE/src/ZZMatrixElement/MELA/data/$SCRAM_ARCH/libmcfm_705.so $CMSSW_BASE/lib/$SCRAM_ARCH")
 
 #logger = logging.getLogger(__name__)
     args = parse_command_line(argv)
