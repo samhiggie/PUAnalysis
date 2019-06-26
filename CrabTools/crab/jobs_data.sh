@@ -1,15 +1,5 @@
 declare -a S=()
-S+=( `ls -d VBF*/` )
-S+=( `ls -d ZHiggs*/` )
-S+=( `ls -d WHiggs*/` )
-S+=( `ls -d GluGlu*/` )
-S+=( `ls -d W*/` )
-S+=( `ls -d Z*/` )
-S+=( `ls -d TT*/` )
-S+=( `ls -d ttH*/` )
-S+=( `ls -d DY*/` )
-S+=( `ls -d ST*/` )
-S+=( `ls -d EWK*/` )
+S+=( `ls -d Tau*/` )
 
 
 if [ $# -eq 0 ]
@@ -33,7 +23,7 @@ else
         then
             echo " " 
             echo ---------------------- $X -----------------------
-            for Y in `ls -d CP_Higgs_2016/*`
+            for Y in `ls -d SM_HTT_2018/*`
             do
                 crab status -d $Y;
             done
@@ -41,13 +31,13 @@ else
         
         if [ $1 = --submit ]
         then
-            cp ../crab3_LT_MC.py ./;
-            crab submit -c crab3_LT_MC.py;
+            cp ../crab3_TT_Data.py ./;
+            crab submit -c crab3_TT_Data.py;
         fi
         
         if [ $1 = --kill ]
         then
-            for Y in `ls -d CPHiggs_2016/*`
+            for Y in `ls -d SM_HTT_2018/*`
             do
                 crab kill -d $Y;
             done
@@ -55,7 +45,7 @@ else
         
         if [ $1 = --resubmit ]
         then
-            for Y in `ls -d CPHiggs_2016/*`
+            for Y in `ls -d SM_HTT_2018/*`
             do
                 crab resubmit -d $Y;
             done

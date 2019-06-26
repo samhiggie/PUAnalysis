@@ -3,14 +3,15 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
+#process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
+process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v12'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(20000)
+    input = cms.untracked.int32(-1)
 )
 
 
@@ -20,8 +21,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-                "/store/mc/RunIIFall17MiniAODv2/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D84ED2D3-5B42-E811-B73B-0CC47A745294.root"
                 #"/store/mc/RunIIFall17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/RECOSIMstep_94X_mc2017_realistic_v10-v1/00000/0293A280-B5F3-E711-8303-3417EBE33927.root"
+                #"/store/mc/RunIIFall17MiniAODv2/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/90000/D092A5CA-B343-E811-96EB-002590E7D7C2.root"
+                "/store/mc/RunIIAutumn18MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15_ext1-v1/110000/CA6B3CD3-D2D5-784D-B2F9-78770C9E4BD9.root"
         #'file:event-21753.root'
 #'/store/mc/RunIISpring16MiniAODv1/GluGluHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/10000/06A0B340-8025-E611-8262-B8CA3A708F98.root'
 #'file:VBFHttFXFX.root',
@@ -42,12 +44,21 @@ process.source = cms.Source("PoolSource",
 #needed: muTau, tauTau, eTau, mumuTauTau, ect. However, different analyses may want to embed
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
+#old triggers for 2018
+        #'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
+        #'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
+        #'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
+#new below
+
 from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionMC(process,'HLT',
         [
-        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
+        'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v',
+        'HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection
@@ -55,7 +66,7 @@ defaultReconstructionMC(process,'HLT',
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")## Check me
+process.load("PUAnalysis.Configuration.hTauTau_Sync_cff")## Check me
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
@@ -103,8 +114,7 @@ createGeneratedParticles(process,
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree  ##check me
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='HLT',isEmbedded=False,isJHU=False)
-addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS',triggerCollection='HLT',isEmbedded=False,isJHU=False)
+addDiTauEventTree(process,'diTauEventTree','diTausSync','TightMuons','TightElectrons',triggerCollection='HLT')
 
 #This event summary tells you how many objects pass each of the steps
 #in the configuration. It is extremely useful for debugging. 

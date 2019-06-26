@@ -520,9 +520,9 @@ def reapplyPUJetID(process, srcJets = cms.InputTag("slimmedJets")):
     process.analysisSequence *= process.pileupJetIdUpdated
    
 def recorrectJetsSQL(process, isData = False):
-    JECTag = 'Fall17_17Nov2017_V32_94X_MC'
+    JECTag = 'Autumn18_V8_MC'
     if(isData):
-      JECTag = 'Fall17_17Nov2017_V32_94X_DATA'
+      JECTag = 'Autumn18_RunABCD_V8_DATA'
     #cmssw_base = os.environ['CMSSW_BASE']
     ## getting the JEC from the DB
     #process.load("CondCore.CondDB.CondDB_cfi")

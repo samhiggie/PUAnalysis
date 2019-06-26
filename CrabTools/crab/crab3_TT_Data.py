@@ -11,7 +11,7 @@ config = config()
 
 import os
 #print("Please include full name of dataset")
-from PUAnalysis.CrabTools.datasets_2017_data import samples 
+from PUAnalysis.CrabTools.datasets_2018_data import samples 
 dset = os.getcwd().replace(os.path.dirname(os.getcwd())+'/', '')
 print 'Submitting jobs for dataset ' + samples[dset][0]
 
@@ -19,7 +19,7 @@ print 'Submitting jobs for dataset ' + samples[dset][0]
 
 #config.section_("General")
 config.General.requestName = samples[dset][0].split('/')[0] 
-#config.General.workArea = 'CP_Higgs_2016'
+config.General.workArea = 'SM_HTT_2018'
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
@@ -27,14 +27,9 @@ config.JobType.psetName = '../../../TT.py'
 config.JobType.allowUndistributedCMSSW = True
 #For the correctionsC.db files needed in the lumiproducer
 #config.JobType.inputFiles = ['../../../Configuration/data/PhaseIISummer16_25nsV3_MC.db']
-config.JobType.inputFiles = ['../../../Configuration/data/Fall17_17Nov2017BCDEF_V6_DATA.db',
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EB1_5_2017_puinfo_BDT.weights.xml.gz",
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EB2_5_2017_puinfo_BDT.weights.xml.gz",
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EE_5_2017_puinfo_BDT.weights.xml.gz",
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EB1_10_2017_puinfo_BDT.weights.xml.gz",
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EB2_10_2017_puinfo_BDT.weights.xml.gz",
-    "../../../../RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_EE_10_2017_puinfo_BDT.weights.xml.gz"]
-config.JobType.outputFiles = ['analysis.root']
+config.JobType.inputFiles = ['../../../Configuration/data/Autumn18_V8_MC.db',
+    "../../../Configuration/data/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt"]
+config.JobType.outputFiles = ['analysis_TauTau.root']
 
 
 config.section_("Data")
@@ -44,7 +39,7 @@ config.Data.splitting = 'FileBased'
 config.Data.publication = False
 config.Data.unitsPerJob = 1
 #config.Data.publishDbsUrl = 'test'
-config.Data.outLFNDirBase = '/store/user/shigginb/2017_data_ditau'
+config.Data.outLFNDirBase = '/store/user/shigginb/2019_June_15_2018_Data_tt'
 
 
 config.section_("Site")

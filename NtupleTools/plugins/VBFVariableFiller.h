@@ -27,7 +27,7 @@ class VBFVariableFiller : public NtupleFillerBase {
             NtupleFillerBase(iConfig,t,iC),
             src_(iC.consumes<std::vector<T> >(iConfig.getParameter<edm::InputTag>("src")))
     {
-        uncertNames={"AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "SubTotalAbsolute", "SubTotalMC", "SubTotalPileUp", "SubTotalPt", "SubTotalRelative", "SubTotalScale", "TimePtEta", "Total", "Closure"};
+        uncertNames={"AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "AbsoluteSample", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeSample","RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "SubTotalAbsolute", "SubTotalMC", "SubTotalPileUp", "SubTotalPt", "SubTotalRelative", "SubTotalScale", "TimePtEta", "TotalNoFlavorNoTime","TotalNoFlavor","TotalNoTime","Total", "Closure"};
         shiftedPt= { 
             "jesAbsoluteFlavMap+",
             "jesAbsoluteFlavMap-",
@@ -37,6 +37,8 @@ class VBFVariableFiller : public NtupleFillerBase {
             "jesAbsoluteScale-",
             "jesAbsoluteStat+",
             "jesAbsoluteStat-",
+            "jesAbsoluteSample+",
+            "jesAbsoluteSample-",
             "jesFlavorQCD+",
             "jesFlavorQCD-",
             "jesFragmentation+",
@@ -55,6 +57,8 @@ class VBFVariableFiller : public NtupleFillerBase {
             "jesPileUpPtRef-",
             "jesRelativeBal+",
             "jesRelativeBal-",
+            "jesRelativeSample+",
+            "jesRelativeSample-",
             "jesRelativeFSR+",
             "jesRelativeFSR-",
             "jesRelativeJEREC1+",
@@ -95,6 +99,12 @@ class VBFVariableFiller : public NtupleFillerBase {
             "jesSubTotalScale-",
             "jesTimePtEta+",
             "jesTimePtEta-",
+            "jesTotalNoFlavorNoTime+",
+            "jesTotalNoFlavorNoTime-",
+            "jesTotalNoFlavor+",
+            "jesTotalNoFlavor-",
+            "jesTotalNoTime+",
+            "jesTotalNoTime-",
             "jesTotal+",
             "jesTotal-",
             "jesClosure+",
@@ -248,6 +258,26 @@ class VBFVariableFiller : public NtupleFillerBase {
         TBranch *nBranchNjetDown34 =  t->Branch(("njet_"+uncertNames[34]+"Down").c_str(),&njetVecDown[34],("njet_"+uncertNames[34]+"Down/I").c_str());
         TBranch *nBranchVBFUp34 =  t->Branch(("vbfMass_"+uncertNames[34]+"Up").c_str(),&vbfVecUp[34],("vbfMass_"+uncertNames[34]+"Up/F").c_str());
         TBranch *nBranchVBFDown34 =  t->Branch(("vbfMass_"+uncertNames[34]+"Down").c_str(),&vbfVecDown[34],("vbfMass_"+uncertNames[34]+"Down/F").c_str());
+        TBranch *nBranchNjetUp35 =  t->Branch(("njet_"+uncertNames[35]+"Up").c_str(),&njetVecUp[35],("njet_"+uncertNames[35]+"Up/I").c_str());
+        TBranch *nBranchNjetDown35 =  t->Branch(("njet_"+uncertNames[35]+"Down").c_str(),&njetVecDown[35],("njet_"+uncertNames[35]+"Down/I").c_str());
+        TBranch *nBranchVBFUp35 =  t->Branch(("vbfMass_"+uncertNames[35]+"Up").c_str(),&vbfVecUp[35],("vbfMass_"+uncertNames[35]+"Up/F").c_str());
+        TBranch *nBranchVBFDown35 =  t->Branch(("vbfMass_"+uncertNames[35]+"Down").c_str(),&vbfVecDown[35],("vbfMass_"+uncertNames[35]+"Down/F").c_str());
+        TBranch *nBranchNjetUp36 =  t->Branch(("njet_"+uncertNames[36]+"Up").c_str(),&njetVecUp[36],("njet_"+uncertNames[36]+"Up/I").c_str());
+        TBranch *nBranchNjetDown36 =  t->Branch(("njet_"+uncertNames[36]+"Down").c_str(),&njetVecDown[36],("njet_"+uncertNames[36]+"Down/I").c_str());
+        TBranch *nBranchVBFUp36 =  t->Branch(("vbfMass_"+uncertNames[36]+"Up").c_str(),&vbfVecUp[36],("vbfMass_"+uncertNames[36]+"Up/F").c_str());
+        TBranch *nBranchVBFDown36 =  t->Branch(("vbfMass_"+uncertNames[36]+"Down").c_str(),&vbfVecDown[36],("vbfMass_"+uncertNames[36]+"Down/F").c_str());
+        TBranch *nBranchNjetUp37 =  t->Branch(("njet_"+uncertNames[37]+"Up").c_str(),&njetVecUp[37],("njet_"+uncertNames[37]+"Up/I").c_str());
+        TBranch *nBranchNjetDown37 =  t->Branch(("njet_"+uncertNames[37]+"Down").c_str(),&njetVecDown[37],("njet_"+uncertNames[37]+"Down/I").c_str());
+        TBranch *nBranchVBFUp37 =  t->Branch(("vbfMass_"+uncertNames[37]+"Up").c_str(),&vbfVecUp[37],("vbfMass_"+uncertNames[37]+"Up/F").c_str());
+        TBranch *nBranchVBFDown37 =  t->Branch(("vbfMass_"+uncertNames[37]+"Down").c_str(),&vbfVecDown[37],("vbfMass_"+uncertNames[37]+"Down/F").c_str());
+        TBranch *nBranchNjetUp38 =  t->Branch(("njet_"+uncertNames[38]+"Up").c_str(),&njetVecUp[38],("njet_"+uncertNames[38]+"Up/I").c_str());
+        TBranch *nBranchNjetDown38 =  t->Branch(("njet_"+uncertNames[38]+"Down").c_str(),&njetVecDown[38],("njet_"+uncertNames[38]+"Down/I").c_str());
+        TBranch *nBranchVBFUp38 =  t->Branch(("vbfMass_"+uncertNames[38]+"Up").c_str(),&vbfVecUp[38],("vbfMass_"+uncertNames[38]+"Up/F").c_str());
+        TBranch *nBranchVBFDown38 =  t->Branch(("vbfMass_"+uncertNames[38]+"Down").c_str(),&vbfVecDown[38],("vbfMass_"+uncertNames[38]+"Down/F").c_str());
+        TBranch *nBranchNjetUp39 =  t->Branch(("njet_"+uncertNames[39]+"Up").c_str(),&njetVecUp[39],("njet_"+uncertNames[39]+"Up/I").c_str());
+        TBranch *nBranchNjetDown39 =  t->Branch(("njet_"+uncertNames[39]+"Down").c_str(),&njetVecDown[39],("njet_"+uncertNames[39]+"Down/I").c_str());
+        TBranch *nBranchVBFUp39 =  t->Branch(("vbfMass_"+uncertNames[39]+"Up").c_str(),&vbfVecUp[39],("vbfMass_"+uncertNames[39]+"Up/F").c_str());
+        TBranch *nBranchVBFDown39 =  t->Branch(("vbfMass_"+uncertNames[39]+"Down").c_str(),&vbfVecDown[39],("vbfMass_"+uncertNames[39]+"Down/F").c_str());
     }
 
 

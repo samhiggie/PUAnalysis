@@ -21,7 +21,8 @@ TTanalysisConfigurator.addSelector('diTausDecayFound' ,'PATDiTauPairSelector','a
 TTanalysisConfigurator.addSelector('diTausStdDecaySel','PATDiTauPairSelector','abs(leg1.charge())==1&&abs(leg2.charge())==1','TTTauStandardDecayFound',1)
 TTanalysisConfigurator.addSelector('diTausDRSel'      ,'PATDiTauPairSelector','dR12>0.5','TTTauDRSel',1)
 #VV Loose criterion for the sync
-TTanalysisConfigurator.addSelector('diTausIsolatedVVLoose','PATDiTauPairSelector','leg1.tauID("idVVLoose2017v2")>0.5&&leg2.tauID("idVVLoose2017v2")>0.5','TTIso1',1)
+#TTanalysisConfigurator.addSelector('diTausIsolatedVVLoose','PATDiTauPairSelector','leg1.tauID("idVVLoose2017v2")>0.5&&leg2.tauID("idVVLoose2017v2")>0.5','TTIso1',1)
+TTanalysisConfigurator.addSelector('diTausIsolatedVVLoose','PATDiTauPairSelector','leg1.tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017")>0.5&&leg2.tauID("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017")>0.5','TTIso1',1)
 TTanalysisConfigurator.addSelector('diTausSync'    ,'PATDiTauPairSelector','charge==0||abs(charge)==2','TTSync',1)
 
 TTanalysisConfigurator.addSorter(  'diTausSyncTrig','PATDiTauPairSorterByIsoDiTau')

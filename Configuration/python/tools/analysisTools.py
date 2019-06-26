@@ -16,7 +16,7 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 import sys
 import os 
 
-def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='PAT',era='B'):
+def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='HLT',era='B'):
   process.load("PUAnalysis.Configuration.startUpSequence_cff")
   process.load("Configuration.StandardSequences.Services_cff")
   process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
@@ -42,7 +42,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   
   process.analysisSequence = cms.Sequence()
 
-  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
+  #runEgammaID(process)#adds new IDs
+  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  # adds old IDs and kinematics 
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
 
   MiniAODMETfilter(process)
@@ -53,12 +54,14 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   metSignificance(process) 
 
   muonTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODMuonID") 
-  electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID") 
+  electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID")#NEW
+  #electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"egammaPostRecoSeq")#NEW
   #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
 
   reRunTaus(process,'slimmedTaus')
   #Build good vertex collection
-  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
+  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
+  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTausDeepID") #ESTaus
 
   tauEffi(process,'triggeredPatTaus',True)
 
@@ -68,7 +71,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
 
   #Now for the jet overloading systematics and filtering 
   jetOverloading(process,"patJetsReapplyJEC",True)
-  MiniAODJES_FSA(process,"patOverloadedJets")
+  #MiniAODJES_FSA(process,"patOverloadedJets")
+  MiniAODJES(process,"patOverloadedJets")
   jetFilter(process,"patOverloadedJets")
 
   #Default selections for systematics
@@ -77,7 +81,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
 
 
-def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='PAT'):
+def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='SIMembedding'):
+###def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu9','HLT_Mu11_PFTau15_v1'],HLT = 'TriggerResults',triggerFilter='HLT'):
   process.load("PUAnalysis.Configuration.startUpSequence_cff")
   process.load("Configuration.StandardSequences.Services_cff")
   process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
@@ -103,7 +108,8 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   
   process.analysisSequence = cms.Sequence()
 
-  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
+  #runEgammaID(process)#adds new IDs
+  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  # adds old IDs and kinematics 
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
 
   MiniAODMETfilter(process)
@@ -115,22 +121,26 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
 
   muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODMuonID") 
   electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODElectronVID") 
+  #electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"egammaPostRecoSeq") 
   #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
 
   reRunTaus(process,'slimmedTaus')
   genmatchtaus(process) 
+  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTausDeepID") #ESTaus
 
   #Note, no tau trigger matching here as this is an embedded sample, triggering on muons.
 
   #tauEffi(process,'rerunSlimmedTaus',True)
 
-  tauOverloading(process,'rerunSlimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
+  #tauOverloading(process,'rerunSlimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
+  tauOverloading(process,'slimmedTausDeepID','triggeredPatMuons','offlineSlimmedPrimaryVertices')
   
   triLeptons(process)
 
   #Now for the jet overloading systematics and filtering 
   jetOverloading(process,"patJetsReapplyJEC",True)
-  MiniAODJES_FSA(process,"patOverloadedJets")
+  #MiniAODJES_FSA(process,"patOverloadedJets")
+  MiniAODJES(process,"patOverloadedJets")
   jetFilter(process,"patOverloadedJets")
 
   #Default selections for systematics
@@ -171,7 +181,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   #Apply Tau Energy Scale Changes
   #EScaledTaus(process,False)
 
-  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
+  #runEgammaID(process)#adds new IDs
+  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  # adds old IDs and kinematics 
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
 
   MiniAODMETfilter(process)
@@ -186,7 +197,10 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
 
   muonTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODMuonID")#NEW
   electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID")#NEW
-  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
+  #electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"egammaPostRecoSeq")#NEW
+  #electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"egammaPostRecoSeq")#NEW
+  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
+  tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTausDeepID") #ESTaus
 
   #Build good vertex collection
   #goodVertexFilter(process)  
@@ -197,8 +211,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
 
   jetOverloading(process,"patJetsReapplyJEC",False)
   #jetOverloading(process,"slimmedJets",False)
-  MiniAODJES_FSA(process,"patOverloadedJets")
-  #MiniAODJES(process,"patOverloadedJets")
+  #MiniAODJES_FSA(process,"patOverloadedJets")
+  MiniAODJES(process,"patOverloadedJets")
 
   jetFilter(process,"JESJets")
 
@@ -244,7 +258,8 @@ def defaultReconstructionJHU(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   #Apply Tau Energy Scale Changes
   #EScaledTaus(process,False)
 
-  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
+  #runEgammaID(process)#adds new IDs
+  MiniAODEleVIDEmbedder(process,"slimmedElectrons")  # adds old IDs and kinematics 
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
 
   MiniAODMETfilter(process)
@@ -260,6 +275,7 @@ def defaultReconstructionJHU(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   #no trigger here!!!  
   muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODMuonID",objects="selectedPatTrigger")#NEW
   electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODElectronVID",objects="selectedPatTrigger")#NEW
+  #electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"egammaPostRecoSeq",objects="selectedPatTrigger")#NEW
   #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"rerunSlimmedTaus") #ESTaus
 
   #Build good vertex collection
@@ -343,7 +359,8 @@ def MiniAODJES(process, jSrc="slimmedJets"):
             "MiniAODJetFullSystematicsEmbedder",
             src = cms.InputTag(jSrc),
             corrLabel = cms.string('AK4PFchs'),
-            fName = cms.string("Fall17_17Nov2017F_V6_DATA_UncertaintySources_AK4PFchs.txt")
+            #fName = cms.string("Fall17_17Nov2017F_V6_DATA_UncertaintySources_AK4PFchs.txt")
+            fName = cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt")
             )
 
     process.analysisSequence*=process.JESJets
@@ -395,6 +412,22 @@ def reRunMET(process, runOnData):
         )
 
   process.analysisSequence *=process.fullPatMetSequenceModifiedMET 
+
+def deepTaus(process, updatedTauName):
+    #updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
+    import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+    tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                        updatedTauName = updatedTauName,
+                        toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                                   "deepTau2017v1", #deepTau Tau-Ids
+                                   "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
+                                   ])
+    tauIdEmbedder.runTauID()
+    # Path and EndPath definitions
+    process.analysisSequence = cms.Path(
+        process.rerunMvaIsolationSequence *
+        getattr(process,updatedTauName)
+    )
 
 
 def reRunTaus(process,taus='slimmedTaus'):
@@ -510,7 +543,23 @@ def reRunTaus(process,taus='slimmedTaus'):
                                                              idVVTight2017v2 = cms.InputTag('rerunDiscriminationByIsolationOldDMMVArun2017v2VVTight')
                                                              )
                                 )
-  process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*process.rerunSlimmedTaus)
+
+  updatedTauName = "slimmedTausDeepID" #name of pat::Tau collection with new tau-Ids
+  import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+  tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                      updatedTauName = updatedTauName,
+                      toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                                 "deepTau2017v1", #deepTau Tau-Ids
+                                 "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
+                                 ])
+  tauIdEmbedder.runTauID()
+  # Path and EndPath definitions
+  #process.analysisSequence = cms.Path(
+  #    process.rerunMvaIsolationSequence *
+  #    getattr(process,updatedTauName)
+  #)
+  #process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*process.rerunSlimmedTaus)
+  process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*getattr(process,updatedTauName))
 
 
 def jetOverloading(process,jets, data):
@@ -555,6 +604,15 @@ def MiniAODMuonIDEmbedder(process,muons):
   process.embedMuonIDs = cms.Sequence(process.miniAODMuonID)
   process.analysisSequence*=process.embedMuonIDs
 
+def runEgammaID(process):
+  from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+  setupEgammaPostRecoSeq(process,
+                         runEnergyCorrections=False, #as energy corrections are not yet availible for 2018
+                         era='2018-Prompt')  
+#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+  #process.p=cms.Path(process.egammaPostRecoSeq)
+  process.egammaPostReco=cms.Sequence(process.egammaPostRecoSeq)
+  process.analysisSequence*=process.egammaPostReco
 
 def MiniAODEleVIDEmbedder(process, eles):
   #Turn on versioned cut-based ID
@@ -586,8 +644,19 @@ def MiniAODEleVIDEmbedder(process, eles):
       ids = cms.VInputTag(*IDTags),
       eleIsoLabel = cms.string("dBRelIso")
   )
-   
+  ##new IDs 
+  #from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+  #setupEgammaPostRecoSeq(process,
+  #                       runEnergyCorrections=False, #as energy corrections are not yet availible for 2018
+  #                       era='2018-Prompt')  
+#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+  #process.p=cms.Path(process.egammaPostRecoSeq)
+  #process.p=cms.Sequence(process.egammaPostRecoSeq)
+  #process.egammaPostReco=cms.Sequence(process.egammaPostRecoSeq)
+  #process.analysisSequence*=process.egammaPostReco
+
   process.embedEleIDs = cms.Sequence(process.egmGsfElectronIDSequence+process.miniAODElectronVID)
+  #process.embedEleIDs = cms.Sequence(process.egmGsfElectronIDSequence+process.miniAODElectronVID+process.p)
   process.analysisSequence*=process.embedEleIDs
 
    
@@ -662,9 +731,9 @@ def reapplyPUJetID(process, srcJets = cms.InputTag("slimmedJets")):
    
 
 def recorrectJetsSQL(process, isData = False):
-    JECTag = 'Fall17_17Nov2017_V32_94X_MC'
+    JECTag = 'Autumn18_V8_MC'
     if(isData):
-      JECTag = 'Fall17_17Nov2017_V32_94X_DATA'
+      JECTag = 'Autumn18_RunABCD_V8_DATA'
     cmssw_base = os.environ['CMSSW_BASE']
     ## getting the JEC from the DB
     process.load("CondCore.CondDB.CondDB_cfi")
@@ -677,8 +746,8 @@ def recorrectJetsSQL(process, isData = False):
                                                           label  = cms.untracked.string('AK4PFchs')
                                                           )
                                                  ), 
-                               #connect = cms.string('sqlite_fip:PUAnalysis/Configuration/data/'+JECTag+'.db')
-                               connect = cms.string('sqlite:////'+cmssw_base+'/src/PUAnalysis/Configuration/data/'+JECTag+'.db')
+                               connect = cms.string('sqlite_fip:PUAnalysis/Configuration/data/'+JECTag+'.db')
+                               #connect = cms.string('sqlite:////'+cmssw_base+'/src/PUAnalysis/Configuration/data/'+JECTag+'.db')
                                )
 
      ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
@@ -734,6 +803,8 @@ def triLeptons(process):
 
   process.TightElectrons = cms.EDFilter("PATElectronSelector",
   							src = cms.InputTag("miniAODElectronVID"),
+  							#src = cms.InputTag("egammaPostReco"),
+  							#src = cms.InputTag("slimmedElectrons"),
   							cut = cms.string('pt>10&&abs(eta)<2.5&&abs(userFloat("dZ"))<0.2&&abs(userFloat("dXY"))<0.045&&userFloat("dBRelIso03")<0.3&&userFloat("eleMVAIDnonIso90")>0&&userInt("eleConversion")==0'),
   							filter = cms.bool(False)
   						)
@@ -776,6 +847,7 @@ def applyDefaultSelectionsPT(process):#FIXME THISWILL HVAE TO CHANGE-- not curee
   										)  
   process.selectedPatElectrons = cms.EDFilter("PATElectronSelector",
                                            src = cms.InputTag("miniAODElectronVID"),
+                                           #src = cms.InputTag("egammaPostRecoSeq"),
                                            cut = cms.string('pt>10&&userFloat("eleMVAIDnonIso90")>0&&userFloat("dBRelIso03")<0.3'),
                                            filter = cms.bool(False)
   										)
@@ -806,14 +878,24 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
                                             src = cms.InputTag(srcTau),
                                             trigEvent = cms.InputTag(HLT),
                                             filtersAND = cms.vstring(
-                                                'hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg'
+                                                'hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1MediumChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1TightChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1TightChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg'
                                             ),
                                             filters = cms.vstring(
-                                                'hltDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
-                                                'hltDoublePFTau40TrackPt1TightChargedIsolationDz02Reg'
+                                                'hltHpsDoublePFTau35TrackPt1MediumChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1MediumChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1MediumChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1TightChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau35TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1TightChargedIsolationDz02Reg',
+                                                'hltHpsDoublePFTau40TrackPt1TightChargedIsolationAndTightOOSCPhotonsDz02Reg'
                                             ),
                                             #bits = cms.InputTag("TriggerResults","","HLT"),
                                             bits = cms.InputTag(HLT,"",triggerProcess),
