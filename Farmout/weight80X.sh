@@ -1,12 +1,14 @@
 #!/bin/sh
-olddirname='2019_Mar_2017_ntuples_pileup'
-newdirname='2019_Mar_2017_ntuples_ZJETs'
+##olddirname='2017_tt_pileupredo'
+##newdirname='2017_tt_fullredo'
+olddirname='2018_tt_pmerge'
+newdirname='2018_tt_pm_weighted'
 mkdir /nfs_scratch/$USER/$newdirname
 cd /nfs_scratch/$USER/$newdirname
 
-weight=0;
-weightH=0;
-weightW=0;
+weight=1;
+weightH=1;
+weightW=1;
 weightZ=1;
 
 #cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.
@@ -17,7 +19,7 @@ if [ $weightH -eq 1 ]
 #    for dir in ggH120.root ggH125.root ggH130.root vbfH120.root vbfH125.root vbfH130.root ttH120.root ttH125.root ttH130.root WpH120.root WpH125.root WpH130.root WmH120.root WmH125.root WmH130.root ZH120.root ZH125.root ZH130.root  
     for dir in ggH125.root vbfH125.root ttH125.root WpH125.root WmH125.root ZH125.root
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/. &
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/. &
     done 
     wait;
     echo 'weight higgs'
@@ -55,7 +57,7 @@ if [ $weightZ -eq 1 ]
     done 
     #make sure Zpt root file is around!!!
     #cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
-    cp $CMSSW_BASE/src/PUAnalysis/Configuration/data/htt_scalefactors_2017_v2.root /scratch/$USER/$newdirname/.
+    cp $CMSSW_BASE/src/PUAnalysis/Configuration/data/htt_scalefactors_2017_v2.root /nfs_scratch/$USER/$newdirname/.
     EventWeightsIterativeZJets    weight=1    histoName='TT/results' 
     hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
      
@@ -65,7 +67,7 @@ if [ $weightW -eq 1 ]
     then
     for dir in WJets.root W1Jets.root W2Jets.root W3Jets.root W4Jets.root
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/. &
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/. &
     done 
     wait;
     #EventWeightsIterativeGen outputFile='WJets.root'      weight=61526.7   histoName='TT/results' sumHistoName='sumweights/genWeights'
@@ -82,7 +84,7 @@ if [ $weight -eq 1 ]
 #WZTo2L2Q.root
     for dir in TT_DL.root TT_SL.root TT_had.root WZTo1L3Nu.root WZTo1L1Nu2Q.root WZTo2L2Q.root WZTo3L1Nu.root tBar_tW.root t_tW.root St_tBar.root St_t.root WWTo1L1Nu2Q.root WWTo2L2Nu.root WWTo4Q.root ZZTo2L2Q.root ZZTo2L2Nu.root ZZTo4L.root EWKWm2j.root EWKWp2j.root EWKZ2Nu.root EWKZ2l.root 
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/.
     done
 
     #EventWeightsIterativeGen outputFile='TT.root'  weight=831.76     histoName='TT/results' sumHistoName='sumweights/genWeights'

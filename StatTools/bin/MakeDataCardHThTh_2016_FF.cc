@@ -19,8 +19,10 @@ int main (int argc, char* argv[])
 	parser.addOption("topFile",optutl::CommandLineParser::kString,"File with the TOP","TOP.root");
 	parser.addOption("qcdFile",optutl::CommandLineParser::kString,"File with the QCD","QCD.root");
 	parser.addOption("dataFile",optutl::CommandLineParser::kString,"DATA! File","DATA.root");
+	parser.addOption("ffFile",optutl::CommandLineParser::kString,"fake factors File","fakefactor.root");
 
 	parser.addOption("doSys",optutl::CommandLineParser::kDouble,"Do Systematics",0.0); //addme default NO
+	parser.addOption("doJEC",optutl::CommandLineParser::kDouble,"Do Systematics",0.0); //addme default NO
 	parser.addOption("useTEC",optutl::CommandLineParser::kDouble,"Use TEC folder",0.0); //addme default NO
 
 	//Input Selections

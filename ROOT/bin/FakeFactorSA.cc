@@ -116,7 +116,8 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[
             TTree *t = (TTree*)obj;
 
             //creating fakefactor object
-            TString ff_file_name = "/afs/hep.wisc.edu/home/samuellh/WorkingArea/CPstuff/Iso_2017/src/HTTutilities/Jet2TauFakes/data/SM2017/tight/vloose/tt/fakeFactors.root";
+            //TString ff_file_name = "/afs/hep.wisc.edu/home/samuellh/WorkingArea/CPstuff/Iso_2017/src/HTTutilities/Jet2TauFakes/data/SM2017/tight/vloose/tt/fakeFactors.root";
+            TString ff_file_name = "/afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/Sam_2017/src/HTTutilities/Jet2TauFakes/data/2018/SM2018/tight/vloose/tt/fakeFactors.root";
             TFile* ff_file = TFile::Open(ff_file_name);
             FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
             //const std::vector<std::string>& inputNames = ff->inputs();

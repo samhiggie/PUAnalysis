@@ -155,7 +155,8 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	std::cout<<"here 3"<<std::endl;
 
 	//FIXME
-	TH1F * ZTT = (TH1F*)(f->Get(dir+"/embedded"));
+	//TH1F * ZTT = (TH1F*)(f->Get(dir+"/embedded"));
+	TH1F * ZTT = (TH1F*)(f->Get(dir+"/ZTT"));
 	if (dndm) convertToDNDM(ZTT);
 	applyStyle(ZTT,kOrange-4,1,1001);
 
@@ -320,7 +321,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	//if(channel == "#tau_{#mu}#tau_{h}") l->AddEntry(ZEE,"Z#rightarrow#mu#mu","F");
 	if(ZEE!=0)
 	  l->AddEntry(ZEE,"Z#rightarrowll","F");
-	//l->AddEntry(EWK,"Electroweak","F");
+	l->AddEntry(EWK,"Electroweak","F");
 	l->AddEntry(QCD,"QCD","F");
 	l->AddEntry(ttbar,"t#bar{t}","F");
 

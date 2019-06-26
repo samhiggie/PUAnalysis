@@ -677,8 +677,8 @@ def recorrectJetsSQL(process, isData = False):
                                                           label  = cms.untracked.string('AK4PFchs')
                                                           )
                                                  ), 
-                               #connect = cms.string('sqlite_fip:PUAnalysis/Configuration/data/'+JECTag+'.db')
-                               connect = cms.string('sqlite:////'+cmssw_base+'/src/PUAnalysis/Configuration/data/'+JECTag+'.db')
+                               connect = cms.string('sqlite_fip:PUAnalysis/Configuration/data/'+JECTag+'.db')
+                               #connect = cms.string('sqlite:////'+cmssw_base+'/src/PUAnalysis/Configuration/data/'+JECTag+'.db')
                                )
 
      ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag

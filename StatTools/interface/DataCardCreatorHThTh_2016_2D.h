@@ -84,7 +84,8 @@ class DataCardCreatorHThTh_2016_2D {
 			qcdFile_  = parser.stringValue("qcdFile");
 			dataFile_  = parser.stringValue("dataFile");
 
-			nominalSelection_ = parser.stringValue("nominalselection");
+			//nominalSelection_ = parser.stringValue("nominalselection");
+			nominalSelection_ = parser.stringValue("preselection");
 
 			//read control and signal regions
 			preSelection_ = parser.stringValue("preselection");
@@ -221,6 +222,8 @@ class DataCardCreatorHThTh_2016_2D {
 			  createShiftsTES("qqH125",dir_+"vbfH125.root",categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
 			  createShiftsTES("ZH125", dir_+"ZH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
 			  createShiftsTES("WH125", dir_+"WH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("WmH125", dir_+"WmH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
+			  createShiftsTES("WpH125", dir_+"WpH125.root",  categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
 			  createShiftsTES("ttH125",dir_+"ttH125.root", categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_, weight_, luminosity_*legCorr,prefix,tmp);
 			  std::cout<<"creating met systematics Higgs"<<std::endl;
 			  createMETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
@@ -1146,7 +1149,8 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 			//estimate Yield in SS Loose
 			//estimate Yield in SS Signal
 			std::cout<<"weight applied "<<weight_<<std::endl;
-			pair<float,float> dataQCD = createHistogramAndShiftsFinal(dataFile_,   "QCD","("+fullRelaxedSelectionDataOS+")",scaleUp_,prefix); 
+			//pair<float,float> dataQCD = createHistogramAndShiftsFinal(dataFile_,   "QCD","("+fullRelaxedSelectionDataOS+")",scaleUp_,prefix); 
+			pair<float,float> dataQCD = createHistogramAndShifts(dataFile_,   "QCD","("+fullRelaxedSelectionDataOS+")",scaleUp_,prefix); 
 			pair<float,float> ZQCD    = createHistogramAndShifts(zttFile_,   "ZQCD","("+fullRelaxedSelectionOS+")*"+weight_+"*"+Zweight_,  luminosity_*tauIDCorr*zttScale_,prefix); 
 			pair<float,float> TopQCD  = createHistogramAndShifts(topFile_, "TopQCD","("+fullRelaxedSelectionOS+")*"+weight_+"*"+TTweight_, luminosity_*tauIDCorr*topExtrap,prefix); 
 			pair<float,float> VVQCD   = createHistogramAndShifts(vvFile_,   "VVQCD","("+fullRelaxedSelectionOS+")*"+weight_,               luminosity_*tauIDCorr*vvScale_,prefix,false);

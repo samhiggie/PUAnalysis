@@ -1,18 +1,18 @@
 #!/bin/sh
-infilename=ztt_weighted_Nov10
-filename=ztt_weighted_Nov10_Corr
-mkdir /scratch/$USER/$filename
+infilename=2018_tt_pm_weighted
+filename=2018_tt_pm_weighted_corr
+mkdir /nfs_scratch/$USER/$filename
 
 #for file in ZJETS.root WJETS.root TT.root DiBoson.root ggH120.root ggH125.root ggH130.root vbfH120.root vbfH125.root vbfH130.root ZH120.root  ZH125.root  ZH130.root  WpH120.root WpH125.root WpH130.root WmH120.root WmH125.root WmH130.root ttH120.root ttH125.root ttH130.root 
 #for file in ZJETS.root WJETS.root TT.root DiBoson.root ggH125.root vbfH125.root ZH125.root WpH125.root WmH125.root ttH125.root  
 #do
-cp /scratch/$USER/$infilename/* /scratch/$USER/$filename/.
+cp /nfs_scratch/$USER/$infilename/* /nfs_scratch/$USER/$filename/.
 #done
-#cp /scratch/$USER/zpt_weights_2016.root /scratch/$USER/$filename/.
+#cp /nfs_scratch/$USER/zpt_weights_2016.root /scratch/$USER/$filename/.
 
-#mv /scratch/$USER/$infilename/tauDATA.root /scratch/$USER/$filename/.
+#mv /nfs_scratch/$USER/$infilename/tauDATA.root /scratch/$USER/$filename/.
 
-cd /scratch/$USER/$filename/
+cd /nfs_scratch/$USER/$filename/
 
 #echo "EventWeightsIterativeZPt"
 #EventWeightsIterativeZPt

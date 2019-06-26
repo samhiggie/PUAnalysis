@@ -18,7 +18,7 @@ ETanalysisConfigurator = CutSequenceProducer(initialCounter  = 'initialEventsET'
 ETanalysisConfigurator.addSmearing('patOverloadedTaus','triggeredPatMuons','triggeredPatElectrons','filteredJets','slimmedMETs','ET')
 
 #create dielectrons
-ETanalysisConfigurator.addDiCandidateModule('diElectrons','PATElePairProducer','triggeredPatElectrons','triggeredPatElectrons','slimmedMETs','','smearedJetsET',0,9999,text = '',leadingObjectsOnly = False,dR = 0.15,recoMode = "",genParticles='prunedGenParticles')
+ETanalysisConfigurator.addDiCandidateModule('diElectrons','PATElePairProducer','triggeredPatElectrons','triggeredPatElectrons','slimmedMETs','','filteredJets',0,9999,text = '',leadingObjectsOnly = False,dR = 0.15,recoMode = "",genParticles='prunedGenParticles')
 ETanalysisConfigurator.addSelector('diElectronsOS','PATElePairSelector','abs(leg1.eta())<2.5&&abs(leg2.eta())<2.5&&abs(leg1.userFloat("dXY"))<0.045&&abs(leg2.userFloat("dXY"))<0.045&&abs(leg1.userFloat("dZ"))<0.2&&abs(leg2.userFloat("dZ"))<0.2&&leg1.pt()>15&&leg2.pt()>15&&charge==0&&leg2.userFloat("eleMVAnonIsoLoose")>0&&leg1.userFloat("eleMVAnonIsoLoose")>0&&leg1.userFloat("dBRelIso03")<0.3&&leg2.userFloat("dBRelIso03")<0.3','DiElectronCreation',0,100)
 ETanalysisConfigurator.addSorter('diElectronsOSSorted','PATElePairSorter')
 

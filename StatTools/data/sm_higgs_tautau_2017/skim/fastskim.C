@@ -33,9 +33,16 @@ void copyNtuples(TString dir, TString file, TString cuts) {
 int fastskim(){
 
   //gROOT->ProcessLine(".L copyNtuples.C");
-  TString selections = "pt_1>45&&abs(eta_1)<2.1&&abs(eta_2)<2.1&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&(((isoMed_1>0.5&&isoTight_2<0.5&&isoLoose_2>0.5)||(isoMed_2>0.5&&isoTight_1<0.5&&isoLoose_1>0.5))||(isoTight_1>0.5&&isoTight_2>0.5))";
+  //TString selections = "pt_1>45&&abs(eta_1)<2.1&&abs(eta_2)<2.1&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&(((isoMed_1>0.5&&isoTight_2<0.5&&isoLoose_2>0.5)||(isoMed_2>0.5&&isoTight_1<0.5&&isoLoose_1>0.5))||(isoTight_1>0.5&&isoTight_2>0.5))";
+  TString selections = "abs(eta_1)<2.1&&abs(eta_2)<2.1&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&(((isoVLoose_2>0.5)||(isoVLoose_1>0.5)))";
+  //TString selections = "abs(eta_1)<2.1&&abs(eta_2)<2.1&&npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&((isoTight_2<0.5&&isoTight_1>0.5&&isoVLoose_2>0.5)||(isoTight_1<0.5&&isoTight_2>0.5&&isoVLoose_1>0.5))";
+  //TString selections = "abs(eta_1)<2.1&&abs(eta_2)<2.1&&npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&((isoTight_2<0.5&&isoTight_1>0.5&&isoVLoose_2>0.5)||(isoTight_1<0.5&&isoTight_2>0.5&&isoVLoose_1>0.5))";
 
-  TString directory = "/hdfs/store/user/shigginb/2017_Nov20_FastMTT";
+
+  //TString directory = "/hdfs/store/user/shigginb/2017_Nov20_FastMTT";
+  //TString directory = "/nfs_scratch/samuellh/2017_svfit_temp/";
+  //TString directory = "/hdfs/store/user/shigginb/2017_tt_fullredo_corr_skim";
+  TString directory = "/hdfs/store/user/shigginb/2018_tt_pm_weighted_corr";
   //copyNtuples(directory,"tauDATA-B.root",selections);  
   //copyNtuples(directory,"tauDATA-C.root",selections);  
   //copyNtuples(directory,"tauDATA-D.root",selections);  
@@ -44,34 +51,36 @@ int fastskim(){
   //copyNtuples(directory,"tauDATA-G.root",selections);  
   //copyNtuples(directory,"tauDATA-H.root",selections);  
   //copyNtuples(directory,"tauDATA.root",selections);  
+ //copyNtuples(directory,"tauDATA.root",selections);  
+ //copyNtuples(directory,"fakefactor2018.root",selections);  
+ copyNtuples(directory,"fakefactor2018_new.root",selections);  
   
-  //copyNtuples(directory,"DiBoson.root",selections);
-  //copyNtuples(directory,"ggH120.root",selections);
-  copyNtuples(directory,"ggH125.root",selections);
-  //copyNtuples(directory,"ggH130.root",selections);
-  //copyNtuples(directory,"ttH120.root",selections);
-  copyNtuples(directory,"ttH125.root",selections);
-  //copyNtuples(directory,"ttH130.root",selections);
-  copyNtuples(directory,"TT.root",selections);
-  //copyNtuples(directory,"vbfH120.root",selections);
-  copyNtuples(directory,"vbfH125.root",selections);
-  //copyNtuples(directory,"vbfH130.root",selections);
-  //copyNtuples(directory,"WH120.root",selections);
-  copyNtuples(directory,"WH125.root",selections);
-  //copyNtuples(directory,"WH130.root",selections);
-  copyNtuples(directory,"WJETS.root",selections);
-  //copyNtuples(directory,"WmH120.root",selections);
-  copyNtuples(directory,"WmH125.root",selections);
-  //copyNtuples(directory,"WmH130.root",selections);
-  //copyNtuples(directory,"WpH120.root",selections);
-  copyNtuples(directory,"WpH125.root",selections);
-  //copyNtuples(directory,"WpH130.root",selections);
-  //copyNtuples(directory,"ZH120.root",selections);
-  copyNtuples(directory,"ZH125.root",selections);
-  //copyNtuples(directory,"ZH130.root",selections);
-  copyNtuples(directory,"ZJETS.root",selections);
-  copyNtuples(directory,"tauDATA.root",selections);  
-  copyNtuples(directory,"tauEmbedded.root",selections);  
+ //copyNtuples(directory,"DiBoson.root",selections);
+ ////copyNtuples(directory,"ggH120.root",selections);
+ //copyNtuples(directory,"ggH125.root",selections);
+ ////copyNtuples(directory,"ggH130.root",selections);
+ ////copyNtuples(directory,"ttH120.root",selections);
+ //copyNtuples(directory,"ttH125.root",selections);
+ ////copyNtuples(directory,"ttH130.root",selections);
+ //copyNtuples(directory,"TT.root",selections);
+ ////copyNtuples(directory,"vbfH120.root",selections);
+ //copyNtuples(directory,"vbfH125.root",selections);
+ ////copyNtuples(directory,"vbfH130.root",selections);
+ ////copyNtuples(directory,"WH120.root",selections);
+ ////copyNtuples(directory,"WH125.root",selections);
+ ////copyNtuples(directory,"WH130.root",selections);
+ //copyNtuples(directory,"WJETS.root",selections);
+ ////copyNtuples(directory,"WmH120.root",selections);
+ //copyNtuples(directory,"WmH125.root",selections);
+ ////copyNtuples(directory,"WmH130.root",selections);
+ ////copyNtuples(directory,"WpH120.root",selections);
+ //copyNtuples(directory,"WpH125.root",selections);
+ ////copyNtuples(directory,"WpH130.root",selections);
+ ////copyNtuples(directory,"ZH120.root",selections);
+ //copyNtuples(directory,"ZH125.root",selections);
+ ////copyNtuples(directory,"ZH130.root",selections);
+ //copyNtuples(directory,"ZJETS.root",selections);
+ //////copyNtuples(directory,"tauEmbedded.root",selections);  
   return 0;
   
 }

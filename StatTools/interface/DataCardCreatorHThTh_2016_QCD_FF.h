@@ -54,6 +54,7 @@ class DataCardCreatorHThTh_2016 {
 			energy_   = parser.stringValue("energy");
 			samesign_ = parser.doubleValue("samesign");
 			doSys_    = parser.doubleValue("doSys");//addme
+			doJEC_    = parser.doubleValue("doJEC");//addme
 			useTEC_  = parser.doubleValue("useTEC");//addme
 
                         string name_=channel_;
@@ -81,6 +82,7 @@ class DataCardCreatorHThTh_2016 {
 			topFile_  = parser.stringValue("topFile");
 			qcdFile_  = parser.stringValue("qcdFile");
 			dataFile_  = parser.stringValue("dataFile");
+			ffFile_  = parser.stringValue("ffFile");
 
 			nominalSelection_ = parser.stringValue("nominalselection");
 
@@ -253,6 +255,8 @@ class DataCardCreatorHThTh_2016 {
 			std::cout<<"creating jet systematics Higgs"<<std::endl;
 			if(doSys_>0)
 			  createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
+            if(doJEC_>0)
+			  createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
 
 			
 		}
@@ -278,6 +282,13 @@ class DataCardCreatorHThTh_2016 {
 			output.DATA = dataY.first;
 
 			if(doSys_>0){
+			  std::cout<<"creating met systematics backgrounds"<<std::endl;
+			  createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
+			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
+			  createJETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
+
+			}
+			if(doJEC_>0){
 			  std::cout<<"creating met systematics backgrounds"<<std::endl;
 			  createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
 			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
@@ -695,6 +706,12 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		}
 		*/
 		void createJetFakeSystematics(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
+          //only temporary ... need to include the ff uncertainties from main method... 
+		  double jetToTauFakeWeight = 1.22942;
+		  double jetToTauFakeWeight_1 = 0.127617;
+		  double jetToTauFakeWeight_2 = 0.1018;
+		  double jetToTauFakeWeightUp = 0.770583;
+		  double jetToTauFakeWeightDown = 1.22942;
 		  //check me if we do the gen selection correctly
 		  pair<float,float> zjftYieldUp     = createHistogramAndShifts(zllFile_, "ZJ_CMS_htt_jetToTauFake_13TeVUp"   ,    ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_+"*jetToTauFakeWeightUp"),   luminosity_*leg1Corr*zttScale_,prefix);    
 		  pair<float,float> zjftYieldDown   = createHistogramAndShifts(zllFile_, "ZJ_CMS_htt_jetToTauFake_13TeVDown" ,  ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_+"*jetToTauFakeWeightDown"), luminosity_*leg1Corr*zttScale_,prefix);    
@@ -708,12 +725,6 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		  pair<float,float> WYieldUp        = createHistogramAndShifts(wFile_,   "W_CMS_htt_jetToTauFake_13TeVUp"    ,     ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*jetToTauFakeWeightUp"),  luminosity_*leg1Corr,prefix);
 		  pair<float,float> WYieldDown      = createHistogramAndShifts(wFile_,   "W_CMS_htt_jetToTauFake_13TeVDown"  ,   ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*jetToTauFakeWeightDown"),luminosity_*leg1Corr,prefix);
 		  
-
-		  //jetToTauFakeWeight = 1.22942
-		  //jetToTauFakeWeight_1 = 0.127617
-		  // jetToTauFakeWeight_2 = 0.1018
-		  // jetToTauFakeWeightUp = 0.770583
-		  // jetToTauFakeWeightDown = 1.22942
 
 		  std::cout<<"zjftYieldUp "<<zjftYieldUp.first<<std::endl;
 		  std::cout<<"topJetYieldUp "<<topJetYieldUp.first<<std::endl;
@@ -1102,12 +1113,13 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 			float leg1Corr=tauID_;
 			float tauIDCorr = tauID_*tauID_;
 			cout<<"FF Selection= "<<"("<<ffSelection_<<"&&"<<trigSelection_<<"&&"<<categorySelection<<")"<<endl;
-			std::string ffcutData = ffSelectionData+ "&&"+trigSelectionData_+"&&"+categorySelection;
-			std::string ffcut     = ffSelection+     "&&"+trigSelection_    +"&&"+categorySelection;
+			std::string ffcutData = ffSelectionData+ "&&"+trigSelectionData_+"&&"+categorySelection+"&&"+signalSelection_;
+			std::string ffcut     = ffSelection+     "&&"+trigSelection_    +"&&"+categorySelection+"&&"+signalSelection_;
 			
             //fake factor application region for data ... 
 			std::cout<<"weight applied "<<weight_<<std::endl;
-			pair<float,float> dataFF = createHistogramAndShifts(dataFile_,   "FF",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
+			//pair<float,float> dataFF = createHistogramAndShifts(ffFile_,   "FF",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
+			pair<float,float> dataFF = createHistogramAndShifts(ffFile_,   "jetFakes",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
             //ZTT for the real tau subtraction
 			pair<float,float> ZTTFF    = createHistogramAndShifts(zttFile_,"ZTT",("("+fullSelection+"&&"+ZTT_genTauSel_+")*"+weight_+"*"+Zweight_),luminosity_*tauIDCorr*zttScale_,prefix);    
             
@@ -1928,6 +1940,7 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		int samesign_;
 		//addme
 		float doSys_;
+		float doJEC_;
 		float useTEC_;
 
 		//files
@@ -1940,6 +1953,7 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		string topFile_;
 		string qcdFile_;
 		string dataFile_;
+		string ffFile_;
 
 
 		///////////////////////

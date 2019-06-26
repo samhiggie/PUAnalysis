@@ -170,7 +170,8 @@ class PATTauOverloader : public edm::EDProducer {
                   }
               }
 
-	      tau.addUserFloat("iso",tau.tauID("byIsolationMVArun2v1DBoldDMwLTraw"));
+	      //tau.addUserFloat("iso",tau.tauID("byIsolationMVArun2v1DBoldDMwLTraw"));
+	      tau.addUserFloat("iso",tau.tauID("byIsolationMVArun2v1DBnewDMwLTraw"));
               tau.addUserFloat("nIsoTracks",nIsoTracks);
               tau.addUserFloat("nIsoNeutral",nIsoNeutral);
               tau.addUserFloat("nIsoGamma",nIsoGamma);

@@ -1,57 +1,72 @@
 #!/bin/sh
-nominalselection='isoTight_1>0.5&&isoTight_2>0.5&&'\
-'abs(eta_1)<2.1&&abs(eta_2)<2.1&&'\
-'againstMuonTight3_1>0&&againstMuonTight3_2>0&&'\
-'againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&'\
-'npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0'
+nominalselection=''
+#nominalselection='isoTight_1>0.5&&isoTight_2>0.5&&'\
+#'abs(eta_1)<2.1&&abs(eta_2)<2.1&&'\
+#'againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&'\
+#'againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&'\
+#'npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0'
 
 ## This is a specialized cut for the central energy scale shifted tau Pt
-tauPtCut='pt_1>50&&pt_2>45&&'
+tauPtCut='pt_1>40&&pt_2>40&&'
 #tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&'\
 #'(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.01)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))&&'
-
+#removed tightelectrons and muons
+#preselection='Tight2017v2_1>0.5&&idTight2017v2_2>0.5&&'\
 preselection='isoTight_1>0.5&&isoTight_2>0.5&&'\
 'abs(eta_1)<2.1&&abs(eta_2)<2.1&&'\
-'againstMuonTight3_1>0&&againstMuonTight3_2>0&&'\
+'againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&'\
 'againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&'\
-'npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0'
+'npv>0&&extraelec_veto==0&&extramuon_veto==0'
+#'npv>0&&extraelec_veto==0&&extramuon_veto==0&&tightElectrons==0&&tightMuons==0'
+##'jpt_1>30&&jpt_2>30&&bpt_1>20&&bpt_2>20&&abs(jeta_1)<4.7&&abs(jeta_2)<4.7&&abs(beta_1)<2.5&&abs(beta_2)<2.5'
+##'npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&charge==0&&'\
 
 ## Again, we need a preselection for MC
 preselectionmc=$tauPtCut$preselection
 
-preselectiondata='pt_1>50&&pt_2>45&&'$preselection
+#preselectiondata='pt_1>50&&pt_2>45&&'$preselection
+preselectiondata=$preselectionmc
 
 ##This is the relaxed QCD Shape selection
 qcdselection=$tauPtCut'abs(eta_1)<2.1&&abs(eta_2)<2.1&&'\
 'npv>0&&diLeptons==0&&extraelec_veto==0&&extramuon_veto==0&&'\
-'againstMuonTight3_1>0&&againstMuonTight3_2>0&&'\
+'againstMuonLoose3_1>0&&againstMuonLoose3_2>0&&'\
 'againstElectronVLooseMVA6_1>0&&againstElectronVLooseMVA6_2>0&&'\
 '((isoMed_1>0.5&&isoTight_2<0.5&&isoLoose_2>0.5)||'\
 '(isoMed_2>0.5&&isoTight_1<0.5&&isoLoose_1>0.5))'
+#'((Med2017v2_1>0.5&&idTight2017v2_2<0.5&&idLoose2017v2_2>0.5)||'\
+#'(idMed2017v2_2>0.5&&Tight2017v2_1<0.5&&Loose2017v2_1>0.5))'
 
 ##Check usage of relaxed selection
-relaxedSelection=$tauPtCut+'npv>0&&diLeptons==0&&((isoLoose_1>0.5&&isoTight_1<0.5&&isoTight_2>0.5)||(isoLoose_2>0.5&&isoTight_2<0.5&&isoTight_1>0.5))&&tightMuons==0&&tightElectrons==0&&againstMuonTight3_2>0&&againstElectronVLooseMVA6_2>0'
+#relaxedSelection=$tauPtCut+'npv>0&&diLeptons==0&&((isoLoose_1>0.5&&isoTight_1<0.5&&isoTight_2>0.5)||(isoLoose_2>0.5&&isoTight_2<0.5&&isoTight_1>0.5))&&tightMuons==0&&tightElectrons==0&&againstMuonLoose3_2>0&&againstElectronVLooseMVA6_2>0'
+relaxedSelection=''
 
 qcdselectionmc=$tauPtCut$qcdSelection
 
-qcdselectiondata='pt_1>50&&pt_2>45&&'$qcdselection
+##qcdselectiondata='pt_1>50&&pt_2>45&&'$qcdselection
+qcdselectiondata='pt_1>40&&pt_2>40&&'$qcdselection
 
 ## This defines the cut off for the QCD selection control region
 ## The maximum m_sv used in the analysis is 300 GeV
-qcdselectionmax='m_sv<300'
+#qcdselectionmax='m_vis<300'
+qcdselectionmax='m_vis<1000'
 
 ##Not used, here for legacy purposes, delete?
 wselection='mt_1>70'
 
 ## Trigger Selection
-trigselection='HLT_Any>0&&hltMed40_1>0&&hltMed40_2>0' 
+##trigselection='((hltTight35_1>0&&hltTight35_2>0&&pt_1>40&&pt_2>40)||(hltTight40_1>0&&hltTight40_2>0&&pt_1>45&&pt_2>45)||(hltMed40_1>0&&hltMed40_2>0&&pt_1>45&&pt_2>45))' 
+trigselection='HLT_Any>0' 
 # Data does not have hltMedComb for the first 2/3rds, a medium working point was 
 # implemented during the 2016 Run, therefore we use HLT_Any for data and MC uses 
 # medium combined but with corrections that scale properly to the full dataset.
-trigselectiondata='HLT_Any>0' #only for Data 
+##trigselectiondata=$trigselection #only for Data 
+trigselectiondata='((hltTight35_1>0&&hltTight35_2>0&&pt_1>40&&pt_2>40)||(hltTight40_1>0&&hltTight40_2>0&&pt_1>45&&pt_2>45)||(hltMed40_1>0&&hltMed40_2>0&&pt_1>45&&pt_2>45))' 
 
 luminosity=41800 #pb
-direc='/hdfs/store/user/shigginb/Isobel_2017_Nov20_FastMTT/'
+#direc='/hdfs/store/user/shigginb/Isobel_2017_Nov20_FastMTT/'
+direc='/hdfs/store/user/shigginb/Isobel_2017_Dec4_MELA_SA_BackUp/'
+#direc='/nfs_scratch/samuellh/2017_tt_fullredo_Corr/'
 zttScale=1.0
 topWeight='1'
 zWeight=1.0
@@ -60,7 +75,8 @@ topSF=1.0
 #tauID=1.0
 tauID=0.89
 vvScale=1
-outputDir='output_ttplots_vbf'
+#outputDir='redo_ttplots_vbf'
+outputDir='oldtuples_ttplots_vbf'
 
 binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,100.,110.,120.,130.,150. binningHighStat=0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.,250.,300.,350.' 
 
@@ -68,6 +84,7 @@ binning='binningLowStat=20.,30.,40.,45.,50.,55.,60.,65.,70.,75.,80.,85.,90.,95.,
 mkdir $outputDir
 signalselection='((njets>=2)&&(abs(jdeta)>2.5&&(fullPt)>100))'
 folder='tt_vbf'
+
 
 for var in    "variable=m_vis          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_vis.root"\
  "variable=m_sv          bins=30 min=2    max=302 outputFile=$outputDir/tauTau_m_sv.root"\
@@ -105,9 +122,27 @@ for var in    "variable=m_vis          bins=30 min=2    max=302 outputFile=$outp
  "variable=njetingap    bins=10 min=0    max=10  outputFile=$outputDir/tauTau_njetingap.root"\
  "variable=mjj          bins=30 min=2    max=300 outputFile=$outputDir/tauTau_mjj.root"\
  "variable=pfmt_1       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_1.root"\
- "variable=pfmt_2       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_2.root"
+ "variable=pfmt_2       bins=30 min=2    max=100 outputFile=$outputDir/tauTau_pfmt_2.root"\
+ "variable=isoTight_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_isoTight_1.root"\
+ "variable=Tight2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_Tight2017v2_1.root"
 do
     echo $var
 
-    MakeDataCardHThTh_2016 channel='diTau'  folder=$folder  dataFile=$direc'tauDATA.root' qcdFile=$direc'tauDATA.root' zttFile=$direc'ZJETS.root' zllFile=$direc'ZJETS.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'TT.root' preselection=$preselectionmc preselectionUp=$preselection preselectionDown=$preselection nominalselection=$nominalselection preselectiondata=$preselectiondata  wselection=$wselection  relaxedSelection=$relaxedSelection trigSelection=$trigselection trigSelectionData=$trigselectiondata  signalselection=$signalselection qcdselectionmax=$qcdselectionmax  qcdselection=$qcdselection qcdselectiondata=$qcdselectiondata luminosityErr=0.045 qcdfactor=$qcdfactor qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075  topSF=$topSF  tauID=$tauID tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0  weight='__WEIGHT__*GENWEIGHT*puweight' Zweight='1' vvScale=$vvScale TTweight=$topWeight  luminosity=$luminosity $var doSys=1
+    MakeDataCardHThTh_2016 channel='diTau'  folder=$folder  dataFile=$direc'tauDATA.root' qcdFile=$direc'tauDATA.root' zttFile=$direc'ZJETS.root' zllFile=$direc'ZJETS.root' wFile=$direc'WJETS.root' vvFile=$direc'DiBoson.root' topFile=$direc'TT.root' preselection=$preselectionmc preselectionUp=$preselection preselectionDown=$preselection nominalselection=$nominalselection preselectiondata=$preselectiondata  wselection=$wselection  relaxedSelection=$relaxedSelection trigSelection=$trigselection trigSelectionData=$trigselectiondata  signalselection=$signalselection qcdselectionmax=$qcdselectionmax  qcdselection=$qcdselection qcdselectiondata=$qcdselectiondata luminosityErr=0.045 qcdfactor=$qcdfactor qcdfactorErr=0.02 vvErr=0.3   zttScale=$zttScale zttScaleErr=0.033    wFactorErr=0.06    zjfterr=0.1  zlfterr=0.24   topErr=0.075  topSF=$topSF  tauID=$tauID tauIDErr=0.06  dir=$direc''  bID=1.0  bIDErr=0.10  bMisID=1.0  bMisIDErr=0.17    bitmask=1,0,0,0  weight='__WEIGHT__*GENWEIGHT*trigweight_1*trigweight_2*puweight' Zweight='_zweight_' vvScale=$vvScale TTweight=$topWeight  luminosity=$luminosity $var doSys=0
 done
+##for var in "variable=isoTight_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_isoTight_1.root"\
+## "variable=isoTight_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_isoTight_2.root"\
+## "variable=isoLoose_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_isoLoose_1.root"\
+## "variable=isoLoose_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_isoLoose_2.root"
+##for var in  "variable=Raw2017v2_1          bins=20 min=-1    max=1 outputFile=$outputDir/tauTau_Raw2017v2_1.root"\
+##    "variable=idRaw2017v2_2          bins=20 min=-1    max=1 outputFile=$outputDir/tauTau_idRaw2017v2_2.root"\
+##    "variable=Tight2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_Tight2017v2_1.root"\
+##    "variable=idTight2017v2_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_idTight2017v2_2.root"\
+##    "variable=VTight2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_VTight2017v2_1.root"\
+##    "variable=idVTight2017v2_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_idVTight2017v2_2.root"\
+##    "variable=Med2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_Med2017v2_1.root"\
+##    "variable=idMed2017v2_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_idMed2017v2_2.root"\
+##    "variable=Loose2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_Loose2017v2_1.root"\
+##    "variable=idLoose2017v2_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_idLoose2017v2_2.root"\
+##    "variable=VLoose2017v2_1  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_VLoose2017v2_1.root"\
+##    "variable=idVLoose2017v2_2  bins=4 min=-1   max=1   outputFile=$outputDir/tauTau_idVLoose2017v2_2.root"
