@@ -3,14 +3,15 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
+#process.GlobalTag.globaltag = '94X_mc2017_realistic_v15'
+process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v12'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(20000)
+    input = cms.untracked.int32(-1)
 )
 
 
@@ -43,12 +44,21 @@ process.source = cms.Source("PoolSource",
 #needed: muTau, tauTau, eTau, mumuTauTau, ect. However, different analyses may want to embed
 #different ID's, isolations, ect. Trigger paths are input below. These plugins are typically
 #found in RecoTools/plugins/
+#old triggers for 2018
+        #'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
+        #'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
+        #'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
+#new below
+
 from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionMC(process,'HLT',
         [
-        'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
-        'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'
+        'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS35_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_eta2p1_Reg_v',
+        'HLT_DoubleTightChargedIsoPFTauHPS40_Trk1_TightID_eta2p1_Reg_v',
+        'HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v',
+        'HLT_VBF_DoubleLooseChargedIsoPFTauHPS20_Trk1_eta2p1_Reg_v'
         ])
 
 #EventSelection

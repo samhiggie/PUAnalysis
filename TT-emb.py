@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_dataRun2_v10'
+process.GlobalTag.globaltag = '102X_dataRun2_Sep2018Rereco_v1'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
@@ -20,7 +20,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        '/store/user/jbechtel/gc_storage/TauTau_data_2017_CMSSW944/TauEmbedding_TauTau_data_2017_CMSSW944_Run2017B/99/merged_998.root_'
+        '/store/user/jbechtel/gc_storage/TauTau_data_2018ABC_CMSSW1020/TauEmbedding_TauTau_data_2018ABC_CMSSW1020_Run2018A/99/merged_9798.root '
 		),
 		inputCommands=cms.untracked.vstring(
 						'keep *',
@@ -29,7 +29,7 @@ process.source = cms.Source("PoolSource",
 )
 
 import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
-process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
+process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/CMSSW_10_2_14/src/PUAnalysis/Configuration/data/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt').getVLuminosityBlockRange() 
 
 
 #Default Reconstruction from the analysTools.py config file
@@ -44,17 +44,23 @@ from PUAnalysis.Configuration.tools.analysisTools import *
 defaultReconstructionEMB(process,'HLT',
                          [
                           'HLT_Mu17_TkMu8',
-                          'HLT_Mu17_Mu8'        
+                          'HLT_Mu17_Mu8' 
                           ],
                          HLT = 'TriggerResults',
                          triggerFilter='SIMembedding')
 
+#defaultReconstructionEMB(process,'HLT',
+#                         [
+#                          'HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg_v',
+#                          'HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg_v',
+#                          'HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg_v'       
+#                          ])
 #EventSelection
 #Most of the selections for the analysis go in hTauTau_cff
 #The selections proceed sequentially, each time a "di-candidate pair" fails a cut in
 #this configuration then the sequence will start over with another di-candidate pair.
 #The final 'sorting' is implemented there as well, either by di-tau PT or isolation.
-process.load("PUAnalysis.Configuration.hTauTau_cff")
+process.load("PUAnalysis.Configuration.hTauTau_Sync_cff")
 
 process.metCalibration.applyCalibration = cms.bool(False)
 
@@ -71,8 +77,8 @@ process.eventSelectionTT = cms.Path(process.selectionSequenceTT)
 #and one with looser selections.
 from PUAnalysis.Configuration.tools.ntupleTools import addDiTauEventTree
 
-addDiTauEventTree(process,'diTauEventTree','diTausAntiMu','TightMuons','TightElectrons',triggerCollection='SIMembedding',isEmbedded=True)
-#addDiTauEventTree(process,'diTauEventTreeFinal','diTausOS')
+addDiTauEventTree(process,'diTauEventTree','diTausSync','TightMuons','TightElectrons',triggerCollection='SIMembedding',isEmbedded=True)
+#addDiTauEventTree(process,'diTauEventTree','diTausSync','TightMuons','TightElectrons',triggerCollection='HLT',isEmbedded=True)
 
 
 #This event summary tells you how many objects pass each of the steps

@@ -119,7 +119,7 @@ def main(argv=None):
     os.system('chmod +x %s' % bash_name)
                 
 # create farmout command
-    farmoutString = 'farmoutAnalysisJobs --infer-cmssw-path --fwklite --input-file-list=%s' % (input_name)
+    farmoutString = 'farmoutAnalysisJobs --site-requirements=\'OpSysAndVer == "SL6"\'  --vsize-limit=8000 --assume-input-files-exist --input-file-list=%s' % (input_name)
     farmoutString += ' --submit-dir=%s --output-dag-file=%s --output-dir=%s' % (submit_dir, dag_dir, output_dir)
 #if period == 8:
 #    farmoutString += ' --input-files-per-job=20 %s %s' % (jobName, bash_name)
