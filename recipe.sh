@@ -1,8 +1,11 @@
 #!/bin/bash
 
 pushd $CMSSW_BASE/src
+mv PUA PUAnalysis
 cd PUAnalysis
+mkdir TauAnalysisTools
 git clone -b tauTriggers2017_reMiniaod_test  https://github.com/truggles/TauTriggerSFs2017.git TauTriggerSFs2017
+git clone -b final_2017_MCv2 https://github.com/cms-tau-pog/TauTriggerSFs $CMSSW_BASE/src/TauAnalysisTools/TauTriggerSFs
 
 pushd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/LeptonEff-interface.git HTT-utilities
@@ -14,10 +17,10 @@ pushd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/RecoilCorrections.git  HTT-utilities/RecoilCorrections 
 pushd $CMSSW_BASE/src
 
-git cms-merge-topic guitargeek:EgammaID_9_4_X
+git cms-merge-topic cms-egamma:EgammaID_949
 pushd $CMSSW_BASE/src
 
-git cms-merge-topic cms-met:METFixEE2017_949_v2
+###git cms-merge-topic cms-met:METFixEE2017_949_v2
 
 cd $CMSSW_BASE/src
 
@@ -28,9 +31,9 @@ cd $CMSSW_BASE/src
 
 
 #MELA
-git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
-cd ZZMatrixElement/
-bash setup.sh -j 12
+#git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
+#cd ZZMatrixElement/
+#bash setup.sh -j 12
 
 cd $CMSSW_BASE/src
 #FakeFactor methods
