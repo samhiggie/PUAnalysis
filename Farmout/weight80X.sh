@@ -1,15 +1,16 @@
 #!/bin/sh
-olddirname='2019_Mar_2017_ntuples_pileup'
-newdirname='2019_Mar_2017_ntuples_ZJETs'
+#olddirname='2018_tt_JEC_merged'
+olddirname='2018_tt_JEC_fastmtt'
+newdirname='2018_tt_JEC_weighted'
 mkdir /nfs_scratch/$USER/$newdirname
 cd /nfs_scratch/$USER/$newdirname
 
-weight=0;
-weightH=0;
-weightW=0;
+weight=1;
+weightH=1;
+weightW=1;
 weightZ=1;
 
-#cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.
+#cp /nfs_scratch/$USER/$olddirname/tauDATA.root /nfs_scratch/$USER/$newdirname/.
 
 if [ $weightH -eq 1 ]
     then
@@ -17,29 +18,34 @@ if [ $weightH -eq 1 ]
 #    for dir in ggH120.root ggH125.root ggH130.root vbfH120.root vbfH125.root vbfH130.root ttH120.root ttH125.root ttH130.root WpH120.root WpH125.root WpH130.root WmH120.root WmH125.root WmH130.root ZH120.root ZH125.root ZH130.root  
     for dir in ggH125.root vbfH125.root ttH125.root WpH125.root WmH125.root ZH125.root
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/. &
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/. &
     done 
     wait;
     echo 'weight higgs'
     #EventWeightsIterativeGen outputFile='ggH120.root'     weight=3.644956       histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='ggH125.root'     weight=3.045965       histoName='TT/results' sumHistoName='sumweights/genWeights' &
     #EventWeightsIterativeGen outputFile='ggH130.root'     weight=2.451271       histoName='TT/results' sumHistoName='sumweights/genWeights' &
+    echo 'weight vbf'
 								 	   
     #EventWeightsIterativeGen outputFile='vbfH120.root'    weight=0.274663       histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='vbfH125.root'    weight=0.2371314      histoName='TT/results' sumHistoName='sumweights/genWeights' &
     #EventWeightsIterativeGen outputFile='vbfH130.root'    weight=0.1967617      histoName='TT/results' sumHistoName='sumweights/genWeights' &
+    echo 'weight wph'
 								 	   
     #EventWeightsIterativeGen outputFile='WpH120.root'     weight=0.0546185      histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='WpH125.root'     weight=0.04304355     histoName='TT/results' sumHistoName='sumweights/genWeights' &
     #EventWeightsIterativeGen outputFile='WpH130.root'     weight=0.03270345     histoName='TT/results' sumHistoName='sumweights/genWeights' &
+    echo 'weight wmh'
 								 	   
     #EventWeightsIterativeGen outputFile='WmH120.root'     weight=0.0546185      histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='WmH125.root'     weight=0.04304355     histoName='TT/results' sumHistoName='sumweights/genWeights' &
     #EventWeightsIterativeGen outputFile='WmH130.root'     weight=0.03270345     histoName='TT/results' sumHistoName='sumweights/genWeights' &
+    echo 'weight zh'
 								 	   
     #EventWeightsIterativeGen outputFile='ZH120.root'      weight=0.0693812      histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='ZH125.root'      weight=0.0554268      histoName='TT/results' sumHistoName='sumweights/genWeights' &
     #EventWeightsIterativeGen outputFile='ZH130.root'      weight=0.042739       histoName='TT/results' sumHistoName='sumweights/genWeights' &
+    echo 'weight tth'
 								 	   
     #EventWeightsIterativeGen outputFile='ttH120.root'     weight=0.040128       histoName='TT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen outputFile='ttH125.root'     weight=0.0320424      histoName='TT/results' sumHistoName='sumweights/genWeights' &
@@ -54,8 +60,8 @@ if [ $weightZ -eq 1 ]
 	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/.
     done 
     #make sure Zpt root file is around!!!
-    #cp /scratch/ojalvo/zpt_weights_2016.root /scratch/$USER/$newdirname/.
-    cp $CMSSW_BASE/src/PUAnalysis/Configuration/data/htt_scalefactors_2017_v2.root /scratch/$USER/$newdirname/.
+    #cp /nfs_scratch/ojalvo/zpt_weights_2016.root /nfs_scratch/$USER/$newdirname/.
+    cp $CMSSW_BASE/src/PUAnalysis/Configuration/data/htt_scalefactors_2017_v2.root /nfs_scratch/$USER/$newdirname/.
     EventWeightsIterativeZJets    weight=1    histoName='TT/results' 
     hadd -f ZJETS.root ZJets.root Z1Jets.root Z2Jets.root Z3Jets.root Z4Jets.root
      
@@ -65,7 +71,7 @@ if [ $weightW -eq 1 ]
     then
     for dir in WJets.root W1Jets.root W2Jets.root W3Jets.root W4Jets.root
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/. &
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/. &
     done 
     wait;
     #EventWeightsIterativeGen outputFile='WJets.root'      weight=61526.7   histoName='TT/results' sumHistoName='sumweights/genWeights'
@@ -82,7 +88,7 @@ if [ $weight -eq 1 ]
 #WZTo2L2Q.root
     for dir in TT_DL.root TT_SL.root TT_had.root WZTo1L3Nu.root WZTo1L1Nu2Q.root WZTo2L2Q.root WZTo3L1Nu.root tBar_tW.root t_tW.root St_tBar.root St_t.root WWTo1L1Nu2Q.root WWTo2L2Nu.root WWTo4Q.root ZZTo2L2Q.root ZZTo2L2Nu.root ZZTo4L.root EWKWm2j.root EWKWp2j.root EWKZ2Nu.root EWKZ2l.root 
     do 
-	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
+	cp /nfs_scratch/$USER/$olddirname/$dir /nfs_scratch/$USER/$newdirname/.
     done
 
     #EventWeightsIterativeGen outputFile='TT.root'  weight=831.76     histoName='TT/results' sumHistoName='sumweights/genWeights'

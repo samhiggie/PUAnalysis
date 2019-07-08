@@ -211,6 +211,7 @@ void readdir(TDirectory *dir, optutl::CommandLineParser parser,  char TreeToUse[
                     frac_tt = (double) fractions[1];//frac_tt;
                     ff_nom_1 = 0.5*ff->value(variables);
                     ff_nom_2 = 1.0;
+                    ff_qcd_syst_up = ff->value(variables,"ff_qcd_syst")
 
                 }
                 //if( isIsolated(tau1) and isAntiIsolated(tau2) ){}
@@ -368,6 +369,7 @@ std::vector<float> getFFractions(float m_vis_val, float njets_val) {
     std::pair<int,int> thebins;
     thebins=findBin("W",m_vis_val,njets_val);
     //std::cout<<"Found the bin!"<<std::endl;
+    std::cout<<"The bins!  "<<thebins<<std::endl;
     
      
     float W    = ((TH2D*) histfile->Get("W"   ))->GetBin(thebins.first,thebins.second); 

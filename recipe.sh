@@ -46,5 +46,28 @@ git clone -b fastMTT_21_06_2018 https://github.com/SVfit/ClassicSVfit TauAnalysi
 git clone https://github.com/SVfit/SVfitTF TauAnalysis/SVfitTF
 pushd $CMSSW_BASE/src
 
-cd $CMSSW_BASE/src
 
+#for rivet tool
+cd $CMSSW_BASE/srMSSW_BASE/src 
+git cms-addpkg Configuration/Generator
+git cms-addpkg GeneratorInterface/RivetInterface
+git cms-addpkg SimDataFormats/HTXS
+git clone https://gitlab.cern.ch/cms-gen/Rivet.git
+cd GeneratorInterface/RivetInterface/plugins/
+rm HTXSRivetProducer.cc
+wget https://raw.githubusercontent.com/amarini/cmssw/htxs_stage1p1_cmssw949_v2/GeneratorInterface/RivetInterface/plugins/HTXSRivetProducer.cc
+cd $CMSSW_BASE/src
+cd SimDataFormats/HTXS/interface/
+rm HiggsTemplateCrossSections.h
+wget https://raw.githubusercontent.com/amarini/cmssw/htxs_stage1p1_cmssw949_v2/SimDataFormats/HTXS/interface/HiggsTemplateCrossSections.h
+cd $CMSSW_BASE/src
+cd GeneratorInterface/RivetInterface/src/
+rm HiggsTemplateCrossSections.cc
+wget https://raw.githubusercontent.com/amarini/cmssw/htxs_stage1p1_cmssw949_v2/GeneratorInterface/RivetInterface/src/HiggsTemplateCrossSections.cc
+cd $CMSSW_BASE/src
+source Rivet/rivetSetup.sh
+rm Rivet/TOP/src/CMS_2016_I1491950.cc
+rm Rivet/TOP/src/CMS_2016_PAS_TOP_15_006.cc
+
+
+echo "Time to do! scram b -j 21"

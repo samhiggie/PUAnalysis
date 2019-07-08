@@ -77,6 +77,7 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
 
   #Default selections for systematics
   applyDefaultSelectionsPT(process)
+  STXS(process)
 
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
 
@@ -133,7 +134,7 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   #tauEffi(process,'rerunSlimmedTaus',True)
 
   #tauOverloading(process,'rerunSlimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  tauOverloading(process,'slimmedTausDeepID','triggeredPatMuons','offlineSlimmedPrimaryVertices')
+  tauOverloading(process,'rerunSlimmedTaus','triggeredPatMuons','offlineSlimmedPrimaryVertices')
   
   triLeptons(process)
 
@@ -221,6 +222,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   #Default selections for systematics
   MiniAODMETfilter(process)
   ##MET
+  
+  STXS(process)
 
   applyDefaultSelectionsPT(process)
 
@@ -1199,5 +1202,33 @@ def pfMetWithSignficance(process):
         process.analysisSequence *
         process.metWithSig
     )
- 
 
+
+def STXS(process):
+  process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+  process.mergedGenParticles = cms.EDProducer(
+    "MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+    )
+  process.myGenerator = cms.EDProducer(
+    "GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+    )
+  process.rivetProducerHTXS = cms.EDProducer(
+    'HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('myGenerator','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+    #ProductionMode = cms.string('GGF'), # For ggH NNLOPS sample
+    )
+  process.makeHiggsClassification = cms.Sequence(
+    process.mergedGenParticles
+    * process.myGenerator
+    * process.rivetProducerHTXS
+  )
+  process.analysisSequence *= process.makeHiggsClassification
+
+ 
