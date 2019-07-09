@@ -208,6 +208,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   MiniAODMETfilter(process)
   ##MET
 
+  STXS(process)
+
   applyDefaultSelectionsPT(process)
 
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
@@ -1119,3 +1121,30 @@ def pfMetWithSignficance(process):
     )
  
 
+
+def STXS(process):
+  process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+  process.mergedGenParticles = cms.EDProducer(
+    "MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+    )
+  process.myGenerator = cms.EDProducer(
+    "GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+    )
+  process.rivetProducerHTXS = cms.EDProducer(
+    'HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('myGenerator','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+    #ProductionMode = cms.string('GGF'), # For ggH NNLOPS sample
+    )
+  process.makeHiggsClassification = cms.Sequence(
+    process.mergedGenParticles
+    * process.myGenerator
+    * process.rivetProducerHTXS
+  )
+  process.analysisSequence *= process.makeHiggsClassification
