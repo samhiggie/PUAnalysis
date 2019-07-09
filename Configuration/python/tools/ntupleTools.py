@@ -420,6 +420,13 @@ def makeEleTauCSVShape(sourceDiTaus):
    )
    return PSet
 
+def makeHiggsClassification(srcName):
+   PSet = cms.PSet(
+        pluginType = cms.string("HiggsClassificationFiller"),
+        src= cms.InputTag(srcName)
+   )
+   return PSet
+
 
 def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons',triggerCollection='HLT', isEmbedded=False, isJHU=False):
    process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_TauTau.root") )
@@ -801,6 +808,7 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                                   src        = cms.InputTag("externalLHEProducer"),
                                   tag        = cms.string("LHEProduct"),
                               )
+                              higgsClass = makeHiggsClassification("rivetProducerHTXS")
                               )
    setattr(process, name, eventTree)
    p = cms.Path(getattr(process,name))
