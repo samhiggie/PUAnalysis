@@ -807,7 +807,7 @@ def addDiTauEventTree(process,name,src = 'diTausOS', srcLL = 'diMuonsOSSorted', 
                                   pluginType = cms.string("LHEProductFiller"),
                                   src        = cms.InputTag("externalLHEProducer"),
                                   tag        = cms.string("LHEProduct"),
-                              )
+                              ),
                               higgsClass = makeHiggsClassification("rivetProducerHTXS")
                               )
    setattr(process, name, eventTree)
