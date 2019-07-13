@@ -5,16 +5,16 @@ PUAnalysis
 #Set Up instructions:
 
 ```
-cmsrel CMSSW_9_4_11 #for 2017 analysis
-cd CMSSW_9_4_11/src/
+cmsrel CMSSW_10_2_14 #for 2017 analysis
+cd CMSSW_10_2_24/src/
 cmsenv
 git cms-init 
-git clone https://github.com/isobelojalvo/PUAnalysis.git   
+git clone https://github.com/samhiggie/PUA.git   
 export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
 cd PUAnalysis
 git fetch origin
-git checkout htt_2017_sam
-bash recipe.sh #Note Recipe13TeV.sh should be the full recipe but we are keeping it simple for now
+git checkout cmssw10_2_14_2018
+bash recipe.sh 
 scram b -j 8
 ```
 to run test of analysis fw - that is going from miniAOD sample to ntuple
@@ -52,11 +52,14 @@ In general To see what needs to be fixed ``` grep -r FIXME *``` or ``` CHECKME``
 
 | Kind Of Issue  | Issue Detail |
 | ------------- | ------------- |
+| Ntupler  | |
+| ------------- | ------------- |
+| ES Scaling    |   |
 | ES Scaling    | Put me back?  |
-| PU reweight   | need to update? |
-| Cut Sequence Producer | Can still be reduced |
-| ntuple tools | reduce tree size |
 | Fix FF fractions | FF fractions currently hardcoded |
-| Settle on JES | Merge the JES in a consistent way |
+| Plotting |  |
+| ------------- | ------------- |
+| TES 
+| FF uncertainties | include them!|
 | JES plotter | Make tools more friendly for JES studies |
 
