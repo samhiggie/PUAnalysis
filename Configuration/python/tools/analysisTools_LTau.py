@@ -55,7 +55,8 @@ def defaultReconstructionBCDEF(process,triggerProcess = 'HLT',triggerPaths = ['H
   #Build good vertex collection
 
   reRunTaus(process,'slimmedTaus')
-  selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  #selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM") #ESTaus
   tauEffi(process,'selectTauDM',True)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
@@ -116,7 +117,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   
   #Build good vertex collection
   reRunTaus(process,'slimmedTaus')
-  selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  #selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM") #ESTaus
   tauEffi(process,'triggeredPatTaus',True)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
@@ -178,7 +180,8 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   #goodVertexFilter(process)  
   genmatchtaus(process)  
   reRunTaus(process,'slimmedTaus')
-  selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  #selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
+  selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM")
   tauEffi(process,'triggeredPatTaus',False)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
@@ -200,6 +203,9 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   GenSumWeights(process)
   GenHTCalculator(process)
   #Default selections for systematics
+
+  STXS(process)
+
   applyDefaultSelectionsPT(process)
 
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
@@ -311,7 +317,7 @@ def MiniAODJES(process, jSrc="slimmedJets"):
             "MiniAODJetFullSystematicsEmbedder",
             src = cms.InputTag(jSrc),
             corrLabel = cms.string('AK4PFchs'),
-            fName = cms.string("Summer16_23Sep2016AllV4_DATA_UncertaintySources_AK4PFchs.txt")
+            fName = cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt")
             )
 
     process.analysisSequence*=process.jetsEmbedJES
@@ -784,7 +790,6 @@ def selectTauDecayMode(process, taus, cut='pt>10'):
 
   process.analysisSequence=cms.Sequence(process.analysisSequence*process.selectTauDM)
 
-      
 
 def reRunTaus(process,taus='slimmedTaus'):
   from RecoTauTag.RecoTau.TauDiscriminatorTools import noPrediscriminants
@@ -899,7 +904,23 @@ def reRunTaus(process,taus='slimmedTaus'):
                                                              idVVTight2017v2 = cms.InputTag('rerunDiscriminationByIsolationOldDMMVArun2017v2VVTight')
                                                              )
                                 )
-  process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*process.rerunSlimmedTaus)
+  updatedTauName = "slimmedTausDeepID" #name of pat::Tau collection with new tau-Ids
+  import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+  tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                      updatedTauName = updatedTauName,
+                      toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                                 "deepTau2017v1", #deepTau Tau-Ids
+                                 "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
+                                 ])
+  tauIdEmbedder.runTauID()
+  # Path and EndPath definitions
+  #process.analysisSequence = cms.Path(
+  #    process.rerunMvaIsolationSequence *
+  #    getattr(process,updatedTauName)
+  #)
+  #process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*process.rerunSlimmedTaus)
+  process.analysisSequence=cms.Sequence(process.analysisSequence*process.rerunMvaIsolationSequence*getattr(process,updatedTauName))
+
 
 def getAllEventCounters(process,path,onSkim = False):
         stringList = []
@@ -1074,3 +1095,29 @@ def pfMetWithSignficance(process):
     )
  
 
+def STXS(process):
+  process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+  process.mergedGenParticles = cms.EDProducer(
+    "MergedGenParticleProducer",
+    inputPruned = cms.InputTag("prunedGenParticles"),
+    inputPacked = cms.InputTag("packedGenParticles"),
+    )
+  process.myGenerator = cms.EDProducer(
+    "GenParticles2HepMCConverter",
+    genParticles = cms.InputTag("mergedGenParticles"),
+    genEventInfo = cms.InputTag("generator"),
+    signalParticlePdgIds = cms.vint32(25),
+    )
+  process.rivetProducerHTXS = cms.EDProducer(
+    'HTXSRivetProducer',
+    HepMCCollection = cms.InputTag('myGenerator','unsmeared'),
+    LHERunInfo = cms.InputTag('externalLHEProducer'),
+    ProductionMode = cms.string('AUTO'),
+    #ProductionMode = cms.string('GGF'), # For ggH NNLOPS sample
+    )
+  process.makeHiggsClassification = cms.Sequence(
+    process.mergedGenParticles
+    * process.myGenerator
+    * process.rivetProducerHTXS
+  )
+  process.analysisSequence *= process.makeHiggsClassification

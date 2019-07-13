@@ -281,6 +281,13 @@ def makeEleTauCSVShape(sourceDiTaus):
    )
    return PSet
 
+def makeHiggsClassification(srcName):
+   PSet = cms.PSet(
+        pluginType = cms.string("HiggsClassificationFiller"),
+        src= cms.InputTag(srcName)
+   )
+   return PSet
+
 
 
 
@@ -449,7 +456,33 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
                               muTauagainstElectronTightMVA6 = makeMuTauPair(src,"againstElectronTightMVA6_2",'leg2.tauID("againstElectronTightMVA6")'),
                               muTauagainstElectronVLooseMVA6 = makeMuTauPair(src,"againstElectronVLooseMVA6_2",'leg2.tauID("againstElectronVLooseMVA6")'),
                               muTauagainstElectronVTightMVA6 = makeMuTauPair(src,"againstElectronVTightMVA6_2",'leg2.tauID("againstElectronVTightMVA6")'),
- 
+
+                              #new deep tau id !!  
+                              muTauDeepIDjetLeg2 = makeMuTauPair(src,"deepjetID_1",'leg2.tauID("byDeepTau2017v1VSjetraw")'),
+                              muTauDeepIDeLeg2 = makeMuTauPair(src,"deepeID_1",'leg2.tauID("byDeepTau2017v1VSeraw")'),
+                              muTauDeepIDmLeg2 = makeMuTauPair(src,"deepmID_1",'leg2.tauID("byDeepTau2017v1VSmuraw")'),
+                              muTauDeepVVLoosejetLeg2 = makeMuTauPair(src,"deepVVLjetID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSjet")'),
+                              muTauDeepVVLooseeLeg2 = makeMuTauPair(src,"deepVVLeID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSe")'),
+                              muTauDeepVVLoosemLeg2 = makeMuTauPair(src,"deepVVLmID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepVLoosejetLeg2 = makeMuTauPair(src,"deepVLjetID_1",'leg2.tauID("byVLooseDeepTau2017v1VSjet")'),
+                              muTauDeepVLooseeLeg2 = makeMuTauPair(src,"deepVLeID_1",'leg2.tauID("byVLooseDeepTau2017v1VSe")'),
+                              muTauDeepVLoosemLeg2 = makeMuTauPair(src,"deepVLmID_1",'leg2.tauID("byVLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepLoosejetLeg2 = makeMuTauPair(src,"deepLjetID_1",'leg2.tauID("byLooseDeepTau2017v1VSjet")'),
+                              muTauDeepLooseeLeg2 = makeMuTauPair(src,"deepLeID_1",'leg2.tauID("byLooseDeepTau2017v1VSe")'),
+                              muTauDeepLoosemLeg2 = makeMuTauPair(src,"deepLmID_1",'leg2.tauID("byLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepMediumjetLeg2 = makeMuTauPair(src,"deepMjetID_1",'leg2.tauID("byMediumDeepTau2017v1VSjet")'),
+                              muTauDeepMediumeLeg2 = makeMuTauPair(src,"deepMeID_1",'leg2.tauID("byMediumDeepTau2017v1VSe")'),
+                              muTauDeepMediummLeg2 = makeMuTauPair(src,"deepMmID_1",'leg2.tauID("byMediumDeepTau2017v1VSmu")'),
+                              muTauDeepTightjetLeg2 = makeMuTauPair(src,"deepTjetID_1",'leg2.tauID("byTightDeepTau2017v1VSjet")'),
+                              muTauDeepTighteLeg2 = makeMuTauPair(src,"deepTeID_1",'leg2.tauID("byTightDeepTau2017v1VSe")'),
+                              muTauDeepTightmLeg2 = makeMuTauPair(src,"deepTmID_1",'leg2.tauID("byTightDeepTau2017v1VSmu")'),
+                              muTauDeepVTightjetLeg2 = makeMuTauPair(src,"deepVTjetID_1",'leg2.tauID("byVTightDeepTau2017v1VSjet")'),
+                              muTauDeepVTighteLeg2 = makeMuTauPair(src,"deepVTeID_1",'leg2.tauID("byVTightDeepTau2017v1VSe")'),
+                              muTauDeepVTightmLeg2 = makeMuTauPair(src,"deepVTmID_1",'leg2.tauID("byVTightDeepTau2017v1VSmu")'),
+
                               muTauGenIsPrompt1 = makeMuTauPair(src,"isPrompt1",'isPrompt1()'),
                               muTauGenIsPromptFS1 = makeMuTauPair(src,"isPromptFS1",'isPromptFS1()'),
                               muTauGenIsDirectTauDecay1 = makeMuTauPair(src,"isTauDecay1",'isDirectPromptTauDecayProduct1()'),
@@ -461,7 +494,8 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
                               muTauGenIsDirectTauDecayFS2 = makeMuTauPair(src,"isTauDecayFS2",'isDirectPromptTauDecayProductFS2()'),
 
 
-                              muTauMass = makeMuTauPair(src,"m_vis","mass") 
+                              muTauMass = makeMuTauPair(src,"m_vis","mass"),
+                              higgsClass = makeHiggsClassification("rivetProducerHTXS")
 
 
    )
@@ -672,15 +706,24 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
                               muTauByOldDMMVAIsoVLoose = makeMuTauPair(src,"byVLooseIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT")'),
                               #muTauByOldDMMVAIsoVVLoose = makeMuTauPair(src,"byVVLooseIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byVVLooseIsolationMVArun2v1DBoldDMwLT")'),
 
-                              muTauByOldDMMVAIsoRR1 = makeMuTauPair(src,"tau_idRaw2017v2",     'leg2.tauID("idRaw2017v2")'),
+                              muTauIsoLeg2 = makeMuTauPair(src,"iso_2",'leg2.tauID("byIsolationMVArun2v1DBoldDMwLTraw")'),
+
+                              muTauVTightIsoLeg2 = makeMuTauPair(src,"isoVTight_2",'leg2.tauID("byVTightIsolationMVArun2v1DBoldDMwLT")'),
+                              muTauTightIsoLeg2 = makeMuTauPair(src,"isoTight_2",'leg2.tauID("byTightIsolationMVArun2v1DBoldDMwLT")'),
+                              muTauMediumIsoLeg2 = makeMuTauPair(src,"isoMed_2",'leg2.tauID("byMediumIsolationMVArun2v1DBoldDMwLT")'),
+                              muTauLooseIsoLeg2 = makeMuTauPair(src,"isoLoose_2",'leg2.tauID("byLooseIsolationMVArun2v1DBoldDMwLT")'),
+                              muTauVLooseIsoLeg2 = makeMuTauPair(src,"isoVLoose_2",'leg2.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT")'),
+                              muTauVVLooseIsoLeg2 = makeMuTauPair(src,"isoVLoose_2",'leg2.tauID("byVVLooseIsolationMVArun2v1DBoldDMwLT")'),
+
+                              #muTauByOldDMMVAIsoRR1 = makeMuTauPair(src,"tau_idRaw2017v2",     'leg2.tauID("idRaw2017v2")'),
                               #muTauByOldDMMVAIsoRR2 = makeMuTauPair(src,"ibyVVLooseIsolationMVArun2017v2DBoldDMwLT2017", 'leg2.tauID("idVVLoose2017v2")'),
-                              muTauByOldDMMVAIsoRR2 = makeMuTauPair(src, "tau_idVVLoose2017v2", 'leg2.tauID("idVVLoose2017v2")'),
-                              muTauByOldDMMVAIsoRR3 = makeMuTauPair(src,"tau_idVLoose2017v2",  'leg2.tauID("idVLoose2017v2")'),
-                              muTauByOldDMMVAIsoRR4 = makeMuTauPair(src,"tau_idLoose2017v2",   'leg2.tauID("idLoose2017v2")'),
-                              muTauByOldDMMVAIsoRR5 = makeMuTauPair(src,"tau_idMed2017v2",     'leg2.tauID("idMed2017v2")'),
-                              muTauByOldDMMVAIsoRR6 = makeMuTauPair(src,"tau_idTight2017v2",   'leg2.tauID("idTight2017v2")'),
-                              muTauByOldDMMVAIsoRR7 = makeMuTauPair(src,"tau_idVTight2017v2",  'leg2.tauID("idVTight2017v2")'),
-                              muTauByOldDMMVAIsoRR8 = makeMuTauPair(src,"tau_idVVTight2017v2", 'leg2.tauID("idVVTight2017v2")'),
+                              #muTauByOldDMMVAIsoRR2 = makeMuTauPair(src, "tau_idVVLoose2017v2", 'leg2.tauID("idVVLoose2017v2")'),
+                              #muTauByOldDMMVAIsoRR3 = makeMuTauPair(src,"tau_idVLoose2017v2",  'leg2.tauID("idVLoose2017v2")'),
+                              #muTauByOldDMMVAIsoRR4 = makeMuTauPair(src,"tau_idLoose2017v2",   'leg2.tauID("idLoose2017v2")'),
+                              #muTauByOldDMMVAIsoRR5 = makeMuTauPair(src,"tau_idMed2017v2",     'leg2.tauID("idMed2017v2")'),
+                              #muTauByOldDMMVAIsoRR6 = makeMuTauPair(src,"tau_idTight2017v2",   'leg2.tauID("idTight2017v2")'),
+                              #muTauByOldDMMVAIsoRR7 = makeMuTauPair(src,"tau_idVTight2017v2",  'leg2.tauID("idVTight2017v2")'),
+                              #muTauByOldDMMVAIsoRR8 = makeMuTauPair(src,"tau_idVVTight2017v2", 'leg2.tauID("idVVTight2017v2")'),
 
 
                               muTauAgainstMuonTight3 = makeMuTauPair(src,"againstMuonTight3_2",'leg2.tauID("againstMuonTight3")'),
@@ -692,6 +735,32 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
                               muTauagainstElectronVLooseMVA6 = makeMuTauPair(src,"againstElectronVLooseMVA6_2",'leg2.tauID("againstElectronVLooseMVA6")'),
                               muTauagainstElectronVTightMVA6 = makeMuTauPair(src,"againstElectronVTightMVA6_2",'leg2.tauID("againstElectronVTightMVA6")'),
                               muTaubyIsolationMVArun2v1DBdR03oldDMwLTraw = makeMuTauPair(src,"byIsolationMVArun2v1DBdR03oldDMwLTraw_2",'leg2.tauID("byIsolationMVArun2v1DBdR03oldDMwLTraw")'),
+
+                              #new deep tau id !!  
+                              muTauDeepIDjetLeg2 = makeMuTauPair(src,"deepjetID_1",'leg2.tauID("byDeepTau2017v1VSjetraw")'),
+                              muTauDeepIDeLeg2 = makeMuTauPair(src,"deepeID_1",'leg2.tauID("byDeepTau2017v1VSeraw")'),
+                              muTauDeepIDmLeg2 = makeMuTauPair(src,"deepmID_1",'leg2.tauID("byDeepTau2017v1VSmuraw")'),
+                              muTauDeepVVLoosejetLeg2 = makeMuTauPair(src,"deepVVLjetID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSjet")'),
+                              muTauDeepVVLooseeLeg2 = makeMuTauPair(src,"deepVVLeID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSe")'),
+                              muTauDeepVVLoosemLeg2 = makeMuTauPair(src,"deepVVLmID_1",'leg2.tauID("byVVLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepVLoosejetLeg2 = makeMuTauPair(src,"deepVLjetID_1",'leg2.tauID("byVLooseDeepTau2017v1VSjet")'),
+                              muTauDeepVLooseeLeg2 = makeMuTauPair(src,"deepVLeID_1",'leg2.tauID("byVLooseDeepTau2017v1VSe")'),
+                              muTauDeepVLoosemLeg2 = makeMuTauPair(src,"deepVLmID_1",'leg2.tauID("byVLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepLoosejetLeg2 = makeMuTauPair(src,"deepLjetID_1",'leg2.tauID("byLooseDeepTau2017v1VSjet")'),
+                              muTauDeepLooseeLeg2 = makeMuTauPair(src,"deepLeID_1",'leg2.tauID("byLooseDeepTau2017v1VSe")'),
+                              muTauDeepLoosemLeg2 = makeMuTauPair(src,"deepLmID_1",'leg2.tauID("byLooseDeepTau2017v1VSmu")'),
+
+                              muTauDeepMediumjetLeg2 = makeMuTauPair(src,"deepMjetID_1",'leg2.tauID("byMediumDeepTau2017v1VSjet")'),
+                              muTauDeepMediumeLeg2 = makeMuTauPair(src,"deepMeID_1",'leg2.tauID("byMediumDeepTau2017v1VSe")'),
+                              muTauDeepMediummLeg2 = makeMuTauPair(src,"deepMmID_1",'leg2.tauID("byMediumDeepTau2017v1VSmu")'),
+                              muTauDeepTightjetLeg2 = makeMuTauPair(src,"deepTjetID_1",'leg2.tauID("byTightDeepTau2017v1VSjet")'),
+                              muTauDeepTighteLeg2 = makeMuTauPair(src,"deepTeID_1",'leg2.tauID("byTightDeepTau2017v1VSe")'),
+                              muTauDeepTightmLeg2 = makeMuTauPair(src,"deepTmID_1",'leg2.tauID("byTightDeepTau2017v1VSmu")'),
+                              muTauDeepVTightjetLeg2 = makeMuTauPair(src,"deepVTjetID_1",'leg2.tauID("byVTightDeepTau2017v1VSjet")'),
+                              muTauDeepVTighteLeg2 = makeMuTauPair(src,"deepVTeID_1",'leg2.tauID("byVTightDeepTau2017v1VSe")'),
+                              muTauDeepVTightmLeg2 = makeMuTauPair(src,"deepVTmID_1",'leg2.tauID("byVTightDeepTau2017v1VSmu")'),
 
                               muTauGenPt1 = makeMuTauPair(src,"genPt1",'p4Leg1gen().pt()'),
                               muTauGenPt2 = makeMuTauPair(src,"genPt2",'p4Leg2gen().pt()'),
@@ -806,7 +875,8 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
                                   tag        = cms.string("embeddedEta"),
                                   method     = cms.string("eta"),
                                   leadingOnly=cms.untracked.bool(False)
-                              )#FIXME #CHECKME
+                              ),#FIXME #CHECKME
+                              higgsClass = makeHiggsClassification("rivetProducerHTXS")
 
    )
 
@@ -1336,7 +1406,8 @@ def addEleTauEventTree(process,name,src='eleTausSorted',fileout='analysis_eletau
                                   tag        = cms.string("embeddedEta"),#CHECKME
                                   method     = cms.string("eta"),
                                   leadingOnly=cms.untracked.bool(False)
-                              )
+                              ),
+                              higgsClass = makeHiggsClassification("rivetProducerHTXS")
    )
 
    setattr(process, name, eventTree)

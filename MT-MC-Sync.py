@@ -39,10 +39,11 @@ process.source = cms.Source("PoolSource",
 from PUAnalysis.Configuration.tools.analysisTools_LTau import *
 defaultReconstructionMC(process,'HLT',
         [
-            'HLT_IsoMu24_v',
+            'HLT_IsoMu24_v*',
+            'HLT_IsoMu27_v*',
             'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
-            'HLT_Ele32_WPTight_Gsf_v',
-            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v'
+            #'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v*',#only data<317509
+            #'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v*' #mcanddat >=317509
             ])
 
 

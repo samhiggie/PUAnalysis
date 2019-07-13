@@ -79,7 +79,7 @@ MTanalysisConfigurator.addSelector('muTausMuonVertices','PATMuTauPairSelector','
 #use ICHEP ID
 
 MTanalysisConfigurator.addSelector('muTausTauPtEta','PATMuTauPairSelector','leg2.pt()>23&&abs(leg2.eta())<2.3','MTTauPtEta',1)
-MTanalysisConfigurator.addSelector('muTausTauLooseID','PATMuTauPairSelector','leg2.tauID("idVVLoose2017v2")>0.5','MTTauLooseID',1)
+MTanalysisConfigurator.addSelector('muTausTauLooseID','PATMuTauPairSelector','leg2.tauID("byVVLooseIsolationMVArun2v1DBoldDMwLT")>0.5','MTTauLooseID',1)
 MTanalysisConfigurator.addSelector('muTausDecayFound','PATMuTauPairSelector','leg2.tauID("decayModeFinding")>0.5','MTTauDecayFound',1)
 MTanalysisConfigurator.addSelector('muTausDecayVertex','PATMuTauPairSelector','abs(leg2.userFloat("taudZ"))<0.2','MTTauVertex',1)
 MTanalysisConfigurator.addSelector('muTausChargeNot2','PATMuTauPairSelector','abs(leg2.charge())==1','MTChargeIsABS1',1)
@@ -89,7 +89,7 @@ MTanalysisConfigurator.addMuTauLVeto('muTausLVeto','TightElectrons','TightMuons'
 MTanalysisConfigurator.addSelector('muTausMuonVeto','PATMuTauPairSelector','lVeto==0','MTMuonVeto',1)
 MTanalysisConfigurator.addSorter('muTausSorted','PATMuTauPairSorterByIso')
 MTanalysisConfigurator.addSelector('muTausMuonIsolation','PATMuTauPairSelector','leg1.userFloat("dBRelIso")<0.15','MTMuonIsolation',1)
-MTanalysisConfigurator.addSelector('muTausTauID','PATMuTauPairSelector','leg2.tauID("idTight2017v2")>0.5','MTTauID',1)
+MTanalysisConfigurator.addSelector('muTausTauID','PATMuTauPairSelector','leg2.tauID("byTightIsolationMVArun2v1DBoldDMwLT")>0.5','MTTauID',1)
 MTanalysisConfigurator.addSelector('muTausTauElectronVeto','PATMuTauPairSelector','leg2.tauID("againstElectronVLooseMVA6")>0.5','MTAgainstElectron',1)
 MTanalysisConfigurator.addSelector('muTausTauMuonVeto','PATMuTauPairSelector','leg2.tauID("againstMuonTight3")>0.5','MTAgainstMuon',1)
 MTanalysisConfigurator.addSelector('muTausOS','PATMuTauPairSelector','charge==0','MTOS',1)

@@ -77,7 +77,7 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
 
   #Default selections for systematics
   applyDefaultSelectionsPT(process)
-  STXS(process)
+  #STXS(process)
 
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
 
@@ -415,22 +415,6 @@ def reRunMET(process, runOnData):
         )
 
   process.analysisSequence *=process.fullPatMetSequenceModifiedMET 
-
-def deepTaus(process, updatedTauName):
-    #updatedTauName = "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
-    import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
-    tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
-                        updatedTauName = updatedTauName,
-                        toKeep = [ "2017v2", "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
-                                   "deepTau2017v1", #deepTau Tau-Ids
-                                   "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
-                                   ])
-    tauIdEmbedder.runTauID()
-    # Path and EndPath definitions
-    process.analysisSequence = cms.Path(
-        process.rerunMvaIsolationSequence *
-        getattr(process,updatedTauName)
-    )
 
 
 def reRunTaus(process,taus='slimmedTaus'):
