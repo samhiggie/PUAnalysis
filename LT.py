@@ -3,14 +3,14 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ANALYSIS")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = '94X_dataRun2_v10'
+process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v11'
 
 process.options   = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(500)
+    input = cms.untracked.int32(-1)
 )
 
 
@@ -21,12 +21,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        ''
-        #'file:singleMu.root'
-        #'/store/data/Run2017B/SingleMuon/MINIAOD/17Nov2017-v1/40000/0021369B-9BD8-E711-BFE9-FA163EAA42CB.root'
-        #"/store/data/Run2016D/SingleMuon/MINIAOD/PromptReco-v2/000/276/384/00000/AAEA15A0-FE46-E611-A7BA-02163E012368.root"
-        #'file:event-21753.root'
-        #'/store/mc/RunIISummer17MiniAOD/VBFHToTauTau_M125_13TeV_powheg_pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10-v2/50000/02098EBB-029C-E711-8FED-441EA1714E4C.root'
+        '/store/data/Run2018A/SingleMuon/MINIAOD/17Sep2018-v2/00000/11697BCC-C4AB-204B-91A9-87F952F9F2C6.root'
 		),
 		inputCommands=cms.untracked.vstring(
 						'keep *',
@@ -36,7 +31,12 @@ process.source = cms.Source("PoolSource",
 
 
 import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
-process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt').getVLuminosityBlockRange() 
+process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
+).getVLuminosityBlockRange() 
+
+
+from PUAnalysis.Configuration.JSON_2018 import myLumiList
+myLumiList(process);
 
 
 #added in etau and mutau triggers
@@ -45,33 +45,31 @@ defaultReconstruction(process,'HLT',
         [
             'HLT_IsoMu24_v',
             'HLT_IsoMu27_v',
-            'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
-            'HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1_v',
-            'HLT_Ele32_WPTight_Gsf_v',
-            'HLT_Ele35_WPTight_Gsf_v'
+            'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v',
+            'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1_v'
             ])
 
 
 
 
         #EventSelection
-process.load("PUAnalysis.Configuration.hTauTau_LTau_cff")
+process.load("PUAnalysis.Configuration.hTauTau_LTau_Sync_cff")
 
 
 process.eventSelectionMT = cms.Path(process.selectionSequenceMT)
-process.eventSelectionET = cms.Path(process.selectionSequenceET)
+#process.eventSelectionET = cms.Path(process.selectionSequenceET)
 
 
 from PUAnalysis.Configuration.tools.ntupleTools_LTau import addMuTauEventTree
 addMuTauEventTree(process,'muTauEventTree')
 addMuTauEventTree(process,'muTauEventTreeFinal','muTausOS','diMuonsOSSorted')
 
-from PUAnalysis.Configuration.tools.ntupleTools_LTau import addEleTauEventTree
-addEleTauEventTree(process,'eleTauEventTree')
-addEleTauEventTree(process,'eleTauEventTreeFinal','eleTausOS','diElectronsOSSorted')
+#from PUAnalysis.Configuration.tools.ntupleTools_LTau import addEleTauEventTree
+#addEleTauEventTree(process,'eleTauEventTree')
+#addEleTauEventTree(process,'eleTauEventTreeFinal','eleTausOS','diElectronsOSSorted')
 
 addEventSummary(process,True,'MT','eventSelectionMT')
-addEventSummary(process,True,'ET','eventSelectionET')
+#addEventSummary(process,True,'ET','eventSelectionET')
 
 
 

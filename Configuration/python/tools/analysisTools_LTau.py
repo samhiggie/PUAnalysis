@@ -108,7 +108,7 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
 
   recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
   reRunMET(process,True)
-
+  
   #mvaMet2(process, True) #isData
   metSignificance(process)
 
@@ -129,6 +129,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   #jetOverloading(process,"patJetsReapplyJEC") #"slimmedJets")
   jetFilter(process,"patOverloadedJets")
 
+  #MiniAODJESMET does nothing on data, but it does rename the collection for consistency with the MC sequence
+  MiniAODJESMET(process,"patOverloadedJets","slimmedMETs")
 
   #Default selections for systematics
   applyDefaultSelectionsPT(process)
@@ -191,6 +193,7 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   jetOverloading(process,"patJetsReapplyJEC",False)
 
   MiniAODJES(process,"patOverloadedJets")
+  MiniAODJESMET(process,"patOverloadedJets","slimmedMETs")
   jetFilter(process,"jetsEmbedJES")
 
   #NOTE: As of Nov 30 2018 this must go after jet corrections or the jets will break
@@ -319,8 +322,17 @@ def MiniAODJES(process, jSrc="slimmedJets"):
             corrLabel = cms.string('AK4PFchs'),
             fName = cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt")
             )
-
     process.analysisSequence*=process.jetsEmbedJES
+
+def MiniAODJESMET(process, jSrc="slimmedJets", mSrc="slimmedJets"):
+    process.metEmbedJES = cms.EDProducer(
+            "MiniAODMETJesSystematicsEmbedder",
+            src = cms.InputTag(jSrc),
+            srcMET = cms.InputTag(mSrc),
+            corrLabel = cms.string('AK4PFchs'),
+            fName = cms.string("Autumn18_V8_MC_UncertaintySources_AK4PFchs.txt")
+            )
+    process.analysisSequence*=process.metEmbedJES
 
 
 #FIXME
@@ -526,13 +538,14 @@ def reapplyPUJetID(process, srcJets = cms.InputTag("slimmedJets")):
     process.analysisSequence *= process.pileupJetIdUpdated
    
 def recorrectJetsSQL(process, isData = False):
-    JECTag = 'Autumn18_V8_MC'
+  #changing from v8 to v15
+    JECTag = 'Autumn18_V15_MC'
     if(isData):
-      JECTag = 'Autumn18_RunABCD_V8_DATA'
+      JECTag = 'Autumn18_RunABCD_V15_DATA'
     #cmssw_base = os.environ['CMSSW_BASE']
     ## getting the JEC from the DB
-    #process.load("CondCore.CondDB.CondDB_cfi")
-    process.load("CondCore.DBCommon.CondDBCommon_cfi")
+    process.load("CondCore.CondDB.CondDB_cfi")
+    #process.load("CondCore.DBCommon.CondDBCommon_cfi")
     process.jec = cms.ESSource("PoolDBESSource",
                                DBParameters = cms.PSet( messageLevel = cms.untracked.int32(0)),
                                timetype = cms.string('runnumber'),
