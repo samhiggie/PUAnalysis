@@ -1,13 +1,13 @@
 #!/bin/sh
-olddirname='lt_unweighted_Nov14'
-newdirname='lt_weighted_Nov16'
+olddirname='lt_Jul20_JECV8'
+newdirname='lt_Jul20_JECV8_Weighted'
 mkdir /scratch/$USER/$newdirname
 cd /scratch/$USER/$newdirname
 
-weight=0;
-weightH=0;
+weight=1;
+weightH=1;
 weightW=1;
-weightZ=0;
+weightZ=1;
 
 #cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.
 
@@ -80,10 +80,10 @@ if [ $weight -eq 1 ]
 
 #removed from copy list:
 #WZTo2L2Q.root
-    #for dir in TT_DL.root TT_SL.root TT_had.root WZTo1L3Nu.root WZTo1L1Nu2Q.root WZTo2L2Q.root WZTo3L1Nu.root tBar_tW.root t_tW.root St_tBar.root St_t.root WWTo1L1Nu2Q.root WWTo2L2Nu.root WWTo4Q.root ZZTo2L2Q.root ZZTo2L2Nu.root ZZTo4L.root EWKWm2j.root EWKWp2j.root EWKZ2Nu.root EWKZ2l.root 
-    #do 
-	#cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
-    #done
+    for dir in TT_DL.root TT_SL.root tBar_tW.root t_tW.root St_tBar.root St_t.root EWKWm2j.root EWKWp2j.root EWKZ2l.root 
+    do 
+	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
+    done
 
     #EventWeightsIterativeGen outputFile='MT.root'  weight=831.76     histoName='MT/results' sumHistoName='sumweights/genWeights'
     echo 'Weight MT'
@@ -152,7 +152,7 @@ if [ $weight -eq 1 ]
 
     wait;
 
-    hadd -f DiBoson.root WWTo*root WZTo*root ZZTo*.root St_*.root t*tW.root EWK*.root
+    hadd -f DiBoson.root St_*.root t*tW.root EWK*.root
     hadd -f TT.root TT_*.root
 fi
 
