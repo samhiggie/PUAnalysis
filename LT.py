@@ -30,10 +30,6 @@ process.source = cms.Source("PoolSource",
 )
 
 
-import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
-process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
-).getVLuminosityBlockRange() 
-
 
 from PUAnalysis.Configuration.JSON_2018 import myLumiList
 myLumiList(process);
