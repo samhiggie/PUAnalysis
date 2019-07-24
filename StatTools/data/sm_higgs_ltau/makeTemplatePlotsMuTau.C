@@ -11,15 +11,15 @@ void makeTemplatePlotsMuTau(){
    makeLTauStack("~/www/ltau_2018_mutau/muTau_jeta_2","muTauPlots/muTau_jeta_2.root","mt_inclusive",3,"Sub-Leading jet #eta","",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_m_2","muTauPlots/muTau_m_2.root","mt_inclusive",3,"M_{#tau}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
 
-   makeLTauStack("~/www/ltau_2018_mutau/muTau_jpt_1","muTauPlots/muTau_jpt_1.root","mt_inclusive",3,"Leading jet Pt","GeV",false,"#tau_{#mu}#tau_{h}","Golden",true,false,true);
-   makeLTauStack("~/www/ltau_2018_mutau/muTau_jpt_2","muTauPlots/muTau_jpt_2.root","mt_inclusive",3,"Sub-Leading jet Pt","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
+   makeLTauStack("~/www/ltau_2018_mutau/muTau_jpt_1","muTauPlots/muTau_jpt_1.root","mt_inclusive",3,"Leading jet p_{T}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",true,false,true);
+   makeLTauStack("~/www/ltau_2018_mutau/muTau_jpt_2","muTauPlots/muTau_jpt_2.root","mt_inclusive",3,"Sub-Leading jet p_{T}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_met","muTauPlots/muTau_met.root","mt_inclusive",3,"ME_{T}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_mt_1_nocut","muTauPlots/muTau_mt_1.root","mt_inclusive",3,"no cut m_{T}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_pt_2","muTauPlots/muTau_pt_2.root","mt_inclusive",3,"#tau P_{T}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_eta_2","muTauPlots/muTau_eta_2.root","mt_inclusive",3,"#eta_{#tau}","",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_mjj","muTauPlots/muTau_mjj.root","mt_inclusive",3,"M_{JJ}","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
-   makeLTauStack("~/www/ltau_2018_mutau/muTau_njetspt20","muTauPlots/muTau_njetspt20.root","mt_inclusive",3,"Number Jets Pt>20","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
-   makeLTauStack("~/www/ltau_2018_mutau/muTau_njets","muTauPlots/muTau_njets.root","mt_inclusive",3,"Number Jets Pt>30","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
+   makeLTauStack("~/www/ltau_2018_mutau/muTau_njetspt20","muTauPlots/muTau_njetspt20.root","mt_inclusive",3,"Number Jets p_{T}>20","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
+   makeLTauStack("~/www/ltau_2018_mutau/muTau_njets","muTauPlots/muTau_njets.root","mt_inclusive",3,"Number Jets p_{T}>30","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
    makeLTauStack("~/www/ltau_2018_mutau/muTau_npvs","muTauPlots/muTau_npv.root","mt_inclusive",3,"PVs","GeV",false,"#tau_{#mu}#tau_{h}","Golden",false,false,true);
 /*
 
