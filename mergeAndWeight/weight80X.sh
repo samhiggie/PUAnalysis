@@ -1,13 +1,13 @@
 #!/bin/sh
-olddirname='lt_unweighted_Nov14'
-newdirname='lt_weighted_Nov16'
+olddirname='lt_Jul20_JECV8'
+newdirname='lt_Jul20_JECV8_Weighted'
 mkdir /scratch/$USER/$newdirname
 cd /scratch/$USER/$newdirname
 
-weight=0;
-weightH=0;
+weight=1;
+weightH=1;
 weightW=1;
-weightZ=0;
+weightZ=1;
 
 #cp /scratch/$USER/$olddirname/tauDATA.root /scratch/$USER/$newdirname/.
 
@@ -80,10 +80,10 @@ if [ $weight -eq 1 ]
 
 #removed from copy list:
 #WZTo2L2Q.root
-    #for dir in TT_DL.root TT_SL.root TT_had.root WZTo1L3Nu.root WZTo1L1Nu2Q.root WZTo2L2Q.root WZTo3L1Nu.root tBar_tW.root t_tW.root St_tBar.root St_t.root WWTo1L1Nu2Q.root WWTo2L2Nu.root WWTo4Q.root ZZTo2L2Q.root ZZTo2L2Nu.root ZZTo4L.root EWKWm2j.root EWKWp2j.root EWKZ2Nu.root EWKZ2l.root 
-    #do 
-	#cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
-    #done
+    for dir in TT_DL.root TT_SL.root tBar_tW.root t_tW.root St_tBar.root St_t.root EWKWm2j.root EWKWp2j.root EWKZ2l.root 
+    do 
+	cp /scratch/$USER/$olddirname/$dir /scratch/$USER/$newdirname/.
+    done
 
     #EventWeightsIterativeGen outputFile='MT.root'  weight=831.76     histoName='MT/results' sumHistoName='sumweights/genWeights'
     echo 'Weight MT'
@@ -91,15 +91,16 @@ if [ $weight -eq 1 ]
     EventWeightsIterativeGen  outputFile='TT_SL.root'             weight=365.35     histoName='MT/results' sumHistoName='sumweights/genWeights' &
     EventWeightsIterativeGen  outputFile='TT_had.root'            weight=377.96     histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
-    echo 'Weight WZ 1L3Nu'
-    EventWeightsIterativeGen outputFile='WZTo1L3Nu.root'      weight=3.293   histoName='MT/results' sumHistoName='sumweights/genWeights' &
-    echo 'Weight WZ 1L1NuQQ'
-    EventWeightsIterativeGen outputFile='WZTo1L1Nu2Q.root'    weight=11.66   histoName='MT/results' sumHistoName='sumweights/genWeights' &
-    echo 'Weight WZ 2L2Q'
-    EventWeightsIterativeGen outputFile='WZTo2L2Q.root'       weight=6.331   histoName='MT/results' sumHistoName='sumweights/genWeights' &
-    echo 'Weight WZ 3L1Nu'
-    EventWeightsIterativeGen outputFile='WZTo3L1Nu.root'      weight=5.052   histoName='MT/results' sumHistoName='sumweights/genWeights' &
-
+    #echo 'Weight WZ 1L3Nu'
+    #EventWeightsIterativeGen outputFile='WZTo1L3Nu.root'      weight=3.293   histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WZ 1L1NuQQ'
+    #EventWeightsIterativeGen outputFile='WZTo1L1Nu2Q.root'    weight=11.66   histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WZ 2L2Q'
+    #EventWeightsIterativeGen outputFile='WZTo2L2Q.root'       weight=6.331   histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WZ 3L1Nu'
+    #EventWeightsIterativeGen outputFile='WZTo3L1Nu.root'      weight=5.052   histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    echo 'Weigth WZ'
+    EventWeightsIterativeGen outputFile='WZ.root'          weight=22.82   histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
     echo 'Weight tBar_tW'
     EventWeightsIterativeGen outputFile='tBar_tW.root'      weight=36.0    histoName='MT/results' sumHistoName='sumweights/genWeights' &
@@ -110,21 +111,25 @@ if [ $weight -eq 1 ]
     echo 'Weight St_top'
     EventWeightsIterativeGen outputFile='St_t.root'         weight=136.02    histoName='MT/results' sumHistoName='sumweights/genWeights' & #136 * 3*.108
 
-    echo 'Weight WW to 1L1Nu QQ'
-    EventWeightsIterativeGen outputFile='WWTo1L1Nu2Q.root'  weight=45.997    histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WW to 1L1Nu QQ'
+    #EventWeightsIterativeGen outputFile='WWTo1L1Nu2Q.root'  weight=45.997    histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
-    echo 'Weight WW To 2L 2Nu'
-    EventWeightsIterativeGen outputFile='WWTo2L2Nu.root'    weight=11.08    histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WW To 2L 2Nu'
+    #EventWeightsIterativeGen outputFile='WWTo2L2Nu.root'    weight=11.08    histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
-    echo 'Weight WW To To 4Q'
-    EventWeightsIterativeGen outputFile='WWTo4Q.root'       weight=47.73    histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight WW To To 4Q'
+    #EventWeightsIterativeGen outputFile='WWTo4Q.root'       weight=47.73    histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    echo 'Weight WW'
+    EventWeightsIterativeGen outputFile='WW.root'           weight=22.82    histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
-    echo 'Weight ZZ 2L2Q'
-    EventWeightsIterativeGen outputFile='ZZTo2L2Q.root'     weight=3.688  histoName='MT/results' sumHistoName='sumweights/genWeights' &
-    echo 'Weight ZZ 2L2Nu'
-    EventWeightsIterativeGen outputFile='ZZTo2L2Nu.root'    weight=0.6008  histoName='MT/results' sumHistoName='sumweights/genWeights' &
-    echo 'Weight ZZTo4L'
-    EventWeightsIterativeGen outputFile='ZZTo4L.root'       weight=1.325  histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight ZZ 2L2Q'
+    #EventWeightsIterativeGen outputFile='ZZTo2L2Q.root'     weight=3.688  histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight ZZ 2L2Nu'
+    #EventWeightsIterativeGen outputFile='ZZTo2L2Nu.root'    weight=0.6008  histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    #echo 'Weight ZZTo4L'
+    #EventWeightsIterativeGen outputFile='ZZTo4L.root'       weight=1.325  histoName='MT/results' sumHistoName='sumweights/genWeights' &
+    echo 'Weight ZZ'
+    EventWeightsIterativeGen outputFile='ZZ.root'            weight=10.32  histoName='MT/results' sumHistoName='sumweights/genWeights' &
 
     echo 'Weight EWK Wm2j'
     EventWeightsIterativeGen outputFile='EWKWm2j.root'       weight=  histoName='MT/results' sumHistoName='sumweights/genWeights' &
@@ -152,7 +157,7 @@ if [ $weight -eq 1 ]
 
     wait;
 
-    hadd -f DiBoson.root WWTo*root WZTo*root ZZTo*.root St_*.root t*tW.root EWK*.root
+    hadd -f DiBoson.root St_*.root t*tW.root EWK*.root WW.root WZ.root ZZ.root
     hadd -f TT.root TT_*.root
 fi
 

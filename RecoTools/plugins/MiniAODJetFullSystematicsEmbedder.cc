@@ -35,22 +35,9 @@ private:
     "AbsoluteScale",
     "AbsoluteStat",
     "AbsoluteSample",
-    //"CorrelationGroupFlavor",
-    //"CorrelationGroupIntercalibration",
-    //"CorrelationGroupMPFInSitu",
-    //"CorrelationGroupUncorrelated",
-    //"CorrelationGroupbJES",
-    //"FlavorPhotonJet",
-    //"FlavorPureBottom",
-    //"FlavorPureCharm",
-    //"FlavorPureGluon",
-    //"FlavorPureQuark",
     "FlavorQCD",
-    //"FlavorZJet",
     "Fragmentation",
     "PileUpDataMC",
-    //"PileUpEnvelope",
-    //"PileUpMuZero",
     "PileUpPtBB",
     "PileUpPtEC1",
     "PileUpPtEC2",
@@ -78,14 +65,14 @@ private:
     "SubTotalRelative",
     "SubTotalScale",
     "TimePtEta",
-    //"TimeRunBCD",
-    //"TimeRunE",
-    //"TimeRunF",
-    //"TimeRunGH",
     "TotalNoFlavorNoTime",
     "TotalNoFlavor",
     "TotalNoTime",
     "Total",
+    //"Eta3to5",
+    //"Eta0to5",
+    //"Eta0to3",
+    //"EC2",
     "Closure",
   }; // end uncertNames
   std::map<std::string, JetCorrectorParameters const *> JetCorParMap;
@@ -100,6 +87,7 @@ MiniAODJetFullSystematicsEmbedder::MiniAODJetFullSystematicsEmbedder(const edm::
   std::string base = std::getenv("CMSSW_BASE");
   std::string fPath_= base+"/src/PUAnalysis/Configuration/data/"+fName_;
   std::cout<<"Using path"<<fPath_<<std::endl;
+
   produces<pat::JetCollection>();
   for (auto const& name : uncertNames) {
     produces<ShiftedCandCollection>("p4OutJESUpJetsUncor"+name);
@@ -108,6 +96,11 @@ MiniAODJetFullSystematicsEmbedder::MiniAODJetFullSystematicsEmbedder(const edm::
     // Create the uncertainty tool for each uncert
     // skip Closure, which is a comparison at the end
     if (name == "Closure") continue;
+    // Also skip the combined eta range uncertainties
+    if (name == "Eta0to3") continue;
+    if (name == "Eta0to5") continue;
+    if (name == "Eta3to5") continue;
+    if (name == "ClosureNew") continue;
     JetCorrectorParameters const * JetCorPar = new JetCorrectorParameters(fPath_, name);
     JetCorParMap[name] = JetCorPar;
 
@@ -133,6 +126,11 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::E
   // For comparing with Total for Closure test
   // assume symmetric uncertainties and ignore Down
   std::vector<double> factorizedTotalUp(nJets, 0.0);
+  std::vector<double> factorizedEta0to3Up(nJets, 0.0);
+  std::vector<double> factorizedEta0to5Up(nJets, 0.0);
+  std::vector<double> factorizedEta3to5Up(nJets, 0.0);
+  std::vector<double> factorizedClosureNewUp(nJets,0.0);
+  std::vector<double> factorizedEC2Up(nJets, 0.0);
 
   for (auto const& name : uncertNames) {
     std::unique_ptr<ShiftedCandCollection> p4OutJESUpJets(new ShiftedCandCollection);
@@ -144,8 +142,10 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::E
     for (size_t i = 0; i < nJets; ++i) {
       const pat::Jet& jet = jets->at(i);
 
+      LorentzVector JetP4= jet.p4();
+
       double unc = 0;
-      if (std::abs(jet.eta()) < 5.2 && jet.pt() > 9 && name != "Closure") {
+      if (std::abs(jet.eta()) < 5.2 && jet.pt() > 9 && name != "Closure" && !(name == "Eta0to3") && !(name == "EC2") && !(name == "Eta0to5") && !(name == "Eta3to5") && !(name == "ClosureNew")) {
 	JetUncMap[name]->setJetEta(jet.eta());
 	JetUncMap[name]->setJetPt(jet.pt());
 	unc = JetUncMap[name]->getUncertainty(true);
@@ -154,10 +154,81 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::E
       // Save our factorized uncertainties into a cumulative total
       // Apply this uncertainty to loop "Closure" for future
       // comparison (also skim SubTotals)
-      if (name != "Total" && name != "Closure" && !name.find("SubTotal") ) factorizedTotalUp[i] += unc*unc;
-      if (std::abs(jet.eta()) < 5.2 && jet.pt() > 9 && name == "Closure") {
-	unc = std::sqrt(factorizedTotalUp[i]);
-      }
+      //if (name != "Total" && name != "Closure" && !name.find("SubTotal") ) factorizedTotalUp[i] += unc*unc;
+      //if (std::abs(jet.eta()) < 5.2 && jet.pt() > 9 && name == "Closure") {
+      //unc = std::sqrt(factorizedTotalUp[i]);
+      //}
+
+    if (name != "Total" && name != "Closure" && name != "Eta0to3" && name != "Eta3to5" && name != "Eta0to5" && name != "EC2" && !name.find("SubTotal") ) factorizedTotalUp[i] += unc*unc;
+
+    if (std::abs(jet.eta()) < 5.2 && jet.pt() > 9) {
+      // Save our factorized uncertainties into a cumulative total
+      // Apply this uncertainty to loop "Closure" for future
+      // comparison (also skip SubTotals)
+      // ALL factorized uncertainties pass this if statment
+      if ( !(name == "Total") && !(name == "Closure") && !(name == "Eta0to3") && !(name == "EC2") && 
+	   !(name == "Eta0to5") && !(name == "Eta3to5") && !(name == "ClosureNew")) {
+	// All 28
+	factorizedTotalUp[i] += unc*unc;
+	// Uncertainties focused in center of detector
+	if ((name == "PileUpPtEC1") ||
+	    (name == "PileUpPtBB") ||
+	    (name == "RelativeJEREC1") ||
+	    (name == "RelativePtEC1") ||
+	    (name == "RelativeStatEC") ||
+	    (name == "RelativePtBB") )
+	  factorizedEta0to3Up[i] += unc*unc;
+	// Uncertainties affecting the entire detector
+	if ((name == "SinglePionECAL") ||
+	    (name == "SinglePionHCAL") ||
+	    (name == "AbsoluteFlavMap") ||
+	    (name == "AbsoluteMPFBias") ||
+	    (name == "AbsoluteScale") ||
+	    (name == "AbsoluteStat") ||
+	    (name == "Fragmentation") ||
+	    (name == "FlavorQCD") ||
+	    (name == "TimePtEta") ||
+	    (name == "PileUpDataMC") ||
+	    (name == "RelativeFSR") ||
+	    (name == "RelativeStatFSR") ||
+	    (name == "PileUpPtRef") )
+	  factorizedEta0to5Up[i] += unc*unc;
+	// Uncertainties focused in forward region of detector
+	if ((name == "RelativeStatHF") ||
+	    (name == "RelativePtHF") ||
+	    (name == "PileUpPtHF") ||
+	    (name == "RelativeJERHF") )
+	  factorizedEta3to5Up[i] += unc*unc;
+	
+	if ((name == "PileUpPtEC2") ||
+	    (name == "RelativeJEREC2") ||
+	    (name == "RelativePtEC2") )
+	  factorizedEC2Up[i] += unc*unc;
+	
+	// New closure test for updated method
+	// These two contributed here and the Eta split regions are
+	// summed below
+        }
+        // std::vector is ordered, so Closure comes after all 28 factorized
+        // options.  Same for the below Eta regions
+        if (name == "Closure") {
+          unc = std::sqrt(factorizedTotalUp[i]);
+        }
+        if (name == "Eta0to3") {
+          unc = std::sqrt(factorizedEta0to3Up[i]);
+          factorizedClosureNewUp[i] += unc*unc;
+        }
+        if (name == "Eta0to5") {
+          unc = std::sqrt(factorizedEta0to5Up[i]);
+          factorizedClosureNewUp[i] += unc*unc;
+        }
+        if (name == "Eta3to5") {
+          unc = std::sqrt(factorizedEta3to5Up[i]);
+          factorizedClosureNewUp[i] += unc*unc;
+        }
+	if (name == "ClosureNew")
+          unc = std::sqrt(factorizedClosureNewUp[i]);
+    } // Shifted jets within absEta and pT
 
       // Get uncorrected pt
       assert(jet.jecSetsAvailable());
@@ -167,6 +238,8 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::E
 
       //std::cout << name << ":  uncDown pt: " << uncDown.pt() << " ,uncUp pt: " << uncUp.pt() << std::endl;
       //std::cout << name << " nominal eta "<< jet.p4().eta()<<":  uncDown eta: " << uncDown.eta() << " ,uncUp eta: " << uncUp.eta() << std::endl;
+   // Double check if we need more cleaning, this is the bare minimum:
+      if(JetP4.pt()<15 || fabs(JetP4.eta())>5.2) continue;
 
       ShiftedCand candUncDown = jet;
       candUncDown.setP4(uncDown);

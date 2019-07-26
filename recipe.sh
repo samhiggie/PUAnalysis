@@ -2,7 +2,8 @@
 
 pushd $CMSSW_BASE/src
 cd PUAnalysis
-git clone -b tauTriggers2017_reMiniaod_test  https://github.com/truggles/TauTriggerSFs2017.git TauTriggerSFs2017
+#git clone -b final_2017_MCv2 https://github.com/cms-tau-pog/TauTriggerSFs $CMSSW_BASE/src/TauAnalysisTools/TauTriggerSFs
+cp -r /afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/Sam_2017/src/PUAnalysis/TauTriggerSFs2017 .
 
 pushd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/LeptonEff-interface.git HTT-utilities
@@ -37,9 +38,11 @@ cd $CMSSW_BASE/src
 git clone https://github.com/CMS-HTT/Jet2TauFakes.git HTTutilities/Jet2TauFakes
 cd HTTutilities/Jet2TauFakes
 git checkout v0.2.2
-scram b
+##scram b
 mkdir data
-git clone -b 2017 ssh://git@gitlab.cern.ch:7999/cms-htt/Jet2TauFakesFiles.git data
+#git clone -b 2017 ssh://git@gitlab.cern.ch:7999/cms-htt/Jet2TauFakesFiles.git data
+#git clone -b 2017 git@gitlab.cern.ch:7999/cms-htt/Jet2TauFakesFiles.git data
+cp -r /afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/Sam_2017/src/HTTutilities/Jet2TauFakes/data/2018/ .
 cd $CMSSW_BASE/src
 #SV-fit and TauAnalysis Tools
 git clone -b fastMTT_21_06_2018 https://github.com/SVfit/ClassicSVfit TauAnalysis/ClassicSVfit #### for fast mtt use this branch -b fastMTT_21_06_2018
@@ -48,7 +51,7 @@ pushd $CMSSW_BASE/src
 
 
 #for rivet tool
-cd $CMSSW_BASE/srMSSW_BASE/src 
+cd $CMSSW_BASE/src 
 git cms-addpkg Configuration/Generator
 git cms-addpkg GeneratorInterface/RivetInterface
 git cms-addpkg SimDataFormats/HTXS
@@ -69,5 +72,6 @@ source Rivet/rivetSetup.sh
 rm Rivet/TOP/src/CMS_2016_I1491950.cc
 rm Rivet/TOP/src/CMS_2016_PAS_TOP_15_006.cc
 
+export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=sign-compare -Wno-error=reorder"
 
 echo "Time to do! scram b -j 21"

@@ -1,3 +1,8 @@
+# Make the framework shut up.
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 20
+
+
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
             $inputFileNames

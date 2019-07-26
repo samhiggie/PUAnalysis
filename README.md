@@ -6,7 +6,7 @@ PUAnalysis
 
 ```
 cmsrel CMSSW_10_2_14 #for 2017 analysis
-cd CMSSW_10_2_24/src/
+cd CMSSW_10_2_14/src/
 cmsenv
 git cms-init 
 git clone https://github.com/samhiggie/PUA.git   
