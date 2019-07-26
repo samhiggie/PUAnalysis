@@ -32,6 +32,8 @@
 </bin>
 <bin   name="FastMTTStandAlonePUATauDM" file="FastMTTStandAlonePUATauDM.cc">
 </bin>
+<bin   name="FakeFactorSA_Syst" file="FakeFactorSA_Syst.cc">
+</bin>
 <!--<bin   name="FakeFactorSA" file="FakeFactorSA.cc">
 </bin>-->
 

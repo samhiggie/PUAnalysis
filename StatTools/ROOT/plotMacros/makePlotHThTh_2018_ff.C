@@ -135,7 +135,7 @@ void makeDiTauStack(TString name,TString file,TString dir,int s,TString labelX,T
 	//if (dndm) convertToDNDM(QCD);
 	//applyStyle(QCD,kMagenta-10,1,1001);
 
-	TH1F * QCD = (TH1F*)(f->Get(dir+"/FF"));
+	TH1F * QCD = (TH1F*)(f->Get(dir+"/jetFakes"));
 	if (dndm) convertToDNDM(QCD);
 	applyStyle(QCD,kSpring+6,1,1001);
 

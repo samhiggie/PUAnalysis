@@ -16,10 +16,10 @@ jobID='2018_Nov13_data_tau'
 
 user=samuellh
 mergedata=0;
-mergemc=0;
-mergeW=0;
+mergemc=1;
+mergeW=1;
 mergeZ=1;
-mergehiggs=0;
+mergehiggs=1;
 
 if [ $mergedata -eq 1 ]
     then

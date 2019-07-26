@@ -12,6 +12,10 @@
 </bin>
 <bin   name="MakeDataCardHThTh_2016_FF" file="MakeDataCardHThTh_2016_FF.cc">
 </bin>
+<bin   name="MakeDataCardHThTh_2018_FF" file="MakeDataCardHThTh_2018_FF.cc">
+</bin>
+<bin   name="MakeDataCardHThTh_2018_2D_FF" file="MakeDataCardHThTh_2018_2D_FF.cc">
+</bin>
 <bin   name="MakeDataCardHTT" file="MakeDataCardHTT.cc">
 </bin>
 
