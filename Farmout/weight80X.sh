@@ -1,7 +1,7 @@
 #!/bin/sh
 #olddirname='2018_tt_JEC_merged'
-olddirname='2018_tt_JEC_fastmtt'
-newdirname='2018_tt_JEC_weighted'
+olddirname='2019_July_tt_2018'
+newdirname='2019_July_tt_2018_weighted'
 mkdir /nfs_scratch/$USER/$newdirname
 cd /nfs_scratch/$USER/$newdirname
 

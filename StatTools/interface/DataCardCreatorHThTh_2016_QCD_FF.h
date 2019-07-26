@@ -54,6 +54,7 @@ class DataCardCreatorHThTh_2016 {
 			energy_   = parser.stringValue("energy");
 			samesign_ = parser.doubleValue("samesign");
 			doSys_    = parser.doubleValue("doSys");//addme
+			doJEC_    = parser.doubleValue("doJEC");//addme
 			useTEC_  = parser.doubleValue("useTEC");//addme
 
                         string name_=channel_;
@@ -81,6 +82,7 @@ class DataCardCreatorHThTh_2016 {
 			topFile_  = parser.stringValue("topFile");
 			qcdFile_  = parser.stringValue("qcdFile");
 			dataFile_  = parser.stringValue("dataFile");
+			ffFile_  = parser.stringValue("ffFile");
 
 			nominalSelection_ = parser.stringValue("nominalselection");
 
@@ -253,6 +255,8 @@ class DataCardCreatorHThTh_2016 {
 			std::cout<<"creating jet systematics Higgs"<<std::endl;
 			if(doSys_>0)
 			  createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
+            if(doJEC_>0)
+			  createJETSystematicsHiggs(fullselection, luminosity_*legCorr*legCorr, prefix);
 
 			
 		}
@@ -278,6 +282,13 @@ class DataCardCreatorHThTh_2016 {
 			output.DATA = dataY.first;
 
 			if(doSys_>0){
+			  std::cout<<"creating met systematics backgrounds"<<std::endl;
+			  createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
+			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
+			  createJETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
+
+			}
+			if(doJEC_>0){
 			  std::cout<<"creating met systematics backgrounds"<<std::endl;
 			  createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
 			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
@@ -628,12 +639,35 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		 */		
 		void createShiftsTES(string name, string inputFile, string inputSelections, string inputWeight, float scale, string prefix,  pair<float,float> nominalYield){
 
-		  std::string ptSelectionDM0Up_    = "(((pt_2*0.988)>40&&decayMode_2==0)||((pt_2*1.010)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&(((pt_1*0.988)>50&&decayMode_1==0)||((pt_1*1.010)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))";
-		  std::string ptSelectionDM0Down_  = "(((pt_2*0.976)>40&&decayMode_2==0)||((pt_2*1.010)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&(((pt_1*0.976)>50&&decayMode_1==0)||((pt_1*1.010)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))";
-		  std::string ptSelectionDM1Up_    = "(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.016)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.016)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))";
-		  std::string ptSelectionDM1Down_  = "(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.004)>40&&decayMode_2==1)||((pt_2*1.004)>40&&decayMode_2==10))&&(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.004)>50&&decayMode_1==1)||((pt_1*1.004)>50&&decayMode_1==10))";
-		  std::string ptSelectionDM10Up_   = "(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.010)>40&&decayMode_2==1)||((pt_2*1.010)>40&&decayMode_2==10))&&(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.010)>50&&decayMode_1==1)||((pt_1*1.010)>50&&decayMode_1==10))";
-		  std::string ptSelectionDM10Down_ = "(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.010)>40&&decayMode_2==1)||((pt_2*0.998)>40&&decayMode_2==10))&&(((pt_1*0.982)>50&&decayMode_1==0)||((pt_1*1.010)>50&&decayMode_1==1)||((pt_1*0.998)>50&&decayMode_1==10))";
+          //2018 
+		  std::string ptSelectionDM0Up_    = "(((pt_2*1.011)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*0.988)>40&&decaymode_2==10))&&(((pt_1*1.011)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*0.988)>50&&decaymode_1==10))";
+		  std::string ptSelectionDM0Down_  = "(((pt_2*0.989)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*0.988)>40&&decaymode_2==10))&&(((pt_1*0.989)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*0.988)>50&&decaymode_1==10))";
+		  std::string ptSelectionDM1Up_    = "(((pt_2*0.987)>40&&decaymode_2==0)||((pt_2*1.008)>40&&decaymode_2==1)||((pt_2*0.988)>40&&decaymode_2==10))&&(((pt_1*0.987)>50&&decaymode_1==0)||((pt_1*1.009)>50&&decaymode_1==1)||((pt_1*0.988)>50&&decaymode_1==10))";
+		  std::string ptSelectionDM1Down_  = "(((pt_2*0.987)>40&&decaymode_2==0)||((pt_2*0.992)>40&&decaymode_2==1)||((pt_2*0.988)>40&&decaymode_2==10))&&(((pt_1*0.987)>50&&decaymode_1==0)||((pt_1*0.992)>50&&decaymode_1==1)||((pt_1*0.988)>50&&decaymode_1==10))";
+		  std::string ptSelectionDM10Up_   = "(((pt_2*0.987)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.009)>40&&decaymode_2==10))&&(((pt_1*0.987)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.011)>50&&decaymode_1==10))";
+		  std::string ptSelectionDM10Down_ = "(((pt_2*0.987)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*0.991)>40&&decaymode_2==10))&&(((pt_1*0.987)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*0.991)>50&&decaymode_1==10))";
+          //2017  not done
+		  //std::string ptselectiondm0up_    = "(((pt_2*1.01)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*1.01)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm0down_  = "(((pt_2*0.99)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.99)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1up_    = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*1.009)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*1.009)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1down_  = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.991)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.991)>50&&decaymode_1==1)||((pt_1*0.989)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10up_   = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.011)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.011)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10down_ = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*0.989)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*0.989)>50&&decaymode_1==10))";
+
+          ////2016 legacy 
+		  //std::string ptselectiondm0up_    = "(((pt_2*1.01)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*1.01)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm0down_  = "(((pt_2*0.99)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.99)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1up_    = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*1.009)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*1.009)>50&&decaymode_1==1)||((pt_1*1.000)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1down_  = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.991)>40&&decaymode_2==1)||((pt_2*1.000)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.991)>50&&decaymode_1==1)||((pt_1*0.989)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10up_   = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*1.011)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*1.011)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10down_ = "(((pt_2*0.994)>40&&decaymode_2==0)||((pt_2*0.995)>40&&decaymode_2==1)||((pt_2*0.989)>40&&decaymode_2==10))&&(((pt_1*0.994)>50&&decaymode_1==0)||((pt_1*0.995)>50&&decaymode_1==1)||((pt_1*0.989)>50&&decaymode_1==10))";
+          //2016
+		  //std::string ptselectiondm0up_    = "(((pt_2*0.988)>40&&decaymode_2==0)||((pt_2*1.010)>40&&decaymode_2==1)||((pt_2*1.004)>40&&decaymode_2==10))&&(((pt_1*0.988)>50&&decaymode_1==0)||((pt_1*1.010)>50&&decaymode_1==1)||((pt_1*1.004)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm0down_  = "(((pt_2*0.976)>40&&decaymode_2==0)||((pt_2*1.010)>40&&decaymode_2==1)||((pt_2*1.004)>40&&decaymode_2==10))&&(((pt_1*0.976)>50&&decaymode_1==0)||((pt_1*1.010)>50&&decaymode_1==1)||((pt_1*1.004)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1up_    = "(((pt_2*0.982)>40&&decaymode_2==0)||((pt_2*1.016)>40&&decaymode_2==1)||((pt_2*1.004)>40&&decaymode_2==10))&&(((pt_1*0.982)>50&&decaymode_1==0)||((pt_1*1.016)>50&&decaymode_1==1)||((pt_1*1.004)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm1down_  = "(((pt_2*0.982)>40&&decaymode_2==0)||((pt_2*1.004)>40&&decaymode_2==1)||((pt_2*1.004)>40&&decaymode_2==10))&&(((pt_1*0.982)>50&&decaymode_1==0)||((pt_1*1.004)>50&&decaymode_1==1)||((pt_1*1.004)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10up_   = "(((pt_2*0.982)>40&&decaymode_2==0)||((pt_2*1.010)>40&&decaymode_2==1)||((pt_2*1.010)>40&&decaymode_2==10))&&(((pt_1*0.982)>50&&decaymode_1==0)||((pt_1*1.010)>50&&decaymode_1==1)||((pt_1*1.010)>50&&decaymode_1==10))";
+		  //std::string ptselectiondm10down_ = "(((pt_2*0.982)>40&&decaymode_2==0)||((pt_2*1.010)>40&&decaymode_2==1)||((pt_2*0.998)>40&&decaymode_2==10))&&(((pt_1*0.982)>50&&decaymode_1==0)||((pt_1*1.010)>50&&decaymode_1==1)||((pt_1*0.998)>50&&decaymode_1==10))";
 
 		  pair<float,float> ZTT_DM0_UP  ;
 		  pair<float,float> ZTT_DM0_DOWN  ;
@@ -695,6 +729,12 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		}
 		*/
 		void createJetFakeSystematics(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
+          //only temporary ... need to include the ff uncertainties from main method... 
+		  double jetToTauFakeWeight = 1.22942;
+		  double jetToTauFakeWeight_1 = 0.127617;
+		  double jetToTauFakeWeight_2 = 0.1018;
+		  double jetToTauFakeWeightUp = 0.770583;
+		  double jetToTauFakeWeightDown = 1.22942;
 		  //check me if we do the gen selection correctly
 		  pair<float,float> zjftYieldUp     = createHistogramAndShifts(zllFile_, "ZJ_CMS_htt_jetToTauFake_13TeVUp"   ,    ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_+"*jetToTauFakeWeightUp"),   luminosity_*leg1Corr*zttScale_,prefix);    
 		  pair<float,float> zjftYieldDown   = createHistogramAndShifts(zllFile_, "ZJ_CMS_htt_jetToTauFake_13TeVDown" ,  ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_+"*jetToTauFakeWeightDown"), luminosity_*leg1Corr*zttScale_,prefix);    
@@ -708,12 +748,6 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		  pair<float,float> WYieldUp        = createHistogramAndShifts(wFile_,   "W_CMS_htt_jetToTauFake_13TeVUp"    ,     ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*jetToTauFakeWeightUp"),  luminosity_*leg1Corr,prefix);
 		  pair<float,float> WYieldDown      = createHistogramAndShifts(wFile_,   "W_CMS_htt_jetToTauFake_13TeVDown"  ,   ("("+inputSelections+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*jetToTauFakeWeightDown"),luminosity_*leg1Corr,prefix);
 		  
-
-		  //jetToTauFakeWeight = 1.22942
-		  //jetToTauFakeWeight_1 = 0.127617
-		  // jetToTauFakeWeight_2 = 0.1018
-		  // jetToTauFakeWeightUp = 0.770583
-		  // jetToTauFakeWeightDown = 1.22942
 
 		  std::cout<<"zjftYieldUp "<<zjftYieldUp.first<<std::endl;
 		  std::cout<<"topJetYieldUp "<<topJetYieldUp.first<<std::endl;
@@ -1102,12 +1136,13 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 			float leg1Corr=tauID_;
 			float tauIDCorr = tauID_*tauID_;
 			cout<<"FF Selection= "<<"("<<ffSelection_<<"&&"<<trigSelection_<<"&&"<<categorySelection<<")"<<endl;
-			std::string ffcutData = ffSelectionData+ "&&"+trigSelectionData_+"&&"+categorySelection;
-			std::string ffcut     = ffSelection+     "&&"+trigSelection_    +"&&"+categorySelection;
+			std::string ffcutData = ffSelectionData+ "&&"+trigSelectionData_+"&&"+categorySelection+"&&"+signalSelection_;
+			std::string ffcut     = ffSelection+     "&&"+trigSelection_    +"&&"+categorySelection+"&&"+signalSelection_;
 			
             //fake factor application region for data ... 
 			std::cout<<"weight applied "<<weight_<<std::endl;
-			pair<float,float> dataFF = createHistogramAndShifts(dataFile_,   "FF",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
+			//pair<float,float> dataFF = createHistogramAndShifts(ffFile_,   "FF",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
+			pair<float,float> dataFF = createHistogramAndShifts(ffFile_,   "jetFakes",("("+ffcutData+")*("+FFweight1_+"*"+FFweight2_+")"),scaleUp_,prefix); 
             //ZTT for the real tau subtraction
 			pair<float,float> ZTTFF    = createHistogramAndShifts(zttFile_,"ZTT",("("+fullSelection+"&&"+ZTT_genTauSel_+")*"+weight_+"*"+Zweight_),luminosity_*tauIDCorr*zttScale_,prefix);    
             
@@ -1928,6 +1963,7 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		int samesign_;
 		//addme
 		float doSys_;
+		float doJEC_;
 		float useTEC_;
 
 		//files
@@ -1940,6 +1976,7 @@ tauPtCut='(((pt_2*0.982)>40&&decayMode_2==0)||((pt_2*1.01)>40&&decayMode_2==1)||
 		string topFile_;
 		string qcdFile_;
 		string dataFile_;
+		string ffFile_;
 
 
 		///////////////////////
