@@ -200,8 +200,7 @@ class DataCardCreatorHTT {
             //sam editions check!!
 			string fullSelection     = preselection+"&&"+trigSelection_+"&&"+osSignalSelection_;
             if(doJEC_>0)
-			  //createJETSystematicsHiggs(fullSelection, luminosity_*legCorr*legCorr, prefix);
-			  createJETSystematicsHiggs(fullSelection, luminosity_*legCorr*3.637*0.0541, prefix);
+			  createJETSystematicsHiggsCustVar(fullSelection, luminosity_*legCorr, prefix);
             
         }
 
@@ -384,7 +383,7 @@ class DataCardCreatorHTT {
 			  std::cout<<"creating met systematics backgrounds"<<std::endl;
 			  //createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
 			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
-			  createJETSystematics(fullSelection,tauID_, leg1Corr, topExtrap, prefix);
+			  createJETSystematicsCustVar(fullSelection,tauID_, leg1Corr, topExtrap, prefix);
 
 			}
 
@@ -592,7 +591,7 @@ class DataCardCreatorHTT {
 
             }
 
-		void createJETSystematicsCustVar(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
+    		void createJETSystematicsCustVar(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
 		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
 
 		  //find and replace jet selection
@@ -604,35 +603,37 @@ class DataCardCreatorHTT {
 		    ReplaceStringInPlace(newSelectionDown, "njets", "njet_"   +jetSys+"Down");
 		    ReplaceStringInPlace(newSelectionDown, "mjj"  , "vbfMass_"+jetSys+"Down");
 
-		    pair<float,float> topJetYieldJetUp   = createHistogramAndShiftsCustomVar(  topFile_, "TTJ_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+TTweight_), luminosity_*tauID_*topExtrap,prefix);
-		    pair<float,float> topJetYieldJetDown = createHistogramAndShiftsCustomVar(  topFile_, "TTJ_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+TTweight_), luminosity_*tauID_*topExtrap,prefix);
+		    pair<float,float> topJetYieldJetUp   = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  topFile_, "TTJ_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+TTweight_), luminosity_*tauID_*topExtrap,prefix);
+		    pair<float,float> topJetYieldJetDown = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  topFile_, "TTJ_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+TTweight_), luminosity_*tauID_*topExtrap,prefix);
+		    									                                      
+		    pair<float,float> topTauYieldJetUp   = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  topFile_, "TTT_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_+"*"+TTweight_),luminosity_*tauIDCorr*topExtrap,prefix); 		  
+		    pair<float,float> topTauYieldJetDown = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  topFile_, "TTT_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&"+ZTT_genTauSel_+")*"+weight_+"*"+TTweight_),luminosity_*tauIDCorr*topExtrap,prefix); 
+		    									                                      
+		    pair<float,float> vvtYieldJetUp      = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  vvFile_,  "VVT_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
+		    pair<float,float> vvtYieldJetDown    = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  vvFile_,  "VVT_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
+		    									                                      
+		    pair<float,float> vvYieldJetUp       = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  vvFile_,  "VVJ_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
+		    pair<float,float> vvYieldJetDown     = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  vvFile_,  "VVJ_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
+		    									                                      
+		    pair<float,float> WYieldJetUp        = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  wFile_,   "W_CMS_scale_j_" +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*leg1Corr,prefix);
+		    pair<float,float> WYieldJetDown      = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  wFile_,   "W_CMS_scale_j_" +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*leg1Corr,prefix);
+		    									                                      
+		    pair<float,float> ZTTYieldJetUp      = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
+		    pair<float,float> ZTTYieldJetDown    = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
 		    
-		    pair<float,float> topTauYieldJetUp   = createHistogramAndShiftsCustomVar(  topFile_, "TTT_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_+"*"+TTweight_),luminosity_*tauIDCorr*topExtrap,prefix); 		  
-		    pair<float,float> topTauYieldJetDown = createHistogramAndShiftsCustomVar(  topFile_, "TTT_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&"+ZTT_genTauSel_+")*"+weight_+"*"+TTweight_),luminosity_*tauIDCorr*topExtrap,prefix); 
-		    
-		    pair<float,float> vvtYieldJetUp      = createHistogramAndShiftsCustomVar(  vvFile_,  "VVT_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
-		    pair<float,float> vvtYieldJetDown    = createHistogramAndShiftsCustomVar(  vvFile_,  "VVT_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
-		    
-		    pair<float,float> vvYieldJetUp       = createHistogramAndShiftsCustomVar(  vvFile_,  "VVJ_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
-		    pair<float,float> vvYieldJetDown     = createHistogramAndShiftsCustomVar(  vvFile_,  "VVJ_CMS_scale_j_" +jetSys+"_13TeVDown" , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*tauIDCorr*vvScale_,prefix);		  
-		    
-		    pair<float,float> WYieldJetUp        = createHistogramAndShiftsCustomVar(  wFile_,   "W_CMS_scale_j_" +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*leg1Corr,prefix);
-		    pair<float,float> WYieldJetDown      = createHistogramAndShiftsCustomVar(  wFile_,   "W_CMS_scale_j_" +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_), luminosity_*leg1Corr,prefix);
-		    
-		    pair<float,float> ZTTYieldJetUp      = createHistogramAndShiftsCustomVar(  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
-		    pair<float,float> ZTTYieldJetDown    = createHistogramAndShiftsCustomVar(  zttFile_, "ZTT_CMS_scale_j_"   +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZTT_genTauSel_+")*"+weight_),    luminosity_*tauIDCorr*zttScale_,prefix);    
-		    
-		    pair<float,float> zlftYieldJetUp     = createHistogramAndShiftsCustomVar(  zllFile_, "ZL_CMS_scale_j_"    +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);
-		    pair<float,float> zlftYieldJetDown   = createHistogramAndShiftsCustomVar(  zllFile_, "ZL_CMS_scale_j_"    +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);
-		    
-		    pair<float,float> zjftYieldJetUp     = createHistogramAndShiftsCustomVar(  zllFile_, "ZJ_CMS_scale_j_" +jetSys+"_13TeVUp"    , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_), luminosity_*leg1Corr*zttScale_,prefix);    
-		    pair<float,float> zjftYieldJetDown   = createHistogramAndShiftsCustomVar(  zllFile_, "ZJ_CMS_scale_j_" +jetSys+"_13TeVDown"  , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_), luminosity_*leg1Corr*zttScale_,prefix);    
+		    pair<float,float> zlftYieldJetUp     = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  zllFile_, "ZL_CMS_scale_j_" +jetSys+"_13TeVUp"     , ("("+newSelectionUp+  "&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);
+		    pair<float,float> zlftYieldJetDown   = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  zllFile_, "ZL_CMS_scale_j_" +jetSys+"_13TeVDown"   , ("("+newSelectionDown+"&&"+ZLFT_genLSel_+")*"+weight_),     luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix);
+		    									                                     
+		    pair<float,float> zjftYieldJetUp     = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  zllFile_, "ZJ_CMS_scale_j_" +jetSys+"_13TeVUp"    , ("("+newSelectionUp+  "&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_), luminosity_*leg1Corr*zttScale_,prefix);    
+		    pair<float,float> zjftYieldJetDown   = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Down",  zllFile_, "ZJ_CMS_scale_j_" +jetSys+"_13TeVDown"  , ("("+newSelectionDown+"&&!("+ZTT_genTauSel_+"))*"+weight_+"*"+Zweight_), luminosity_*leg1Corr*zttScale_,prefix);    
 
 		  }
 		}
 
 		void createJETSystematicsHiggsCustVar(string inputSelections, float scale, string prefix){
+
 		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
+
 		  for(auto jetSys : jetSysVec){
 
 		    std::string newSelectionUp=inputSelections;
@@ -642,23 +643,23 @@ class DataCardCreatorHTT {
 		    ReplaceStringInPlace(newSelectionDown, "njets", "njet_"   +jetSys+"Down");
 		    ReplaceStringInPlace(newSelectionDown, "mjj"  , "vbfMass_"+jetSys+"Down");
 		    
-		    pair<float,float> ggH125JetUp   = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> ggH125JetDown = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ggH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ggH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    pair<float,float> qqH125JetUp   = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> qqH125JetDown = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> qqH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> qqH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    pair<float,float> ZH125JetUp    = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> ZH125JetDown  = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ZH125JetUp    = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ZH125JetDown  = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    pair<float,float> WmH125JetUp   = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> WmH125JetDown = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> WmH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WmH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 
-		    pair<float,float> WpH125JetUp   = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> WpH125JetDown = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> WpH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WpH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    pair<float,float> ttH125JetUp   = createHistogramAndShiftsCustomVar(variable_+jetSys+"Up"  ,  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    pair<float,float> ttH125JetDown = createHistogramAndShiftsCustomVar(variable_+jetSys+"Down",  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ttH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ttH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		  }
 		}
 		void createJETSystematics(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
