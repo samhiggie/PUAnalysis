@@ -18,6 +18,7 @@
 #include "TauAnalysis/ClassicSVfit/interface/MeasuredTauLepton.h"
 #include "TauAnalysis/ClassicSVfit/interface/svFitHistogramAdapter.h"
 #include "TauAnalysis/ClassicSVfit/interface/FastMTT.h"
+#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
 
 //
 // class decleration
@@ -292,9 +293,9 @@ class VBFVariableFiller : public NtupleFillerBase {
 		
 		if (njets>1){
 		  if(  handle->at(0).jets().at(0)->userCand(shiftedPt[c])->pt()>20  &&  handle->at(0).jets().at(1)->userCand(shiftedPt[c])->pt()>20) {
-		    firstJet= (*(handle->at(0).jets().at(0)));
-		    secondJet= (*(handle->at(0).jets().at(1)));   
-		    vbfmass = (firstJet.userCand(shiftedPt[c])->p4()+secondJet.userCand(shiftedPt[c])->p4()).M();
+		    firstJet  = (*(handle->at(0).jets().at(0)));
+		    secondJet = (*(handle->at(0).jets().at(1)));   
+		    vbfmass   = (firstJet.userCand(shiftedPt[c])->p4()+secondJet.userCand(shiftedPt[c])->p4()).M();
 		    //std::cout<<"VBF mass "<<vbfmass<<std::endl;
 		  }
 		}
@@ -308,34 +309,34 @@ class VBFVariableFiller : public NtupleFillerBase {
 		//std::cout<<"met pt shifted: "<<handle->at(0).met()->userCand(shiftedPt[c])->pt()<<std::endl;
 		//std::cout<<"met phi shifted: "<<handle->at(0).met()->userCand(shiftedPt[c])->phi()<<std::endl;
 
-		met = handle->at(0).met()->userCand(shiftedPt[c])->p4().pt();
+		met    = handle->at(0).met()->userCand(shiftedPt[c])->p4().pt();
 		metphi = handle->at(0).met()->userCand(shiftedPt[c])->p4().phi();
 		
 		//now for SVFit!
 		std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptons;
-		measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, handle->at(0).leg1()->pt(), handle->at(0).leg1()->eta(),  handle->at(0).leg1()->phi(), 0.10566)); 
+		measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay,   handle->at(0).leg1()->pt(),  handle->at(0).leg1()->eta(),  handle->at(0).leg1()->phi(),  0.10566)); 
 		measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  handle->at(0).leg2()->pt(),  handle->at(0).leg2()->eta(),  handle->at(0).leg2()->phi(),  handle->at(0).leg2()->mass(),  handle->at(0).leg2()->decayMode()));
 		//measured leptons, measured met x, measured met y, covmet, 0, return values
 
 		float t_svFitMass, t_svFitPt, t_svFitEta, t_svFitPhi;
-		runSVFit(measuredTauLeptons, met*TMath::Cos(metphi), met*TMath::Sin(metphi), covMET, 0, t_svFitMass, t_svFitPt, t_svFitEta, t_svFitPhi);
+		runSVFitAndRecoil(measuredTauLeptons, met*TMath::Cos(metphi), met*TMath::Sin(metphi), covMET, handle, 0, t_svFitMass, t_svFitPt, t_svFitEta, t_svFitPhi);
 		
 		if (type==0){
-		  //std::cout<<"Starting type 0"<<std::endl;
+
 		  njetVecUp[fill]=njets;
-		  //std::cout<<"here 1"<<std::endl;
+
 		  vbfVecUp[fill]=vbfmass;
-		  //std::cout<<"here 2"<<std::endl;
+
 		  jetaVecUp[fill]=jeta;
-		  //std::cout<<"here 3"<<std::endl;
+
 		  metVecUp[fill]=met;
-		  //std::cout<<"here 4"<<std::endl;
+
 		  metphiVecUp[fill]=metphi;
-		  //std::cout<<"here 5"<<std::endl;
+
 		  msvVecUp[fill]=t_svFitMass;
-		  //std::cout<<"here 6"<<std::endl;
+
 		  ptsvVecUp[fill]=t_svFitPt;
-		  //std::cout<<"Ending type 0"<<std::endl;
+
 		}
 		else {
 		  //std::cout<<"Starting type 1"<<std::endl;
@@ -368,9 +369,9 @@ class VBFVariableFiller : public NtupleFillerBase {
 	      float decayMode2 = handle->at(0).leg2()->decayMode();
 	      float ES_UP_scale=1.0; // this value is for jet -> tau fakes
 	      if (eta1<-2.1) ES_UP_scale=1.027;
-	      else if (eta1<-1.2) ES_UP_scale=1.009;
-	      else if (eta1<1.2) ES_UP_scale=1.004;
-	      else if (eta1<2.1) ES_UP_scale=1.009;
+	      else if (eta1>-2.1 && eta1<-1.2) ES_UP_scale=1.009;
+	      else if (eta1>-1.2 && eta1<1.2) ES_UP_scale=1.004;
+	      else if (eta1>1.2  && eta1<2.1) ES_UP_scale=1.009;
 	      else ES_UP_scale=1.017;
 
 	      double pt1_UP;
@@ -384,7 +385,9 @@ class VBFVariableFiller : public NtupleFillerBase {
 	      std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUP;
 	      measuredTauLeptonsUP.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, pt1_UP, eta1,  phi1, 0.10566));
 	      measuredTauLeptonsUP.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  pt2, eta2, phi2,  m2, decayMode2));
-	      runSVFit(measuredTauLeptonsUP, metcorr_ex_UP, metcorr_ey_UP, covMET, 0, svFitMass_MESUp, svFitPt_MESUp, svFitEta_MESUp, svFitPhi_MESUp);
+
+	      runSVFitAndRecoil(measuredTauLeptonsUP, metcorr_ex_UP, metcorr_ey_UP, covMET, handle, 0, svFitMass_MESUp, svFitPt_MESUp, svFitEta_MESUp, svFitPhi_MESUp);
+
 	      //met*TMath::Cos(metphi), met*TMath::Sin(metphi)
 	      float ES_DOWN_scale=1.0; // jet
 	      if (eta1<-2.1) ES_DOWN_scale=1 - 0.027;
@@ -404,7 +407,7 @@ class VBFVariableFiller : public NtupleFillerBase {
 	      std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDOWN;
 	      measuredTauLeptonsDOWN.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, pt1_DOWN, eta1,  phi1, 0.10566));
 	      measuredTauLeptonsDOWN.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  pt2, eta2, phi2,  m2, decayMode2));
-	      runSVFit(measuredTauLeptonsDOWN, metcorr_ex_DOWN, metcorr_ey_DOWN, covMET, 0, svFitMass_MESDown, svFitPt_MESDown, svFitEta_MESDown, svFitPhi_MESDown);
+	      runSVFitAndRecoil(measuredTauLeptonsDOWN, metcorr_ex_DOWN, metcorr_ey_DOWN, covMET, handle, 0, svFitMass_MESDown, svFitPt_MESDown, svFitEta_MESDown, svFitPhi_MESDown);
 
 	      float gen_match_2 = handle->at(0).leg2()->userInt("gen_match");
 	      if (gen_match_2<=5){
@@ -443,7 +446,7 @@ class VBFVariableFiller : public NtupleFillerBase {
 		std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsUP;
                 measuredTauLeptonsUP.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, pt1, eta1,  phi1, 0.10566));
                 measuredTauLeptonsUP.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  pt2_UP, eta2, phi2,  mass2_UP, decayMode2));
-		runSVFit(measuredTauLeptonsUP, metcorr_ex_UP, metcorr_ey_UP, covMET, 0, svFitMass_UP, svFitPt_UP, svFitEta_UP, svFitPhi_UP);
+		runSVFitAndRecoil(measuredTauLeptonsUP, metcorr_ex_UP, metcorr_ey_UP, covMET, handle, 0, svFitMass_UP, svFitPt_UP, svFitEta_UP, svFitPhi_UP);
 
                 float ES_DOWN_scale=1.0; // jet
                 if (gen_match_2<5) ES_DOWN_scale=0.97;  // elec/mu
@@ -478,7 +481,7 @@ class VBFVariableFiller : public NtupleFillerBase {
 		std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptonsDOWN;
                 measuredTauLeptonsDOWN.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, pt1, eta1,  phi1, 0.10566));
                 measuredTauLeptonsDOWN.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  pt2_DOWN, eta2, phi2,  mass2_DOWN, decayMode2));
-		runSVFit(measuredTauLeptonsDOWN, metcorr_ex_DOWN, metcorr_ey_DOWN, covMET, 0, svFitMass_DOWN, svFitPt_DOWN, svFitEta_DOWN, svFitPhi_DOWN);
+		runSVFitAndRecoil(measuredTauLeptonsDOWN, metcorr_ex_DOWN, metcorr_ey_DOWN, covMET, handle, 0, svFitMass_DOWN, svFitPt_DOWN, svFitEta_DOWN, svFitPhi_DOWN);
 
 	      }
 	    }//handle exists
@@ -491,7 +494,8 @@ class VBFVariableFiller : public NtupleFillerBase {
 	    
 	    //now for SVFit!
 	    std::vector<classic_svFit::MeasuredTauLepton> measuredTauLeptons;
-	    measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay, handle->at(0).leg1()->pt(), handle->at(0).leg1()->eta(),  handle->at(0).leg1()->phi(), 0.10566)); 
+	    //measuredTauLeptons.clear();
+	    measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToMuDecay,   handle->at(0).leg1()->pt(),  handle->at(0).leg1()->eta(),  handle->at(0).leg1()->phi(), 0.10566)); 
 	    measuredTauLeptons.push_back(classic_svFit::MeasuredTauLepton(classic_svFit::MeasuredTauLepton::kTauToHadDecay,  handle->at(0).leg2()->pt(),  handle->at(0).leg2()->eta(),  handle->at(0).leg2()->phi(),  handle->at(0).leg2()->mass(),  handle->at(0).leg2()->decayMode()));
 	    //measured leptons, measured met x, measured met y, covmet, 0, return values
 	    float t_svFitMass, t_svFitPt, t_svFitEta, t_svFitPhi;
@@ -500,11 +504,44 @@ class VBFVariableFiller : public NtupleFillerBase {
 	    svFitPt = t_svFitPt; 
 	    svFitPhi = t_svFitPhi; 
 	    svFitEta = t_svFitEta;
+	    std::cout <<"nominal svFit Mass: "<<svFitMass<< " Pt: "<<svFitPt<< " Phi: "<<svFitPhi<< " Eta: "<<svFitEta<< " MET: "<<met<< " metphi: "<< metphi<<" NLeptons: "<< measuredTauLeptons.size()<<std::endl;
 	  }
 	}
+
 	void runSVFit(std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons, double measuredMETx, double measuredMETy, TMatrixD &covMET, float num, float &svFitMass, float& svFitPt, float &svFitEta, float &svFitPhi){
 	  FastMTT aFastMTTAlgo;
 	  aFastMTTAlgo.run(measuredTauLeptons,measuredMETx,measuredMETy,covMET);
+	  LorentzVector ttP4 = aFastMTTAlgo.getBestP4();
+	  svFitMass = ttP4.M(); // return value is in units of GeV
+	  svFitPt = ttP4.Pt();
+	  svFitEta = ttP4.Eta();
+	  svFitPhi = ttP4.Phi();
+	  //std::cout << "found mass = " << svFitMass << std::endl;
+
+	}
+
+	void runSVFitAndRecoil(std::vector<classic_svFit::MeasuredTauLepton> & measuredTauLeptons, double measuredMETx, double measuredMETy, TMatrixD &covMET, edm::Handle<std::vector<T> > handle, float num, float &svFitMass, float& svFitPt, float &svFitEta, float &svFitPhi){
+
+	  RecoilCorrector recoilPFMetCorrector("HTT-utilities/RecoilCorrections/data/TypeI-PFMet_Run2018.root"); // Type I PF MET 2018
+	  //recoil correction
+	  float pfmetcorr_ex;
+	  float pfmetcorr_ey;
+	  recoilPFMetCorrector.CorrectByMeanResolution(
+						       measuredMETx, // uncorrected type I pf met px (float)
+						       measuredMETy, // uncorrected type I pf met py (float)
+						       handle->at(0).p4GenBoson().px(), // generator Z/W/Higgs px (float)
+						       handle->at(0).p4GenBoson().px(), // generator Z/W/Higgs py (float)
+						       handle->at(0).p4GenBosonVis().px(), // generator visible Z/W/Higgs px (float)
+						       handle->at(0).p4GenBosonVis().py(), // generator visible Z/W/Higgs py (float)
+						       njets,  // number of jets (hadronic jet multiplicity) (int)
+						       pfmetcorr_ex, // corrected type I pf met px (float)
+						       pfmetcorr_ey  // corrected type I pf met py (float)
+						       );	
+
+	  //std::cout<<"input met "<< sqrt(measuredMETx*measuredMETx+measuredMETy*measuredMETy) <<" recoil corrected met: "<< sqrt(pfmetcorr_ex*pfmetcorr_ex+pfmetcorr_ey*pfmetcorr_ey) <<std::endl;
+	  
+	  FastMTT aFastMTTAlgo;
+	  aFastMTTAlgo.run(measuredTauLeptons,pfmetcorr_ex,pfmetcorr_ey,covMET);
 	  LorentzVector ttP4 = aFastMTTAlgo.getBestP4();
 	  svFitMass = ttP4.M(); // return value is in units of GeV
 	  svFitPt = ttP4.Pt();

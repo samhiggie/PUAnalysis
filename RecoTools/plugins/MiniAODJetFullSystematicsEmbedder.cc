@@ -69,9 +69,9 @@ private:
     "TotalNoFlavor",
     "TotalNoTime",
     "Total",
-    //"Eta3to5",
-    //"Eta0to5",
-    //"Eta0to3",
+    "Eta3to5",
+    "Eta0to5",
+    "Eta0to3",
     //"EC2",
     "Closure",
   }; // end uncertNames
@@ -235,7 +235,7 @@ void MiniAODJetFullSystematicsEmbedder::produce(edm::Event& iEvent, const edm::E
 
       LorentzVector uncDown = (1-unc)*jet.p4();
       LorentzVector uncUp = (1+unc)*jet.p4();
-
+      //std::cout<<"nominal jet pt: "<<jet.pt()<<" eta: "<<jet.eta()<<std::endl;
       //std::cout << name << ":  uncDown pt: " << uncDown.pt() << " ,uncUp pt: " << uncUp.pt() << std::endl;
       //std::cout << name << " nominal eta "<< jet.p4().eta()<<":  uncDown eta: " << uncDown.eta() << " ,uncUp eta: " << uncUp.eta() << std::endl;
    // Double check if we need more cleaning, this is the bare minimum:

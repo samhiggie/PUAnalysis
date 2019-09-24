@@ -76,9 +76,9 @@ private:
     "TotalNoFlavor",
     "TotalNoTime",
     "Total",
-    //"Eta3to5",
-    //"Eta0to5",
-    //"Eta0to3",
+    "Eta3to5",
+    "Eta0to5",
+    "Eta0to3",
     //"EC2",
     "Closure"
   }; // end uncertNames
