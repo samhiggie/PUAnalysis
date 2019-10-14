@@ -50,8 +50,8 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
       triggerBits_(iC.consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"))),
       triggerObjects_(iC.consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects")))
 	{
-	  idBranch_1 = t->Branch("emb_trig_Match_1",&idValue_1,"emb_trig_Match_1/I");
-	  idBranch_2 = t->Branch("emb_trig_Match_2",&idValue_2,"emb_trig_Match_2/I");
+	  idBranch_1 = t->Branch("emb_trig_Match_1",&idValue_1,"emb_trig_Match_1/D");
+	  idBranch_2 = t->Branch("emb_trig_Match_2",&idValue_2,"emb_trig_Match_2/D");
 
 	  function_pt_1  = new StringObjectFunction<T>(pt_1_);
 	  function_eta_1  = new StringObjectFunction<T>(eta_1_);
@@ -168,8 +168,8 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
   StringObjectFunction<T>*function_eta_2;
   StringObjectFunction<T>*function_phi_2;
 
-  float idValue_1;
-  float idValue_2;
+  double idValue_1;
+  double idValue_2;
   TBranch *idBranch_1;
   TBranch *idBranch_2;
   RooWorkspace *w;
