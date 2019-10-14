@@ -58,9 +58,11 @@ def defaultReconstructionBCDEF(process,triggerProcess = 'HLT',triggerPaths = ['H
   #selectTauDecayMode(process, 'rerunSlimmedTaus', 'pt>10')
   selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM") #ESTaus
-  tauEffi(process,'selectTauDM',True)
+  tauEffi(process,'triggeredPatTaus',True)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  
+  EScaledTaus(process,True,'patOverloadedTaus',False)  
+  EScaledMET(process,True,'patOverloadedTaus',False,"slimmedMETs")  
+
   triLeptons(process)
   #jetOverloading(process,"slimmedJets",True)
   jetOverloading(process,"patJetsReapplyJEC",True)
@@ -122,7 +124,8 @@ def defaultReconstruction(process,triggerProcess = 'HLT',triggerPaths = ['HLT_Mu
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM") #ESTaus
   tauEffi(process,'triggeredPatTaus',True)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  
+  EScaledTaus(process,True,'patOverloadedTaus',True)    
+
   triLeptons(process)
   #jetOverloading(process,"slimmedJets",True)
   jetOverloading(process,"patJetsReapplyJEC",True)
@@ -165,7 +168,6 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   process.analysisSequence = cms.Sequence()
 
   #Apply Tau Energy Scale Changes
-  #EScaledTaus(process,False)
 
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons")  
@@ -187,13 +189,15 @@ def defaultReconstructionMC(process,triggerProcess = 'HLT',triggerPaths = ['HLT_
   tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"selectTauDM")
   tauEffi(process,'triggeredPatTaus',False)
   tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  
+  EScaledTaus(process,True,'patOverloadedTaus',False)  
+  EScaledMET(process,True,'patOverloadedTaus',False,"slimmedMETs")  
+
   triLeptons(process)
   #jetOverloading(process,"slimmedJets",False)
   jetOverloading(process,"patJetsReapplyJEC",False)
 
   MiniAODJES(process,"patOverloadedJets")
-  MiniAODJESMET(process,"patOverloadedJets","slimmedMETs")
+  MiniAODJESMET(process,"patOverloadedJets","ESMET")
   jetFilter(process,"jetsEmbedJES")
 
   #NOTE: As of Nov 30 2018 this must go after jet corrections or the jets will break
@@ -239,39 +243,48 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
 
   process.analysisSequence = cms.Sequence()
 
-  #BadMuonFilter(process)
-  MiniAODMETfilter(process)
+  #Apply Tau Energy Scale Changes
 
   MiniAODEleVIDEmbedder(process,"slimmedElectrons")  
   MiniAODMuonIDEmbedder(process,"slimmedMuons") #is not HIP, use standard ID   
 
-  recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
-  reRunMET(process,True)
+  #BadMuonFilter(process)
 
-  #mvaMet2(process, True) #isData
+  recorrectJetsSQL(process, True) #adds patJetsReapplyJEC  
+
+  muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODMuonID") 
+  electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODElectronVID") 
+
+  genmatchtaus(process)  
+  reRunTaus(process,'slimmedTaus')
+  selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
+
+  tauEffi(process,'selectTauDM',False)
+  tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
+  EScaledTaus(process,True,'patOverloadedTaus',False)  
+  EScaledMET(process,True,'patOverloadedTaus',False,"slimmedMETs")  
+
+  triLeptons(process)
+  jetOverloading(process,"patJetsReapplyJEC",True)
+
+  MiniAODJES(process,"patOverloadedJets")
+  MiniAODJESMET(process,"patOverloadedJets","ESMET")
+  jetFilter(process,"jetsEmbedJES")
+
+  reRunMET(process,True)
+  MiniAODMETfilter(process)
   metSignificance(process)
 
-  muonTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODMuonID") 
-  electronTriggerMatchMiniAOD(process,triggerProcess,HLT,"miniAODElectronVID") 
-  #tauTriggerMatchMiniAOD(process,triggerProcess,HLT,"slimmedTaus") #ESTaus
-  
-  #Build good vertex collection
-  #goodVertexFilter(process)  
-  tauEffi(process,'slimmedTaus',True)
-  tauOverloading(process,'tauTriggerEfficiencies','triggeredPatMuons','offlineSlimmedPrimaryVertices')
-  
-  triLeptons(process)
-  #jetOverloading(process,"slimmedJets",True)
-  jetOverloading(process,"patJetsReapplyJEC",True)
-  #jetOverloading(process,"patJetsReapplyJEC") #"slimmedJets")
-  jetFilter(process,"patOverloadedJets")
+  GenSumWeights(process)
+  GenHTCalculator(process)
+  #Default selections for systematics
+
+  STXS(process)
 
   #Default selections for systematics
   applyDefaultSelectionsPT(process)
 
   process.runAnalysisSequence = cms.Path(process.analysisSequence)
-
-
 
 
 def genmatchtaus(process):
@@ -446,15 +459,19 @@ def MiniAODEleVIDEmbedder(process, eles):
   process.analysisSequence*=process.embedEleIDs
 
    
-def EScaledTaus(process,smearing):  #second arg is bool
+def EScaledTaus(process,smearing,taus,isData):  #second arg is bool
 
   process.ESTausID = cms.EDProducer("ESTauProducer",
-                                    src = cms.InputTag("slimmedTaus"),
+                                    src = cms.InputTag(taus),
                                     module_label = cms.string("FROGS"),
                                     genParticles = cms.InputTag("genParticles"),
+                                    data = cms.bool(isData),
                                     smearConstituents = cms.bool(smearing),
                                     smearMCParticle = cms.bool(False),
                                     energyScale  = cms.double(1.0),
+                                    oneProngEnergyScale     = cms.double(0.987),
+                                    oneProngPi0EnergyScale  = cms.double(0.995),
+                                    threeProngEnergyScale   = cms.double(0.988),
                                     energyScaleDB= cms.int32(0),
                                     deltaEta     = cms.double(0.0),
                                     deltaPhi     = cms.double(0.0),
@@ -464,6 +481,30 @@ def EScaledTaus(process,smearing):  #second arg is bool
   
   process.EScaledTaus = cms.Sequence(process.ESTausID)
   process.analysisSequence*=process.EScaledTaus
+
+def EScaledMET(process,smearing,taus,isData,met):  #second arg is bool
+
+  process.ESMET = cms.EDProducer("ESTauProducerMET",
+                                    src = cms.InputTag(taus),
+                                    srcMET = cms.InputTag(met),
+                                    module_label = cms.string("FROGS"),
+                                    genParticles = cms.InputTag("genParticles"),
+                                    data = cms.bool(isData),
+                                    smearConstituents = cms.bool(smearing),
+                                    smearMCParticle = cms.bool(False),
+                                    energyScale  = cms.double(1.0),
+                                    oneProngEnergyScale     = cms.double(0.987),
+                                    oneProngPi0EnergyScale  = cms.double(0.995),
+                                    threeProngEnergyScale   = cms.double(0.988),
+                                    energyScaleDB= cms.int32(0),
+                                    deltaEta     = cms.double(0.0),
+                                    deltaPhi     = cms.double(0.0),
+                                    deltaPtB     = cms.double(0.0),
+                                    deltaPtE     = cms.double(0.0)
+                                    )
+  
+  process.EScaledMET = cms.Sequence(process.ESMET)
+  process.analysisSequence*=process.EScaledMET
 
 
 def mvaMet2(process, isData):
@@ -670,6 +711,45 @@ def applyDefaultSelectionsPT(process):#FIXME THISWILL HVAE TO CHANGE-- not curee
   										)								 									  
   process.selectedObjectsForSyst = cms.Sequence(process.selectedPatTaus+process.selectedPatElectrons+process.selectedPatMuons+process.cleanPatJets)
   process.analysisSequence = cms.Sequence(process.analysisSequence*process.selectedObjectsForSyst)
+
+
+def muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcMuon,objects="slimmedPatTrigger"):
+
+   process.triggeredPatMuons = cms.EDProducer("MuonTriggerMatcherMiniAOD",
+                                            src = cms.InputTag(srcMuon),
+                                            trigEvent = cms.InputTag(HLT),
+                                            filters = cms.vstring(
+                                            #'hltDoubleL2IsoTau26eta2p2'
+                                            ),
+					    filtersAND = cms.vstring(
+                                            #'hltDoubleL2IsoTau26eta2p2'
+					    ),
+                                            bits = cms.InputTag("TriggerResults","","SIMembedding"),
+                                            prescales = cms.InputTag("patTrigger"),
+                                            objects = cms.InputTag(objects),
+                                            ptCut = cms.int32(0) 
+   )
+  
+   process.analysisSequence*= process.triggeredPatMuons
+
+##this module does not do anything but is used to make sure the sequence stays the same beteween emb and non-emb
+def electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcEle,objects="slimmedPatTrigger"):
+
+   process.triggeredPatElectrons = cms.EDProducer("ElectronTriggerMatcherMiniAOD",
+                                            src = cms.InputTag(srcEle),#"miniAODElectronVID"
+                                            trigEvent = cms.InputTag(HLT),#unused
+                                            filters = cms.vstring(
+                                            ),
+					    filtersAND = cms.vstring(
+					    ),
+                                            bits = cms.InputTag("TriggerResults","","SIMembedding"),
+                                            prescales = cms.InputTag("patTrigger"),
+                                            objects = cms.InputTag(objects),
+                                            ptCut = cms.int32(0) 
+   )
+  
+   process.analysisSequence*= process.triggeredPatElectrons
+
 
 def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
    strTrig=''

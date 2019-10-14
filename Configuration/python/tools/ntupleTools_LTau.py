@@ -289,10 +289,41 @@ def makeHiggsClassification(srcName):
    return PSet
 
 
+def makeEmbeddedEventSF(sourceDiTaus,runSF,tag,genPt1,genEta1,genPt2,genEta2):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairEmbeddedSFFiller"),
+         src         = cms.InputTag(sourceDiTaus),
+         isEmbedded  = cms.bool(runSF),
+         tag         = cms.string(tag),
+         pt1          = cms.string(genPt1),
+         eta1         = cms.string(genEta1),
+         pt2          = cms.string(genPt2),
+         eta2         = cms.string(genEta2)
+
+   )
+   return PSet
+
+def makeEmbeddedTriggerMatch(sourceDiTaus,runSF,genPt1,genEta1,genPhi1,genPt2,genEta2,genPhi2,triggerfilter):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATDiTauPairEmbeddedTriggerFilterFiller"),
+         src         = cms.InputTag(sourceDiTaus),
+         isEmbedded  = cms.bool(runSF),
+         pt_1          = cms.string(genPt1),
+         eta_1         = cms.string(genEta1),
+         phi_1          = cms.string(genPhi1),
+         pt_2          = cms.string(genPt2),
+         eta_2         = cms.string(genEta2),
+         phi_2          = cms.string(genPhi2),
+         triggerFilter  = cms.string(triggerfilter), 
+         triggerBits   = cms.InputTag("TriggerResults","","SIMembedding"),
+         objects = cms.InputTag("slimmedPatTrigger")
+
+   )
+   return PSet
 
 
 
-def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
+def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons', isEmbedded=False):
    process.TFileService = cms.Service("TFileService", fileName = cms.string("analysis_LTau.root") )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
@@ -443,11 +474,19 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
                               muTauGenBosonVisPx = makeMuTauPair(src,"vispX",'p4GenBosonVis().px()'),
                               muTauGenBosonVisPy = makeMuTauPair(src,"vispY",'p4GenBosonVis().py()'),
 
+                              muTauEmbeddedSF  = makeEmbeddedEventSF(src, 
+                                                                     True if isEmbedded else False, 
+                                                                     "embedded_trig_sf", 'p4Leg1gen().pt()','p4Leg1gen().eta()','p4Leg2gen().pt()','p4Leg2gen().eta()'),
+                              muTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src, 
+                                                                                   True if isEmbedded else False,
+                                                                                   'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+
                               muTauByOldDMMVAIsoTight = makeMuTauPair(src,"byTightIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byTightIsolationMVArun2v1DBoldDMwLT")'),
                               muTauByOldDMMVAIsoMedium = makeMuTauPair(src,"byMediumIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byMediumIsolationMVArun2v1DBoldDMwLT")'),
                               muTauByOldDMMVAIsoLoose= makeMuTauPair(src,"byLooseIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byLooseIsolationMVArun2v1DBoldDMwLT")'),
                               muTauByOldDMMVAIsoVLoose = makeMuTauPair(src,"byVLooseIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byVLooseIsolationMVArun2v1DBoldDMwLT")'),
 
+                              
                               muTauAgainstMuonTight3 = makeMuTauPair(src,"againstMuonTight3_2",'leg2.tauID("againstMuonTight3")'),
                               muTauAgainstEleVLooseMVA6 = makeMuTauPair(src,"againstElectronVLooseMVA6_2",'leg2.tauID("againstElectronVLooseMVA6")'),
                               muTauagainstElectronMVA6Raw = makeMuTauPair(src,"againstElectronMVA6Raw_2",'leg2.tauID("againstElectronMVA6Raw")'),
@@ -506,7 +545,7 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
 
 
 
-def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.root',srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons'):
+def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.root',srcLL = 'diMuonsOSSorted', srcU='TightMuons', srcE='TightElectrons', isEmbedded=False):
    process.TFileService = cms.Service("TFileService", fileName = cms.string(fileout) )
    eventTree = cms.EDAnalyzer('EventTreeMaker',
                               genEvent = cms.InputTag('generator'),
@@ -642,6 +681,12 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
 
                               muTauTopGenPt = makeMuTauPair(src,"topGenPt","topGenPt"),#FIXME
                               muTauAntiTopGenPt = makeMuTauPair(src,"antiTopGenPt","antiTopGenPt"),#FIXME
+                              diTauEmbeddedSF  = makeEmbeddedEventSF(src, 
+                                                                     True if isEmbedded else False, 
+                                                                     "embedded_trig_sf", 'p4Leg1gen().pt()','p4Leg1gen().eta()','p4Leg2gen().pt()','p4Leg2gen().eta()'),
+                              diTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src, 
+                                                                                   True if isEmbedded else False,
+                                                                                   'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
 
                               #BTAGS AND JETS
                               muTauVBFDEta = makeMuTauPair(src,"vbfDEta","vbfDEta"),
@@ -663,23 +708,23 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
                               muTauDecayFound = makeMuTauPair(src,"decayModeFinding_2",'leg2.tauID("decayModeFinding")'),
                               muTauDecayFoundOld = makeMuTauPair(src,"decayModeFindingOldDMs_2",'leg2.tauID("decayModeFinding")'),
                               muTauMuTriggerMatch0 = makeMuTauPair(src,"hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07",
-                                                                   'leg1.userFloat("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg1.userFloat("hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07")'),
                               muTauMuTriggerMatch1 = makeMuTauPair(src,"hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched",
-                                                                   'leg1.userFloat("hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg1.userFloat("hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched")'),
                               muTauMuTriggerMatch2 = makeMuTauPair(src,"hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded_1",
-                                                                   'leg1.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg1.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
                               muTauMuTriggerMatch3 = makeMuTauPair(src,"hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07",
-                                                                   'leg1.userFloat("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg1.userFloat("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07")'),
                               muTauMuTriggerMatch4 = makeMuTauPair(src,"hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07",
-                                                                   'leg1.userFloat("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg1.userFloat("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")'),
                               muTauMuTriggerMatch5 = makeMuTauPair(src,"hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07",
-                                                                   'leg2.userFloat("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg2.userFloat("hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07")'),
                               muTauMuTriggerMatch6 = makeMuTauPair(src,"hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded_2",
-                                                                   'leg2.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg2.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
                               muTauMuTriggerMatch7 = makeMuTauPair(src,"hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched",
-                                                                   'leg2.userFloat("hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg2.userFloat("hltSelectedPFTau27LooseChargedIsolationAgainstMuonL1HLTMatched")'),
                               muTauMuTriggerMatch8 = makeMuTauPair(src,"hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded",
-                                                                   'leg2.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
+                                                                   methodName = "1" if isEmbedded or isJHU else 'leg2.userFloat("hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded")'),
                               muTauPzeta = makeMuTauPair(src,"pZeta",'pZeta-1.5*pZetaVis'),
                               muTauPZ = makeMuTauPair(src,"pZ",'pZeta'),
                               muTauPZV = makeMuTauPair(src,"pzetavis",'pZetaVis'),

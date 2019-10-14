@@ -1,4 +1,4 @@
-#include "PUAnalysis/RecoTools/plugins/ESTauProducer.h"
+#include "PUAnalysis/RecoTools/plugins/ESTauProducerMET.h"
 
 /*
    Decay mode Tau Momentum scaling vs Tau pT
@@ -7,9 +7,10 @@
    3-prong p4' = p4 * (1.012 + 0.001 * TMath::Min(TMath::Max(pT-32.,0.),18.) 
    */
 
-ESTauProducer::ESTauProducer(const edm::ParameterSet& iConfig):
+ESTauProducerMET::ESTauProducerMET(const edm::ParameterSet& iConfig):
 	smearConstituents_(iConfig.getParameter<bool>("smearConstituents")),
 	src_(consumes<pat::TauCollection>(iConfig.getParameter<edm::InputTag>("src"))), 
+	met_(consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("srcMET"))), 
 	genParticles_(consumes<reco::GenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
 	data_(iConfig.getParameter<bool>("data")),
 	oneProngEnergyScale_(iConfig.getParameter<double>("oneProngEnergyScale")),
@@ -18,22 +19,22 @@ ESTauProducer::ESTauProducer(const edm::ParameterSet& iConfig):
 {
 	smearingModule = new SmearedParticleMaker<pat::Tau,GenJetRetriever<pat::Tau> >(iConfig);
 	produces<std::vector<pat::Tau> >();
+	produces<pat::METCollection >();
 }
 
 
-ESTauProducer::~ESTauProducer()
+ESTauProducerMET::~ESTauProducerMET()
 {}
 
 void 
-ESTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+ESTauProducerMET::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-	//std::cout << "<ESTauProducer::produce>:" << std::endl;
+	//std::cout << "<ESTauProducerMET::produce>:" << std::endl;
 
 	using namespace edm;
 	using namespace reco;
 
 	edm::Handle<pat::TauCollection > srcH;
-	std::unique_ptr<std::vector<pat::Tau> > out(new std::vector<pat::Tau> );
 
 	edm::Handle<reco::GenParticleCollection> genParticleCollection;
 
@@ -113,10 +114,25 @@ ESTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	      
 
 	    }	      
-	    out->push_back(object);
 	  }
-	iEvent.put(std::move(out),"");    
-
+	
+	// now for the met
+	std::unique_ptr<pat::METCollection > outMET(new pat::METCollection);
+	Handle<pat::METCollection> srcMET;
+  
+	if(iEvent.getByToken(met_,srcMET)) 
+	  for(unsigned int i=0;i<srcMET->size();++i) {
+	    pat::MET  met = srcMET->at(i);
+	    math::XYZTLorentzVector unclustered =-met.p4()-originalVector;
+	    //std::cout<<"oldMET: "<<met.pt()<<std::endl;
+	    //std::cout<<"original.pt(), smeared.pt(), diff"<<originalVector.pt()<<", "<<smearedVector.pt()<<", "<<originalVector.pt()-smearedVector.pt()<<std::endl;
+	    math::XYZTLorentzVector newMET = -(unclustered+smearedVector);
+	    //std::cout<<"newMET: "<<newMET.pt()<<std::endl;
+	    met.setP4(math::XYZTLorentzVector(newMET.px(),newMET.py(),0.0,sqrt(newMET.px()*newMET.px()+newMET.py()*newMET.py())));
+	    outMET->push_back(met);
+    }
+	
+	iEvent.put(std::move(outMET),"");    
 
 
 }
@@ -125,4 +141,4 @@ ESTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 
 #include "FWCore/Framework/interface/MakerMacros.h"
-DEFINE_FWK_MODULE(ESTauProducer);
+DEFINE_FWK_MODULE(ESTauProducerMET);

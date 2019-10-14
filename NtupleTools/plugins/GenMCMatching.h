@@ -57,20 +57,20 @@ class GenMCMatching : public NtupleFillerBase {
 			  //std::cout<<"isPrompt2: "<<handle->at(0).isPrompt2()<<std::endl;
 			  //std::cout<<"2 P4: "<<handle->at(0).p4Leg2gen().pt()<<std::endl;
 			  //std::cout<<"2 P4Vis: "<<handle->at(0).p4VisLeg2gen().pt()<<std::endl;
-			  /*
+			  
 			  if (abs(handle->at(0).genPdg1())==11&&handle->at(0).isPrompt1()&&handle->at(0).p4Leg1gen().pt()>8){genMatch1=1;}
 			  else if (abs(handle->at(0).genPdg1())==13&&handle->at(0).isPrompt1()&&handle->at(0).p4Leg1gen().pt()>8){genMatch1=2;}
 			  else if (abs(handle->at(0).genPdg1())==11&&handle->at(0).isDirectPromptTauDecayProduct1()&&handle->at(0).p4Leg1gen().pt()>8){genMatch1=3;}
 			  else if (abs(handle->at(0).genPdg1())==13&&handle->at(0).isDirectPromptTauDecayProduct1()&&handle->at(0).p4Leg1gen().pt()>8){genMatch1=4;}
 			  else if (handle->at(0).p4VisLeg1gen().pt()>15){genMatch1=5;}
 			  else {genMatch1=6;}
-			  */
-			  
+
+			  /*
 			  if(handle->at(0).leg1()->hasUserInt("gen_match"))
 			    genMatch1 = handle->at(0).leg1()->userInt("gen_match");
 			  else
 			    genMatch1 = 0;
-
+			  */
 			  genMatch2 = handle->at(0).leg2()->userInt("gen_match");
 			  //std::cout<<" gen_match_1: "<<genMatch1<<std::endl;
 			  //std::cout<<" gen_match_2: "<<genMatch2<<std::endl;

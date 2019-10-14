@@ -60,7 +60,7 @@ MTanalysisConfigurator = CutSequenceProducer(initialCounter  = 'initialEventsMT'
 
 #Add smearing
 #MTanalysisConfigurator.addSmearing('patOverloadedTaus','triggeredPatMuons','triggeredPatElectrons','filteredJets','metEmbedJES','MT')
-MTanalysisConfigurator.addSmearing('patOverloadedTaus','triggeredPatMuons','triggeredPatElectrons','filteredJets','slimmedMETs','MT')
+MTanalysisConfigurator.addSmearing('ESTausID','triggeredPatMuons','triggeredPatElectrons','filteredJets','slimmedMETs','MT')
 
 #Create di muon pairs for veto purposes
 #MTanalysisConfigurator.addDiCandidateModule('diMuons','PATMuPairProducer','triggeredPatMuons','triggeredPatMuons','metEmbedJES','','smearedJetsMT',0,9999,text = '',leadingObjectsOnly = False,dR = 0.15,recoMode = "",genParticles='prunedGenParticles')
@@ -70,7 +70,7 @@ MTanalysisConfigurator.addSelector('diMuonsOS','PATMuPairSelector','leg1.isPFMuo
 MTanalysisConfigurator.addSorter('diMuonsOSSorted','PATMuPairSorter')
 
 #Make DiTaus   
-MTanalysisConfigurator.addDiCandidateModule('muTaus','PATMuTauPairProducer','triggeredPatMuons','patOverloadedTaus','smearedMETMT','patOverloadedTaus','smearedJetsMT',1,9999,text='AtLeastOneMuTau',leadingObjectsOnly = False,dR = 0.5,recoMode ="",genParticles='prunedGenParticles')
+MTanalysisConfigurator.addDiCandidateModule('muTaus','PATMuTauPairProducer','triggeredPatMuons','ESTausID','smearedMETMT','ESTausID','smearedJetsMT',1,9999,text='AtLeastOneMuTau',leadingObjectsOnly = False,dR = 0.5,recoMode ="",genParticles='prunedGenParticles')
 #MTanalysisConfigurator.addSelector('muTausTausMuTrigMatch','PATMuTauPairSelector','leg1.userFloat("hltL3crIsoL1sMu16L1f0L2f10QL3f18QL3trkIsoFiltered0p09")>0','MTMuTrigMatch',1)
 MTanalysisConfigurator.addSelector('muTausMuonPtEta','PATMuTauPairSelector','leg1.pt()>20&&abs(leg1.eta())<2.4','MTMuonPtEta',1)
 MTanalysisConfigurator.addSelector('muTausTauPtEta','PATMuTauPairSelector','leg2.pt()>20&&abs(leg2.eta())<2.3','MTTauPtEta',1)

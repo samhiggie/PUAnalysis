@@ -504,7 +504,7 @@ class VBFVariableFiller : public NtupleFillerBase {
 	    svFitPt = t_svFitPt; 
 	    svFitPhi = t_svFitPhi; 
 	    svFitEta = t_svFitEta;
-	    std::cout <<"nominal svFit Mass: "<<svFitMass<< " Pt: "<<svFitPt<< " Phi: "<<svFitPhi<< " Eta: "<<svFitEta<< " MET: "<<met<< " metphi: "<< metphi<<" NLeptons: "<< measuredTauLeptons.size()<<std::endl;
+	    //std::cout <<"nominal svFit Mass: "<<svFitMass<< " Pt: "<<svFitPt<< " Phi: "<<svFitPhi<< " Eta: "<<svFitEta<< " MET: "<<met<< " metphi: "<< metphi<<" NLeptons: "<< measuredTauLeptons.size()<<std::endl;
 	  }
 	}
 

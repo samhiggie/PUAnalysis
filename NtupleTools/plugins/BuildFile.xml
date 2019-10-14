@@ -1,6 +1,7 @@
 <export>
 </export>
 <library   name="PUAnalysisNtupleTools_plugins" file="*.cc">
+  <use   name="HTT-utilities/RecoilCorrections"/>
   <use   name="TauAnalysis/ClassicSVfit"/> 
   <use   name="FWCore/Framework"/>
   <use   name="FWCore/MessageLogger"/>
