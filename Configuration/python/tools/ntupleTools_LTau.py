@@ -291,7 +291,7 @@ def makeHiggsClassification(srcName):
 
 def makeEmbeddedEventSF(sourceDiTaus,runSF,tag,genPt1,genEta1,genPt2,genEta2):
    PSet = cms.PSet(
-         pluginType  = cms.string("PATDiTauPairEmbeddedSFFiller"),
+         pluginType  = cms.string("PATMuTauPairEmbeddedSFFiller"),
          src         = cms.InputTag(sourceDiTaus),
          isEmbedded  = cms.bool(runSF),
          tag         = cms.string(tag),
@@ -303,9 +303,9 @@ def makeEmbeddedEventSF(sourceDiTaus,runSF,tag,genPt1,genEta1,genPt2,genEta2):
    )
    return PSet
 
-def makeEmbeddedTriggerMatch(sourceDiTaus,runSF,genPt1,genEta1,genPhi1,genPt2,genEta2,genPhi2,triggerfilter):
+def makeEmbeddedTriggerFiller(sourceDiTaus,runSF,genPt1,genEta1,genPhi1,genPt2,genEta2,genPhi2,triggerfilter):
    PSet = cms.PSet(
-         pluginType  = cms.string("PATDiTauPairEmbeddedTriggerFilterFiller"),
+         pluginType  = cms.string("PATMuTauPairEmbeddedTriggerFilterFiller"),
          src         = cms.InputTag(sourceDiTaus),
          isEmbedded  = cms.bool(runSF),
          pt_1          = cms.string(genPt1),
@@ -316,7 +316,18 @@ def makeEmbeddedTriggerMatch(sourceDiTaus,runSF,genPt1,genEta1,genPhi1,genPt2,ge
          phi_2          = cms.string(genPhi2),
          triggerFilter  = cms.string(triggerfilter), 
          triggerBits   = cms.InputTag("TriggerResults","","SIMembedding"),
-         objects = cms.InputTag("slimmedPatTrigger")
+         objects = cms.InputTag("slimmedPatTrigger","","MERGE")
+
+   )
+   return PSet
+
+def makeEmbeddedTriggerMatch(sourceDiTaus,isEmbed):
+   PSet = cms.PSet(
+         pluginType  = cms.string("PATMuTauPairEmbeddedTriggerFilterMatcher"),
+         src         = cms.InputTag(sourceDiTaus),
+         isEmbedded  = cms.bool(isEmbed),
+         triggerBits   = cms.InputTag("TriggerResults","","SIMembedding"),
+         objects = cms.InputTag("slimmedPatTrigger","","MERGE")
 
    )
    return PSet
@@ -479,7 +490,8 @@ def addMuTauShortEventTree(process,name,src = 'muTausSorted', srcLL = 'diMuonsOS
                                                                      "embedded_trig_sf", 'p4Leg1gen().pt()','p4Leg1gen().eta()','p4Leg2gen().pt()','p4Leg2gen().eta()'),
                               muTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src, 
                                                                                    True if isEmbedded else False,
-                                                                                   'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+                                                                                   #'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+                                                                                   'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltL1sMu18erTau24erIorMu20erTau24er"),
 
                               muTauByOldDMMVAIsoTight = makeMuTauPair(src,"byTightIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byTightIsolationMVArun2v1DBoldDMwLT")'),
                               muTauByOldDMMVAIsoMedium = makeMuTauPair(src,"byMediumIsolationMVArun2v1DBoldDMwLT_2",'leg2.tauID("byMediumIsolationMVArun2v1DBoldDMwLT")'),
@@ -684,9 +696,15 @@ def addMuTauEventTree(process,name,src = 'muTausSorted',fileout='analysis_mutau.
                               diTauEmbeddedSF  = makeEmbeddedEventSF(src, 
                                                                      True if isEmbedded else False, 
                                                                      "embedded_trig_sf", 'p4Leg1gen().pt()','p4Leg1gen().eta()','p4Leg2gen().pt()','p4Leg2gen().eta()'),
-                              diTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src, 
-                                                                                   True if isEmbedded else False,
-                                                                                   'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+                              diTauEmbeddedTriggerMatch = makeEmbeddedTriggerMatch(src,True if isEmbedded else False),
+
+                            #  diTauEmbeddedTriggerMatch = makeEmbeddedTriggerFiller(src, 
+                            #                                                       True if isEmbedded else False,
+                            #                                                       #'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltDoubleL2IsoTau26eta2p2"),
+                            #                                                      'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltL1sMu18erTau24erIorMu20erTau24er"),
+                            #                                                      #'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07"),
+                            #                                                      #'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "SIMembedding"),
+                            #                                                       #'p4Leg1gen().pt()','p4Leg1gen().eta()', 'p4Leg1gen().phi()', 'p4Leg2gen().pt()','p4Leg2gen().eta()', 'p4Leg2gen().phi()', "hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07"),
 
                               #BTAGS AND JETS
                               muTauVBFDEta = makeMuTauPair(src,"vbfDEta","vbfDEta"),

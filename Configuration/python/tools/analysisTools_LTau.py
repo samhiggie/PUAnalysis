@@ -240,6 +240,7 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   TriggerRes=HLT 
   global TriggerFilter
   TriggerFilter=triggerFilter
+  print "we are using the trigger filter:    ",TriggerFilter
 
   process.analysisSequence = cms.Sequence()
 
@@ -254,9 +255,11 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
 
   muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODMuonID") 
   electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"miniAODElectronVID") 
+  tauTriggerMatchMiniAODEMB(process,triggerProcess,HLT,"slimmedTaus")
 
   genmatchtaus(process)  
-  reRunTaus(process,'slimmedTaus')
+  #reRunTaus(process,'slimmedTaus')
+  reRunTaus(process,'triggeredPatTaus')
   selectTauDecayMode(process, 'slimmedTausDeepID', 'pt>10')
 
   tauEffi(process,'selectTauDM',False)
@@ -279,7 +282,7 @@ def defaultReconstructionEMB(process,triggerProcess = 'HLT',triggerPaths = ['HLT
   GenHTCalculator(process)
   #Default selections for systematics
 
-  STXS(process)
+  #STXS(process)
 
   #Default selections for systematics
   applyDefaultSelectionsPT(process)
@@ -720,13 +723,19 @@ def muonTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcMuon,objects="slimm
                                             trigEvent = cms.InputTag(HLT),
                                             filters = cms.vstring(
                                             #'hltDoubleL2IsoTau26eta2p2'
+                                            'hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07',
+                                            'hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07',
+                                            'hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07',
+                                            'hltL3crIsoBigORMu18erTauXXer2p1L1f0L2f10QL3f20QL3trkIsoFiltered0p07',
+                                            'hltL1sMu18erTau24erIorMu20erTau24er'
                                             ),
 					    filtersAND = cms.vstring(
                                             #'hltDoubleL2IsoTau26eta2p2'
+                                            #'hltL1sMu18erTau24erIorMu20erTau24er'
 					    ),
                                             bits = cms.InputTag("TriggerResults","","SIMembedding"),
                                             prescales = cms.InputTag("patTrigger"),
-                                            objects = cms.InputTag(objects),
+                                            objects = cms.InputTag("slimmedPatTrigger","","MERGE"),
                                             ptCut = cms.int32(0) 
    )
   
@@ -739,17 +748,50 @@ def electronTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcEle,objects="sl
                                             src = cms.InputTag(srcEle),#"miniAODElectronVID"
                                             trigEvent = cms.InputTag(HLT),#unused
                                             filters = cms.vstring(
+                                            #'hltL1sMu18erTau24erIorMu20erTau24er'
                                             ),
 					    filtersAND = cms.vstring(
+                                            #'hltL1sMu18erTau24erIorMu20erTau24er'
 					    ),
                                             bits = cms.InputTag("TriggerResults","","SIMembedding"),
                                             prescales = cms.InputTag("patTrigger"),
-                                            objects = cms.InputTag(objects),
+                                            objects = cms.InputTag("slimmedPatTrigger","","MERGE"),
                                             ptCut = cms.int32(0) 
    )
   
    process.analysisSequence*= process.triggeredPatElectrons
 
+def tauTriggerMatchMiniAODEMB(process,triggerProcess,HLT,srcTau):
+   strTrig=''
+   for i in TriggerPaths:
+    if i==TriggerPaths[0]:
+      strTrig+='path(\"'+i+'\")'
+    else:  
+      strTrig+='|| path(\"'+i+'\")'
+
+
+   process.triggeredPatTaus = cms.EDProducer("TauTriggerMatcherMiniAOD",
+                                            src = cms.InputTag(srcTau),
+                                            trigEvent = cms.InputTag(HLT),
+                                            filtersAND = cms.vstring(
+                                                #'hltL1sMu18erTau24erIorMu20erTau24er'
+                                            ),
+                                            filters = cms.vstring(
+                                                'hltL1sMu18erTau24erIorMu20erTau24er',
+                                                'hltL1sBigORMu18erTauXXer2p1',
+                                                'hltPFTau180TrackPt50LooseAbsOrRelMediumHighPtRelaxedIsoIso',
+                                                'hltSelectedPFTau180MediumChargedIsolationL1HLTMatched'
+                                            ),
+                                            #bits = cms.InputTag("TriggerResults","","HLT"),
+                                            #bits = cms.InputTag(HLT,"",triggerProcess),
+                                            bits = cms.InputTag("TriggerResults","","SIMembedding"),
+                                            prescales = cms.InputTag("patTrigger"),
+                                            objects = cms.InputTag("slimmedPatTrigger","","MERGE"),#for 2017 analysis
+                                            ptCut = cms.int32(10) #too low to affect anything
+   )
+                                            
+   #process.analysisSequence=cms.Sequence(process.analysisSequence*process.preTriggeredPatTaus*process.triggeredPatTaus)
+   process.analysisSequence=cms.Sequence(process.analysisSequence*process.triggeredPatTaus)
 
 def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
    strTrig=''
@@ -764,7 +806,8 @@ def tauTriggerMatchMiniAOD(process,triggerProcess,HLT,srcTau):
                                             src = cms.InputTag(srcTau),
                                             trigEvent = cms.InputTag(HLT),
                                             filtersAND = cms.vstring(
-                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07'
+                                                'hltL3crIsoL1sMu18erTau24erIorMu20erTau24erL1f0L2f10QL3f20QL3trkIsoFiltered0p07',
+                                                'hltL1sMu18erTau24erIorMu20erTau24er'
                                                 #'hltOverlapFilterIsoMu20LooseChargedIsoPFTau27L1Seeded'
                                             ),
                                             filters = cms.vstring(

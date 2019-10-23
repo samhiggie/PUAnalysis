@@ -85,6 +85,7 @@ class EmbeddedSFFiller : public NtupleFillerBase {
 	  double eta1 = (*function_eta1)(handle->at(0));
 	  double pt2  = (*function_pt2)(handle->at(0));
 	  double eta2 = (*function_eta2)(handle->at(0));
+      std::cout<<"pt of the muon   : "<<pt1<<std::endl;
 	  
 	  w->var("gt1_pt")->setVal(pt1);
 	  w->var("gt1_eta")->setVal(eta1);
@@ -98,8 +99,10 @@ class EmbeddedSFFiller : public NtupleFillerBase {
 
 	  idValue_1 = w->function("m_sel_idEmb_ratio")->getVal();
 
-	  w->var("gt1_pt")->setVal(pt2);
-	  w->var("gt1_eta")->setVal(eta2);
+	  //w->var("gt1_pt")->setVal(pt2);
+	  //w->var("gt1_eta")->setVal(eta2);
+	  w->var("gt_pt")->setVal(pt2);
+	  w->var("gt_eta")->setVal(eta2);
 	  idValue_2 = w->function("m_sel_idEmb_ratio")->getVal();
 	  
 	  //now the tau trigger weights which should NOT be needed in the next iteration

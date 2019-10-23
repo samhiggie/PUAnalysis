@@ -50,8 +50,8 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
       triggerBits_(iC.consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerBits"))),
       triggerObjects_(iC.consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects")))
 	{
-	  idBranch_1 = t->Branch("emb_trig_Match_1",&idValue_1,"emb_trig_Match_1/D");
-	  idBranch_2 = t->Branch("emb_trig_Match_2",&idValue_2,"emb_trig_Match_2/D");
+	  idBranch_1 = t->Branch("emb_trig_Match_1",&trigMatchValue_1,"emb_trig_Match_1/F");
+	  idBranch_2 = t->Branch("emb_trig_Match_2",&trigMatchValue_2,"emb_trig_Match_2/F");
 
 	  function_pt_1  = new StringObjectFunction<T>(pt_1_);
 	  function_eta_1  = new StringObjectFunction<T>(eta_1_);
@@ -81,8 +81,8 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
     edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
     edm::Handle<edm::TriggerResults> triggerBits;
 
-    idValue_1 = 1;
-    idValue_2 = 1;
+    trigMatchValue_1 = 1;
+    trigMatchValue_2 = 1;
 
     iEvent.getByToken(triggerBits_, triggerBits);
     iEvent.getByToken(triggerObjects_, triggerObjects);
@@ -99,30 +99,35 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
 	  double pt_2  = (*function_pt_2)(handle->at(0));
 	  double eta_2  = (*function_eta_2)(handle->at(0));
 	  double phi_2  = (*function_phi_2)(handle->at(0));
+      //std::cout<<"pt of the muon in embedded trig match   :  "<<pt_1<<std::endl;
+      std::cout<<"pt of the tau in embedded trig match   :  "<<pt_2<<std::endl;
 
 	  reco::Candidate::LorentzVector p4_1(pt_1,eta_1,phi_1,115);
 	  reco::Candidate::LorentzVector p4_2(pt_2,eta_2,phi_2,115);
 	  //find all the trigger objects that match to the input filter, there should be 2 per good event
 	  std::vector<reco::Candidate::LorentzVector>  filters_p4;
+      //std::cout<<"The filter name being applied: "<<filter_<<std::endl;
 	  filters_p4 = getFilters(iEvent, triggerBits, filter_, *triggerObjects);
+      //std::cout<<"The filter being applied :"<<filters_p4.at(0)<<std::endl;
 	  
-	  idValue_1 = matchFilter(p4_1,filters_p4);
-	  idValue_2 = matchFilter(p4_2,filters_p4);
+	  trigMatchValue_1 = matchFilter(p4_1,filters_p4);
+      //std::cout<<"ID 1: "<<trigMatchValue_1<<std::endl;
+	  trigMatchValue_2 = matchFilter(p4_2,filters_p4);
 	  
 	}
       }
     }
   }
 
-  bool matchFilter(reco::Candidate::LorentzVector gen_leg, std::vector<reco::Candidate::LorentzVector> filters){
+  float matchFilter(reco::Candidate::LorentzVector gen_leg, std::vector<reco::Candidate::LorentzVector> filters){
     for(auto filter: filters){
       if(deltaR(filter,gen_leg)<0.5){
-	//std::cout<<"found matched filter for embedded sample"<<std::endl;
-	return true;
+	std::cout<<"found matched filter for embedded sample"<<std::endl;
+	return 1.0;
       }
     }
-    //std::cout<<"NO found matched filter for embedded sample"<<std::endl;
-    return false;
+    std::cout<<"NO found matched filter for embedded sample"<<std::endl;
+    return 0.0;
   }
 
   std::vector<reco::Candidate::LorentzVector> getFilters(const edm::Event& iEvent, edm::Handle<edm::TriggerResults> triggerBits,std::string filter,pat::TriggerObjectStandAloneCollection triggerObjects)
@@ -168,8 +173,8 @@ class EmbeddedTriggerFilterFiller : public NtupleFillerBase {
   StringObjectFunction<T>*function_eta_2;
   StringObjectFunction<T>*function_phi_2;
 
-  double idValue_1;
-  double idValue_2;
+  double trigMatchValue_1;
+  double trigMatchValue_2;
   TBranch *idBranch_1;
   TBranch *idBranch_2;
   RooWorkspace *w;

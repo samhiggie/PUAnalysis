@@ -43,8 +43,12 @@ process.source = cms.Source("PoolSource",
 from PUAnalysis.Configuration.tools.analysisTools_LTau import *
 defaultReconstructionEMB(process,'HLT',
                          [
-                          'HLT_Mu17_TkMu8',
-                          'HLT_Mu17_Mu8' 
+                          'HLT_IsoMu24_v',
+                          'HLT_IsoMu27_v',
+                          'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1_v',
+                          'HLT_IsoMu20_eta2p1_LooseChargedIsoPFTauHPS27_eta2p1_CrossL1_v',
+                          'HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v',
+                          'HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_v' 
                           ],
                          HLT = 'TriggerResults',
                          triggerFilter='SIMembedding')
