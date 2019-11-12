@@ -4,6 +4,7 @@
 <use   name="PhysicsTools/FWLite"/>
 <use   name="DataFormats/FWLite"/>
 <use   name="PUAnalysis/DataFormats"/>
+<use   name="HTTutilities/Jet2TauFakes"/>
 
 <bin   name="MakeDataCardUpgrade" file="MakeDataCardUpgrade.cc">
 </bin>
@@ -16,6 +17,10 @@
 </bin>
 <bin   name="MakeDataCardHTT_2018" file="MakeDataCardHTT_2018.cc">
 </bin>
+<bin   name="MakeDataCardHTT_2018_FF" file="MakeDataCardHTT_2018_FF.cc">
+</bin>
+<!--<bin   name="MakeDataCard_MuTau_2018" file="MakeDataCard_MuTau_2018.cc">
+</bin>-->
 <bin   name="MakeDataCardHThTh_2018_2D_FF" file="MakeDataCardHThTh_2018_2D_FF.cc">
 </bin>
 <bin   name="MakeDataCardHTT" file="MakeDataCardHTT.cc">

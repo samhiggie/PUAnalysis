@@ -4,6 +4,8 @@
 #include "TTree.h"
 #include "TChain.h"
 #include "TH1.h"
+#include "TH2.h"
+#include "TCut.h"
 #include "TF1.h"
 #include "PhysicsTools/FWLite/interface/CommandLineParser.h" 
 #include <math.h>
@@ -15,6 +17,7 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 //#include "FineBins.h"
+#include "HTTutilities/Jet2TauFakes/interface/FakeFactor.h"
 
 
 using std::cout;
@@ -109,6 +112,7 @@ class DataCardCreatorHTT {
             ZTT3PRONG_        = "tauDecayMode==10"; //Zttyield
 
             ZTT_genTauSel_        = "gen_match_2==5"; //Zttyield
+            muTau_genTauSel_        = "gen_match_1 ==2 && gen_match_2==5"; //Zttyield
             ZLFT_genLSel_         = "gen_match_2<5";
             ZJFT_genLReject_      = "gen_match_2==6";
             ZLL_genLLSel_        = "(gen_match_2<5||gen_match_2==6)"; //Zttyield
@@ -196,10 +200,12 @@ class DataCardCreatorHTT {
             if(muID_!=0&&eleID_==0) {legCorr*=muID_*tauID_;}
             if(muID_==0&&eleID_!=0) {legCorr*=eleID_*tauID_;}
             std::cout<<"Make Higgs Shape"<<std::endl;
-            //tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*44.14*0.0627,prefix);
-            //tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*3.782*0.0627,prefix);
-            tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr,prefix);
-            tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr,prefix);
+            tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH120",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*47.38*0.0698,prefix);
+            tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*44.14*0.0627,prefix);
+            tmp= createHistogramAndShifts(dir_+"ggH125.root","ggH130",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*41.23*0.0541,prefix);
+            tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH120",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*3.935*0.0698,prefix);
+            tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH125",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*3.782*0.0627,prefix);
+            tmp= createHistogramAndShifts(dir_+"vbfH125.root","qqH130",("("+preselection+"&&"+categoryselection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*legCorr*3.637*0.0541,prefix);
             std::cout<<"Made Higgs Shape"<<std::endl;
             //sam editions check!!
 			string fullSelection     = preselection+"&&"+trigSelection_+"&&"+osSignalSelection_;
@@ -211,6 +217,143 @@ class DataCardCreatorHTT {
 
         /*-------------Create Histograms------------------*/
 
+        BkgOutput runOSLSMT(std::string preSelection,std::string prefix,std::string zShape, float topExtrap) {
+            std::cout<<"runOSLSMT"<<std::endl;
+
+            BkgOutput output(0);    
+
+            float leg1Corr=1.0;
+            if(muID_!=0) leg1Corr*=muID_;
+            if(eleID_!=0) leg1Corr*=eleID_;
+
+            printf("Tau ID Scale Factor is %.3f \n",tauID_);
+
+            std::cout<<"Create Data"<<std::endl;
+            std::cout<<"      Data Selection: "<<preSelection<<"&&"<<osSignalSelection_<<std::endl;
+
+
+            std::pair<float,float> dataY         = createHistogramAndShifts(dataFile_,"data_obs","("+preSelection+"&&"+trigSelectionData_+"&&"+osSignalSelection_+"&&"+blinding_+")",scaleUp_,prefix);
+            output.DATA = dataY.first;
+
+
+            std::cout<<"Create Top"<<std::endl;
+            std::cout<<"Create Top Sys"<<TTweight_<<std::endl;
+            //Create ttbar
+            std::pair<float,float> topYield      = createHistogramAndShifts(topFile_,"TT",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_+"*"+TTweight_),luminosity_*leg1Corr*tauID_*topExtrap,prefix);
+            std::pair<float,float> topInflYield  = inflateError(topYield,topErr_);
+            printf("      TTbar events in signal region = %f + %f \n",topInflYield.first,topInflYield.second);
+            output.TOP  = topInflYield.first;
+            output.dTOP = topInflYield.second;
+
+            std::cout<<"Create VV"<<std::endl;
+            //Create Diboson
+            std::pair<float,float> vvYield      = createHistogramAndShifts(vvFile_,"VV",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+")*"+weight_),luminosity_*leg1Corr*tauID_,prefix);
+            printf("      Diboson events before inflation = %f + %f \n",vvYield.first,vvYield.second);
+            std::pair<float,float> vvInflYield  = inflateError(vvYield,vvErr_);
+            printf("      Diboson events in signal region = %f + %f \n",vvInflYield.first,vvInflYield.second);
+            output.VV  = vvInflYield.first;
+            output.dVV = vvInflYield.second;
+
+
+            std::cout<<"Create ZLFT"<<std::endl;
+            //Create ZL and ZJ
+            std::pair<float,float> zlftYield   = createHistogramAndShifts(zllFile_,"ZL",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+ZLFT_genLSel_+")*"+weight_),luminosity_*leg1Corr*zttScale_*zlftFactor_,prefix,false);
+            //std::pair<float,float> zlftYield   = createHistogramAndShifts(zllFile_,"ZL",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&genTaus==0&&((abs(pdg2)==13&&genPt2>8)||(abs(pdg2)==11&&genPt2>8)))*"+weight_),luminosity_*leg1Corr*zlftFactor_*zttScale_,prefix,false);
+            std::pair<float,float> zlftInflYield  = inflateError(zlftYield,zlftErr_);
+            printf("      Z (l->tau) in signal region = %f + %f \n",zlftInflYield.first,zlftInflYield.second);
+            output.ZLFT  = zlftInflYield.first;
+            output.dZLFT = zlftInflYield.second;
+
+
+            std::cout<<"Create ZJFT"<<std::endl;
+            std::pair<float,float> zjftYield      = createHistogramAndShifts(zllFile_,"ZJ",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+ZJFT_genLReject_+")*"+weight_),luminosity_*leg1Corr*zttScale_,prefix);    
+            //std::pair<float,float> zjftYield      = createHistogramAndShifts(zllFile_,"ZJ",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&(!((genTaus==0&&abs(pdg2)==13&&genPt2>8)||(genTaus==0&&abs(pdg2)==11&&genPt2>8)||(genTaus>0&&genVisPt2>18))))*"+weight_),luminosity_*leg1Corr*zttScale_,prefix);    
+            std::pair<float,float> zjftInflYield  = inflateError(zjftYield,zjftErr_);
+            printf("      Z (j->tau) in signal region = %f + %f \n",zjftInflYield.first,zjftInflYield.second);
+            output.ZJFT  = zjftInflYield.first;
+            output.dZJFT = zjftInflYield.second;
+
+            /*
+               std::cout<<"Create ZLL"<<std::endl;
+            //Create ZL and ZJ
+            std::pair<float,float> zllYield   = createHistogramAndShifts(zllFile_,"ZL",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+ZLL_genLLSel_+")*"+weight_),luminosity_*leg1Corr*zllFactor_*zttScale_,prefix,false);
+            //std::pair<float,float> zllYield   = createHistogramAndShifts(zllFile_,"ZL",("("+preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&genTaus==0&&((abs(pdg2)==13&&genPt2>8)||(abs(pdg2)==11&&genPt2>8)))*"+weight_),luminosity_*leg1Corr*zllFactor_*zttScale_,prefix,false);
+            std::pair<float,float> zllInflYield  = inflateError(zllYield,zllErr_);
+            printf("      Z (l->tau) in signal region = %f + %f \n",zllInflYield.first,zllInflYield.second);
+            output.ZLL  = zllInflYield.first;
+            output.dZLL = zllInflYield.second;
+            */
+
+
+            std::cout<<"Create ZTT"<<std::endl;
+            //Create Z-->tautau
+            if(!runZTT(preSelection, prefix, zShape, topExtrap, output)){
+                std::cout<<"Error Creating Ztt"<<std::endl;
+                return output;
+            }
+
+
+            //Create W 
+            //In principle osSignalSelection should work as a dummy variable
+            std::cout<<"Create W"<<std::endl;
+            if(!runW(preSelection, prefix, zShape, topExtrap, output, "pt_1>-100", "pt_1>-100",wSelection_)){
+                std::cout<<"Error Creating W"<<std::endl;
+                return output;
+            }
+
+            std::cout<<"Create QCD"<<std::endl;
+            //Create QCD
+            if(!runQCD(preSelection, prefix, zShape, topExtrap, output, "pt_1>-100", relaxedSelection_)){ //pt_1>-100 is the category Selection
+                std::cout<<"Error Creating QCD"<<std::endl;
+                return output;
+            }
+
+
+            std::cout<<"=============Data Yields============="<<std::endl;
+            std::cout<<"DATA: "<< output.DATA<<std::endl;
+            std::cout<<std::endl;
+            std::cout<<"BKGD Yields "<<std::endl;
+            std::cout<<"QCD: "<< output.QCD<<std::endl;
+            std::cout<<"W: "<< output.W<<std::endl;
+            std::cout<<"TOP: "<< output.TOP<<std::endl;
+            std::cout<<"VV: "<< output.VV<<std::endl;
+            std::cout<<"ZLFT: "<< output.ZLFT<<std::endl;
+            std::cout<<"ZJFT: "<< output.ZJFT<<std::endl;
+            std::cout<<"ZTT: "<< output.ZTT<<std::endl;
+
+            //TODO: Check that this outputs the correct values
+            float background    = output.QCD  + output.W  + output.TOP  + output.VV  + output.ZLFT  + output.ZJFT  + output.ZTT;
+            float backgroundErr = sqrt( pow(output.dQCD,2) + pow(output.dW,2) + pow(output.dTOP,2) + pow(output.dVV,2) + pow(output.dZLFT,2) + pow(output.dZJFT,2) + pow(output.dZTT,2));
+
+            printf("BACKGROUND=%f +-%f \n",background,backgroundErr);
+
+
+            float fullBackgroundErr = sqrt(pow(quadrature(output.VV,output.dVV,muIDErr_,eleIDErr_,zttScaleErr_,tauIDErr_),2)
+                    +pow(quadrature(output.TOP,output.dTOP,muIDErr_,eleIDErr_,tauIDErr_),2)
+                    +pow(quadrature(output.ZJFT,output.dZJFT,muIDErr_,eleIDErr_,zttScaleErr_),2)
+                    +pow(quadrature(output.ZLFT,output.dZLFT,muIDErr_,eleIDErr_,zttScaleErr_),2)
+                    +pow(output.dQCD,2)
+                    +pow(output.dW,2)
+                    +pow(quadrature(output.ZTT,output.dZTT,muIDErr_,eleIDErr_,zttScaleErr_,tauIDErr_),2));
+
+            printf("Total Background & %.2f $\\pm$ %.2f & - & - & - \\\\ \n",background,sqrt(pow(quadrature(output.VV,    output.dVV,   muIDErr_,eleIDErr_,zttScaleErr_,tauIDErr_),2)
+                        +pow(quadrature(output.TOP,  output.dTOP,  muIDErr_,eleIDErr_,tauIDErr_),2)
+                        +pow(quadrature(output.ZJFT, output.dZJFT, muIDErr_,eleIDErr_,zttScaleErr_),2)
+                        +pow(quadrature(output.ZLFT, output.dZLFT, muIDErr_,eleIDErr_,zttScaleErr_),2)
+                        +pow(output.dQCD,2)
+                        +pow(output.dW,2)
+                        +pow(quadrature(output.ZTT,output.dZTT,muIDErr_,eleIDErr_,zttScaleErr_,tauIDErr_),2)));
+
+
+
+            //create a histogram with the error for plotting reasons and only
+            TH1F *err = new TH1F("BKGErr","",1,0,1);
+            err->SetBinContent(1,fullBackgroundErr/background);
+            fout_->cd((filelabel_+prefix).c_str());
+            err->Write();
+
+            return output;      
+        }
 
         /*
          * Run the full extrapolation in the Btag category
@@ -243,16 +386,6 @@ class DataCardCreatorHTT {
             std::cout<<"      DATA Yield: "<< output.DATA<<std::endl;
             std::cout<<"      DATA Selection: "<<preSelection<<"&&"<<trigSelectionData_<<"&&"<<osSignalSelection_<<"&&"<<categorySelection<<std::endl; 
 
-            //sam editions check!!
-			string fullSelection     = preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_;
-
-			if(doJEC_>0){
-			  std::cout<<"creating met systematics backgrounds"<<std::endl;
-			  //createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
-			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
-			  createJETSystematicsCustVar(fullSelection,tauID_, leg1Corr, topExtrap, prefix);
-
-			}
 
 
             std::cout<<"Create DiBoson"<<std::endl;
@@ -283,6 +416,8 @@ class DataCardCreatorHTT {
             output.VVL  = vvlInflYield.first;
             output.dVVL = vvlInflYield.second;
 
+            //END PROGRAM FOR DEBUGGING VV DISTS.
+            return output;
             //Create ZL and ZJ
 
             std::cout<<"Create ZLFT"<<std::endl;
@@ -349,6 +484,12 @@ class DataCardCreatorHTT {
                 return output;
             }
 
+            std::cout<<"Running Fake Factor"<<std::endl;
+            if(!runFF(preSelection, prefix, zShape, topExtrap, output, categorySelection, relaxedSelection)){
+                std::cout<<"Error Creating FF"<<std::endl;
+                return output;
+            }
+
             std::cout<<"Create QCD"<<std::endl;
             //Create QCD
             if(!runQCD(preSelection, prefix, zShape, topExtrap, output, categorySelection, relaxedSelection)){
@@ -358,6 +499,16 @@ class DataCardCreatorHTT {
 
 
 
+            //adding the systematics!!
+			string fullSelection     = preSelection+"&&"+trigSelection_+"&&"+osSignalSelection_;
+
+			if(doJEC_>0){
+			  std::cout<<"creating met systematics backgrounds"<<std::endl;
+			  //createMETSystematics(fullSelection,tauIDCorr, leg1Corr, topExtrap, prefix);
+			  std::cout<<"creating jet systematics backgrounds"<<std::endl;
+			  createJETSystematicsCustVar(fullSelection,tauID_, leg1Corr, topExtrap, prefix);
+
+			}
             std::cout<<std::endl;
             std::cout<<"=============Data Yields============="<<std::endl;
             std::cout<<"DATA: "<< output.DATA<<std::endl;
@@ -477,7 +628,7 @@ class DataCardCreatorHTT {
             }
 
     		void createJETSystematicsCustVar(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
-		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "RelativeSample","SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
+		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
 
 		  //find and replace jet selection
 		  for(auto jetSys : jetSysVec){
@@ -517,7 +668,7 @@ class DataCardCreatorHTT {
 
 		void createJETSystematicsHiggsCustVar(string inputSelections, float scale, string prefix){
 
-		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF","RelativeSample", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
+		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
 
 		  for(auto jetSys : jetSysVec){
 
@@ -528,29 +679,28 @@ class DataCardCreatorHTT {
 		    ReplaceStringInPlace(newSelectionDown, "njets", "njet_"   +jetSys+"Down");
 		    ReplaceStringInPlace(newSelectionDown, "mjj"  , "vbfMass_"+jetSys+"Down");
 		    
-		    //examplepair<float,float> topTauYieldJetUp   = createHistogramAndShiftsCustomVar(  variable_+"_"+jetSys+"Up"  ,  topFile_, "TTT_CMS_scale_j_" +jetSys+"_13TeVUp"   , ("("+newSelectionUp+  "&&"+ZTT_genTauSel_+")*"+weight_+"*"+TTweight_),luminosity_*tauIDCorr*topExtrap,prefix); 		  
+		    pair<float,float> ggH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ggH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    
+		    pair<float,float> qqH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> qqH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		   /* 
+		    pair<float,float> ZH125JetUp    = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ZH125JetDown  = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    
+		    pair<float,float> WmH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WmH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 
-		    pair<float,float> ggH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVUp"  ,("("+newSelectionUp+")*"+weight_),scale,prefix);
-		    pair<float,float> ggH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ggH125.root" ,"ggH125_CMS_scale_j_"+jetSys+"_13TeVDown",("("+newSelectionDown+")*"+weight_),scale,prefix);
+		    pair<float,float> WpH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WpH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    pair<float,float> qqH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,("("+newSelectionUp+")*"+weight_),scale,prefix);
-		    pair<float,float> qqH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVDown",("("+newSelectionDown+")*"+weight_),scale,prefix);
-		    
-		    //pair<float,float> ZH125JetUp    = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> ZH125JetDown  = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
-		    
-		    //pair<float,float> WmH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> WmH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
-
-		    //pair<float,float> WpH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> WpH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
-		    
-		    //pair<float,float> ttH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> ttH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ttH125JetUp   = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Up"  ,  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ttH125JetDown = createHistogramAndShiftsCustomVar(variable_+"_"+jetSys+"Down",  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+            */
 		  }
 		}
 		void createJETSystematics(string inputSelections, float tauIDCorr, float leg1Corr, float topExtrap, string prefix){
-		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "RelativeSample","SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
+		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
 
 		  //find and replace jet selection
 		  for(auto jetSys : jetSysVec){
@@ -589,7 +739,7 @@ class DataCardCreatorHTT {
 		}
 
 		void createJETSystematicsHiggs(string inputSelections, float scale, string prefix){
-		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "RelativeSample","SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
+		  std::vector<std::string> jetSysVec = {"Closure", "AbsoluteFlavMap", "AbsoluteMPFBias", "AbsoluteScale", "AbsoluteStat", "FlavorQCD", "Fragmentation", "PileUpDataMC", "PileUpPtBB", "PileUpPtEC1", "PileUpPtEC2", "PileUpPtHF", "PileUpPtRef", "RelativeBal", "RelativeFSR", "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF", "RelativePtBB", "RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeStatEC", "RelativeStatFSR", "RelativeStatHF", "SinglePionECAL", "SinglePionHCAL", "TimePtEta", "Total","Eta0to5","Eta3to5","Eta0to3","EC2"};
 		  for(auto jetSys : jetSysVec){
 
 		    std::string newSelectionUp=inputSelections;
@@ -605,17 +755,17 @@ class DataCardCreatorHTT {
 		    pair<float,float> qqH125JetUp   = createHistogramAndShifts(  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
 		    pair<float,float> qqH125JetDown = createHistogramAndShifts(  dir_+"vbfH125.root","qqH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    //pair<float,float> ZH125JetUp    = createHistogramAndShifts(  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> ZH125JetDown  = createHistogramAndShifts(  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ZH125JetUp    = createHistogramAndShifts(  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ZH125JetDown  = createHistogramAndShifts(  dir_+"ZH125.root"  ,"ZH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    //pair<float,float> WmH125JetUp   = createHistogramAndShifts(  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> WmH125JetDown = createHistogramAndShifts(  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> WmH125JetUp   = createHistogramAndShifts(  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WmH125JetDown = createHistogramAndShifts(  dir_+"WmH125.root"  ,"WmH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 
-		    //pair<float,float> WpH125JetUp   = createHistogramAndShifts(  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> WpH125JetDown = createHistogramAndShifts(  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> WpH125JetUp   = createHistogramAndShifts(  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> WpH125JetDown = createHistogramAndShifts(  dir_+"WpH125.root"  ,"WpH125_CMS_scale_j_"  +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		    
-		    //pair<float,float> ttH125JetUp   = createHistogramAndShifts(  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
-		    //pair<float,float> ttH125JetDown = createHistogramAndShifts(  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
+		    pair<float,float> ttH125JetUp   = createHistogramAndShifts(  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVUp"  ,newSelectionUp,scale,prefix);
+		    pair<float,float> ttH125JetDown = createHistogramAndShifts(  dir_+"ttH125.root" ,"ttH125_CMS_scale_j_" +jetSys+"_13TeVDown",newSelectionDown,scale,prefix);
 		  }
 		}
 
@@ -687,16 +837,16 @@ class DataCardCreatorHTT {
 		  pair<float,float> qqH125UncUp   = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"vbfH125.root","qqH125_CMS_scale_met_unclustered_13TeVUp"  ,inputSelections,scale,prefix);
 		  pair<float,float> qqH125UncDown = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"vbfH125.root","qqH125_CMS_scale_met_unclustered_13TeVDown",inputSelections,scale,prefix);
 
-		  //pair<float,float> ZH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> ZH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> ZH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> ZH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
 
-		  //pair<float,float> WmH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> WmH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
-		  //pair<float,float> WpH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> WpH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> WmH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> WmH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> WpH125UncUp    = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_unclustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> WpH125UncDown  = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_unclustered_13TeVDown" ,inputSelections,scale,prefix);
 
-		  //pair<float,float> ttH125UncUp   = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_unclustered_13TeVUp"  ,inputSelections,scale,prefix);
-		  //pair<float,float> ttH125UncDown = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_unclustered_13TeVDown",inputSelections,scale,prefix);
+		  pair<float,float> ttH125UncUp   = createHistogramAndShiftsCustomVar(var1_UP_   ,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_unclustered_13TeVUp"  ,inputSelections,scale,prefix);
+		  pair<float,float> ttH125UncDown = createHistogramAndShiftsCustomVar(var1_DOWN_ ,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_unclustered_13TeVDown",inputSelections,scale,prefix);
 
 		  var1_UP_   = "m_sv_ClusteredMet_UP";
 		  var1_DOWN_ = "m_sv_ClusteredMet_DOWN";
@@ -707,16 +857,16 @@ class DataCardCreatorHTT {
 		  pair<float,float> qqH125ClusUp   = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"vbfH125.root","qqH125_CMS_scale_met_clustered_13TeVUp"  ,inputSelections,scale,prefix);
 		  pair<float,float> qqH125ClusDown = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"vbfH125.root","qqH125_CMS_scale_met_clustered_13TeVDown",inputSelections,scale,prefix);
 
-		  //pair<float,float> ZH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> ZH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> ZH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> ZH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"ZH125.root"  ,"ZH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
 
-		  //pair<float,float> WmH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> WmH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
-		  //pair<float,float> WpH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
-		  //pair<float,float> WpH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> WmH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> WmH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"WmH125.root"  ,"WmH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
+		  pair<float,float> WpH125ClusUp    = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_clustered_13TeVUp"   ,inputSelections,scale,prefix);
+		  pair<float,float> WpH125ClusDown  = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"WpH125.root"  ,"WpH125_CMS_scale_met_clustered_13TeVDown" ,inputSelections,scale,prefix);
 
-		  //pair<float,float> ttH125ClusUp   = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"ttH125.root" ,"ttH125_CMS_scale_met_clustered_13TeVUp"  ,inputSelections,scale,prefix);
-		  //pair<float,float> ttH125ClusDown = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_clustered_13TeVDown",inputSelections,scale,prefix);
+		  pair<float,float> ttH125ClusUp   = createHistogramAndShiftsCustomVar(var1_UP_,  dir_+"ttH125.root" ,"ttH125_CMS_scale_met_clustered_13TeVUp"  ,inputSelections,scale,prefix);
+		  pair<float,float> ttH125ClusDown = createHistogramAndShiftsCustomVar(var1_DOWN_,dir_+"ttH125.root" ,"ttH125_CMS_scale_met_clustered_13TeVDown",inputSelections,scale,prefix);
 
 		}
 
@@ -963,6 +1113,144 @@ output.dW  = wYield.second;
 return true;
 }
 */
+
+bool runFF(std::string preSelection, std::string prefix, std::string zShape, float topExtrap, BkgOutput &output, std::string categorySelection, std::string relaxedSelection){
+
+            std::string processSelection = "gen_match_2==5";
+            //Making the anti-isolated histograms from MC
+            TCut preselection = "pt_1>21&&pt_2>30&&npv>0&&id_m_medium_1>0&&tightMuons<=1&&tightElectrons==0&&diLeptons==0&&againstMuonTight3_2>0&&againstElectronVLooseMVA6_2>0";
+            TCut ApplicationRegion = "byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5&&byTightIsolationMVArun2v1DBoldDMwLT_2<0.5";
+            TCut SignalRegion = "byTightIsolationMVArun2v1DBoldDMwLT_2>0.5";
+
+            TCut trueSelection = "gen_match_2==5";
+            TCut trueLSelection = "gen_match_2<5";
+            TCut fakeSelection = "gen_match_2==6";
+    
+            std::pair<float,float> vvtYield      = createHistogramAndShifts(vvFile_,"VVT_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+trueSelection+"&&"+categorySelection+")*"+weight_),luminosity_*leg1Corr*tauID_,prefix);
+            std::cout<<"      VVT before error inflation: "<<vvtYield.first<<std::endl;
+
+            std::pair<float,float> vvjYield      = createHistogramAndShifts(vvFile_,"VVJ_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+fakeSelection+"&&"+categorySelection+")*"+weight_),luminosity_*leg1Corr*tauID_,prefix);
+            std::cout<<"      VVJ before error inflation: "<<vvjYield.first<<std::endl;
+
+            std::pair<float,float> vvlYield      = createHistogramAndShifts(vvFile_,"VVL_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+trueLSelection+"&&"+categorySelection+")*"+weight_),luminosity_*leg1Corr*tauID_,prefix);
+            std::cout<<"      VVL before error inflation: "<<vvlYield.first<<std::endl;
+
+
+            std::pair<float,float> toptauShape      = createHistogramAndShifts(topFile_,"TTT_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+trueSelection+"&&"+categorySelection+")*"+weight_+"*"+TTweight_), luminosity_*leg1Corr*tauID_*topExtrap, prefix);
+            std::pair<float,float> topjetShape      = createHistogramAndShifts(topFile_,"TTJ_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+fakeSelection+"&&"+categorySelection+")*"+weight_+"*"+TTweight_), luminosity_*leg1Corr*tauID_*topExtrap, prefix);
+            std::pair<float,float> topleptonShape      = createHistogramAndShifts(topFile_,"TTL_AI",("("+preselection+"&&"+trigSelection_+"&&"+osSignalSelection_+"&&"+trueLSelection+"&&"+categorySelection+")*"+weight_+"*"+TTweight_), luminosity_*leg1Corr*tauID_*topExtrap, prefix);
+            //std::pair<float,float> topInflYield  = inflateError(topYield,topErr_);
+
+
+
+
+            // Data
+            TFile * datafile = new TFile(dataFile_.c_str());
+            TTree *t = (TTree*) datafile->Get((channel_+"EventTree/eventTree").c_str());
+            std::cout<<"Data Entries   "<<t->GetEntries()<<std::endl;
+
+            std::cout<<"Running FF ..."<<std::endl;
+            generateFFHistograms(t,"data",preSelection, prefix, zShape, topExtrap, output, categorySelection, relaxedSelection);
+            t->Delete();
+            datafile->Close();
+
+            //Now that we have all the distributions and shapes we need to subtract the MC from the Data to get the jetFakes distributions 
+            //access to all the histograms we just made 
+            std::string folder = filelabel_+prefix;
+
+            fout_->cd(folder.c_str());
+
+            TH1F * fakefactorhisto  = new TH1F("jetFakes","jetFakes",bins_,min_,max_);
+            //running the systematics 
+            std::vector<std::string>  ffsystematics =
+                                                      {
+                                                         "qcd_syst_up",                  
+                                                         "qcd_dm0_njet0_stat_up",        
+                                                         "qcd_dm0_njet1_stat_up",        
+                                                         "w_syst_up",                    
+                                                         "w_dm0_njet0_stat_up",          
+                                                         "w_dm0_njet1_stat_up",          
+                                                         "tt_syst_up",                   
+                                                         "tt_dm0_njet0_stat_up",         
+                                                         "tt_dm0_njet1_stat_up",         
+                                                         "qcd_syst_down",                  
+                                                         "qcd_dm0_njet0_stat_down",        
+                                                         "qcd_dm0_njet1_stat_down",        
+                                                         "w_syst_down",                    
+                                                         "w_dm0_njet0_stat_down",          
+                                                         "w_dm0_njet1_stat_down",          
+                                                         "tt_syst_down",                   
+                                                         "tt_dm0_njet0_stat_down",         
+                                                         "tt_dm0_njet1_stat_down"         };
+
+            int numsys = ffsystematics.size(); 
+
+            std::vector<ROOT.TH1F*> FFHistovector;
+
+            for(auto ffsyst : ffsystematics){
+                TH1F * fakefactorsyshisto  = new TH1F(("jetFakes_"+ffsyst).c_str(),("jetFakes_"+ffsyst).c_str(),bins_,min_,max_);
+                FFHistovector.push_back(fakefactorsyshisto);
+                TH1F * W    = (TH1D*) fout_->Get((folder+"/W"  +ffsyst).c_str() ); 
+                TH1F * ZJ   = (TH1D*) fout_->Get((folder+"/ZJ" +ffsyst).c_str() );
+                TH1F * VVJ  = (TH1D*) fout_->Get((folder+"/VVJ"+ffsyst).c_str() );
+                TH1F * VVT  = (TH1D*) fout_->Get((folder+"/VVT"+ffsyst).c_str() );
+                TH1F * TTT  = (TH1D*) fout_->Get((folder+"/TTT"+ffsyst).c_str() );
+                TH1F * TTJ  = (TH1D*) fout_->Get((folder+"/TTJ"+ffsyst).c_str() );
+                TH1F * ZTT  = (TH1D*) fout_->Get((folder+"/TTJ"+ffsyst).c_str() );
+                TH1F * data = (TH1D*) fout_->Get((folder+"/data_obs").c_str());
+                fakefactorsyshisto->Add(data); 
+                fakefactorsyshisto->Add(W,-1); 
+                fakefactorsyshisto->Add(ZJ,-1); 
+                fakefactorsyshisto->Add(VVJ,-1); 
+                fakefactorsyshisto->Add(VVT,-1); 
+                fakefactorsyshisto->Add(TTT,-1); 
+                fakefactorsyshisto->Add(TTJ,-1); 
+                fakefactorsyshisto->Add(ZTT,-1);
+                fakefactorsyshisto  -> Write((folder+fakefactorsyshisto->GetName()).c_str(),TObject::kOverwrite);
+                //cleaning up 
+                W    -> Delete(); 
+                ZJ   -> Delete();
+                VVJ  -> Delete();
+                VVT  -> Delete();
+                TTT  -> Delete();
+                TTJ  -> Delete();
+                ZTT  -> Delete();
+                data -> Delete();
+                fakefactorsyshisto->Delete();
+            }
+            //TH1F * fakefactorhisto_qcd_syst_up  = new TH1F("jetFakes_qcd_syst_up","jetFakes_qcd_syst_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_qcd_dm0_njet0_stat_up  = new TH1F("jetFakes_qcd_dm0_njet0_stat_up","jetFakes_qcd_dm0_njet0_stat_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_qcd_dm0_njet1_stat_up  = new TH1F("jetFakes_qcd_dm0_njet1_stat_up","jetFakes_qcd_dm0_njet1_stat_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_syst_up  = new TH1F("jetFakes_w_syst_up","jetFakes_w_syst_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_dm0_njet0_stat_up  = new TH1F("jetFakes_w_dm0_njet0_stat_up","jetFakes_w_dm0_njet0_stat_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_dm0_njet1_stat_up  = new TH1F("jetFakes_w_dm0_njet1_stat_up","jetFakes_w_dm0_njet1_stat_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_syst_up  = new TH1F("jetFakes_tt_syst_up","jetFakes_tt_syst_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_dm0_njet0_stat_up  = new TH1F("jetFakes_tt_dm0_njet0_stat_up","jetFakes_tt_dm0_njet0_stat_up",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_dm0_njet1_stat_up  = new TH1F("jetFakes_tt_dm0_njet1_stat_up","jetFakes_tt_dm0_njet1_stat_up",bins_,min_,max_);
+
+            //TH1F * fakefactorhisto_qcd_syst_down  = new TH1F("jetFakes_qcd_syst_down","jetFakes_qcd_syst_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_qcd_dm0_njet0_stat_down  = new TH1F("jetFakes_qcd_dm0_njet0_stat_down","jetFakes_qcd_dm0_njet0_stat_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_qcd_dm0_njet1_stat_down  = new TH1F("jetFakes_qcd_dm0_njet1_stat_down","jetFakes_qcd_dm0_njet1_stat_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_syst_down  = new TH1F("jetFakes_w_syst_down","jetFakes_w_syst_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_dm0_njet0_stat_down  = new TH1F("jetFakes_w_dm0_njet0_stat_down","jetFakes_w_dm0_njet0_stat_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_w_dm0_njet1_stat_down  = new TH1F("jetFakes_w_dm0_njet1_stat_down","jetFakes_w_dm0_njet1_stat_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_syst_down  = new TH1F("jetFakes_tt_syst_down","jetFakes_tt_syst_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_dm0_njet0_stat_down  = new TH1F("jetFakes_tt_dm0_njet0_stat_down","jetFakes_tt_dm0_njet0_stat_down",bins_,min_,max_);
+            //TH1F * fakefactorhisto_tt_dm0_njet1_stat_down  = new TH1F("jetFakes_tt_dm0_njet1_stat_down","jetFakes_tt_dm0_njet1_stat_down",bins_,min_,max_);
+             
+            //TH1F * W    = (TH1D*) fout_->Get((folder+"/W"  ).c_str() ); 
+            //TH1F * ZJ   = (TH1D*) fout_->Get((folder+"/ZJ" ).c_str() );
+            //TH1F * VVJ  = (TH1D*) fout_->Get((folder+"/VVJ").c_str() );
+            //TH1F * VVT  = (TH1D*) fout_->Get((folder+"/VVT").c_str() );
+            //TH1F * TTT  = (TH1D*) fout_->Get((folder+"/TTT").c_str() );
+            //TH1F * TTJ  = (TH1D*) fout_->Get((folder+"/TTJ").c_str() );
+            //TH1F * ZTT  = (TH1D*) fout_->Get((folder+"/TTJ").c_str() );
+            //TH1F * data = (TH1D*) fout_->Get((folder+"/data_obs").c_str());
+            //fakefactorhisto  = data - W - ZJ - VVJ - VVT - TTT - TTJ - ZTT;
+
+            return true;
+
+}
 bool runW(std::string preSelection,std::string prefix,std::string zShape, float topExtrap, BkgOutput &output, std::string categorySelection, std::string relaxedSelection, std::string wSel) {
 
     float leg1Corr=1.0;
@@ -1725,6 +2013,401 @@ bool qcdSyst(std::string channel, std::string prefix, std::string histo1, float 
     return true;
 }
 
+void generateFFHistograms(TTree * t, std::string process, std::string preSelection, std::string prefix, std::string zShape, float topExtrap, BkgOutput &output, std::string categorySelection, std::string relaxedSelection){
+
+    //creating fakefactor object
+    TString ff_file_name = "/afs/hep.wisc.edu/home/samuellh/WorkingArea/CPstuff/Iso_2017/src/HTTutilities/Jet2TauFakes/data/SM2017/tight/vloose/mt/fakeFactors.root";
+    TFile* ff_file = TFile::Open(ff_file_name);
+    FakeFactor* ff = (FakeFactor*)ff_file->Get("ff_comb");
+    const std::vector<std::string>& inputNames = ff->inputs();
+    //std::vector<string> inputNames( ff->inputs() ) ;
+    if (ff_file==0) std::cout<<"Error in FF file"<<std::endl;
+
+
+
+    //different cut strings that are important for the FakeFactor Method
+
+    TCut preselection = "pt_1>21&&pt_2>30&&npv>0&&id_m_medium_1>0&&tightMuons<=1&&tightElectrons==0&&diLeptons==0&&againstMuonTight3_2>0&&againstElectronVLooseMVA6_2>0";
+    TCut preselectionIso = "pt_1>21&&pt_2>30&&npv>0&&id_m_medium_1>0&&iso_1<0.15&&byTightIsolationMVArun2v1DBoldDMwLT_2>0.5&&tightMuons<=1&&tightElectrons==0&&diLeptons==0&&againstMuonTight3_2>0&&againstElectronVLooseMVA6_2>0";
+    TCut ApplicationRegion = "byVLooseIsolationMVArun2v1DBoldDMwLT_2>0.5&&byTightIsolationMVArun2v1DBoldDMwLT_2<0.5";
+    TCut SignalRegion = "byTightIsolationMVArun2v1DBoldDMwLT_2>0.5";
+
+    TCut trueSelection = "gen_match_2<=5";
+    TCut fakeSelection = "gen_match_2==6";
+    
+    TTree * trimmedTree = t->CopyTree(preselection);
+
+    //adding the variables necessary to calculate weight
+    Float_t pt_1, pt_2, tau_pt, mt, decayMode_2, m_vis, iso_1,isoTight_2;
+    Float_t variable;
+    Int_t njets;
+    TBranch *b_pt_1, *b_pt_2, *b_tau_pt, *b_mt, *b_decayMode_2, *b_njets, *b_m_vis, *b_iso_1, *b_isoTight_2;
+    TBranch *b_variable;
+    std::vector<double> variables( inputNames.size() );
+
+    //loop over events in data file (global variable) 
+    //TFile *f = new TFile(dataFile_.c_str());
+    //if(f==0) printf("Not file Found\n");
+    //get the nominal tree first
+    //if(t==0) printf("Not Tree Found in file %s\n",file.c_str());
+    //setting branch addresses
+    trimmedTree->SetBranchAddress("pt_1", &pt_1, &b_pt_1);
+    trimmedTree->SetBranchAddress("pt_2", &pt_2, &b_pt_2);
+    trimmedTree->SetBranchAddress("njets", &njets, &b_njets);
+    trimmedTree->SetBranchAddress("m_vis", &m_vis, &b_m_vis);
+    trimmedTree->SetBranchAddress("mt_1", &mt, &b_mt);
+    trimmedTree->SetBranchAddress("tauDecayMode", &decayMode_2, &b_decayMode_2);
+    trimmedTree->SetBranchAddress("iso_1", &iso_1, &b_iso_1);
+    trimmedTree->SetBranchAddress("byTightIsolationMVArun2v1DBoldDMwLT_2", &isoTight_2, &b_isoTight_2);
+
+    //the variable that we are actually plotting    
+    trimmedTree->SetBranchAddress(variable_.c_str(), &variable, &b_variable);
+
+    //new fake factor weight
+    double ff_nom = 0.0;
+    double frac_qcd = 0.0;
+    double frac_w = 0.0;
+    double frac_tt = 0.0;
+
+    //fake factor systematics 
+    double ff_qcd_syst_up = 0.0;
+    double ff_qcd_dm0_njet0_stat_up = 0.0;
+    double ff_qcd_dm0_njet1_stat_up = 0.0;
+    double ff_w_syst_up = 0.0;
+    double ff_w_dm0_njet0_stat_up = 0.0;
+    double ff_w_dm0_njet1_stat_up = 0.0;
+    double ff_tt_syst_up = 0.0;
+    double ff_tt_dm0_njet0_stat_up = 0.0;
+    double ff_tt_dm0_njet1_stat_up = 0.0;
+    double ff_qcd_syst_down = 0.0;
+    double ff_qcd_dm0_njet0_stat_down = 0.0;
+    double ff_qcd_dm0_njet1_stat_down = 0.0;
+    double ff_w_syst_down = 0.0;
+    double ff_w_dm0_njet0_stat_down = 0.0;
+    double ff_w_dm0_njet1_stat_down = 0.0;
+    double ff_tt_syst_down = 0.0;
+    double ff_tt_dm0_njet0_stat_down = 0.0;
+    double ff_tt_dm0_njet1_stat_down = 0.0;
+
+    //All the new branches in DATA
+    
+    TBranch *nBff_qcd_syst_up            trimmedtree->Branch("ff_qcd_syst_up"              ,      &ff_qcd_syst_up               ,"ff_qcd_syst_up/F"             );
+    TBranch *nBff_qcd_dm0_njet0_stat_up  trimmedtree->Branch("ff_qcd_dm0_njet0_stat_up"    ,      &ff_qcd_dm0_njet0_stat_up     ,"ff_qcd_dm0_njet0_stat_up/F"   );
+    TBranch *nBff_qcd_dm0_njet1_stat_up  trimmedtree->Branch("ff_qcd_dm0_njet1_stat_up"    ,      &ff_qcd_dm0_njet1_stat_up     ,"ff_qcd_dm0_njet1_stat_up/F"   );
+    TBranch *nBff_w_syst_up              trimmedtree->Branch("ff_w_syst_up"                ,          &ff_w_syst_up             ,"ff_w_syst_up/F"               );
+    TBranch *nBff_w_dm0_njet0_stat_up    trimmedtree->Branch("ff_w_dm0_njet0_stat_up"      ,      &ff_w_dm0_njet0_stat_up       ,"ff_w_dm0_njet0_stat_up/F"     );
+    TBranch *nBff_w_dm0_njet1_stat_up    trimmedtree->Branch("ff_w_dm0_njet1_stat_up"      ,      &ff_w_dm0_njet1_stat_up       ,"ff_w_dm0_njet1_stat_up/F"     );
+    TBranch *nBff_tt_syst_up             trimmedtree->Branch("ff_tt_syst_up"               ,      &ff_tt_syst_up                ,"ff_tt_syst_up/F"              );
+    TBranch *nBff_tt_dm0_njet0_stat_up   trimmedtree->Branch("ff_tt_dm0_njet0_stat_up"     ,      &ff_tt_dm0_njet0_stat_up      ,"ff_tt_dm0_njet0_stat_up/F"    );
+    TBranch *nBff_tt_dm0_njet1_stat_up   trimmedtree->Branch("ff_tt_dm0_njet1_stat_up"     ,      &ff_tt_dm0_njet1_stat_up      ,"ff_tt_dm0_njet1_stat_up/F"    );
+    TBranch *nBff_qcd_syst_down          trimmedtree->Branch("ff_qcd_syst_down"            ,      &ff_qcd_syst_down             ,"ff_qcd_syst_down/F"           );
+    TBranch *nBff_qcd_dm0_njet0_stat_down trimmedtree->Branch("ff_qcd_dm0_njet0_stat_down"  ,         &ff_qcd_dm0_njet0_stat_down,"ff_qcd_dm0_njet0_stat_down/F" );
+    TBranch *nBff_qcd_dm0_njet1_stat_down trimmedtree->Branch("ff_qcd_dm0_njet1_stat_down"  ,         &ff_qcd_dm0_njet1_stat_down,"ff_qcd_dm0_njet1_stat_down/F" );
+    TBranch *nBff_w_syst_down            trimmedtree->Branch("ff_w_syst_down"              ,      &ff_w_syst_down               ,"ff_w_syst_down/F"             );
+    TBranch *nBff_w_dm0_njet0_stat_down  trimmedtree->Branch("ff_w_dm0_njet0_stat_down"    ,      &ff_w_dm0_njet0_stat_down     ,"ff_w_dm0_njet0_stat_down/F"   );
+    TBranch *nBff_w_dm0_njet1_stat_down  trimmedtree->Branch("ff_w_dm0_njet1_stat_down"    ,      &ff_w_dm0_njet1_stat_down     ,"ff_w_dm0_njet1_stat_down/F"   );
+    TBranch *nBff_tt_syst_down           trimmedtree->Branch("ff_tt_syst_down"             ,      &ff_tt_syst_down              ,"ff_tt_syst_down/F"            );
+    TBranch *nBff_tt_dm0_njet0_stat_down trimmedtree->Branch("ff_tt_dm0_njet0_stat_down"   ,      &ff_tt_dm0_njet0_stat_down    ,"ff_tt_dm0_njet0_stat_down/F"  );
+    TBranch *nBff_tt_dm0_njet1_stat_down trimmedtree->Branch("ff_tt_dm0_njet1_stat_down"   ,      &ff_tt_dm0_njet1_stat_down    ,"ff_tt_dm0_njet1_stat_down/F"  );
+
+
+    //double fakefactor;
+    std::vector<float> fractions(3);
+
+    //dir->cd();
+    std::string folder = filelabel_+prefix;
+    std::cout<<"The folder corresponding to the output file directory is:   "<<folder<<std::endl;
+
+    fout_->cd(folder.c_str());
+
+    TH1F * fakefactorhisto  = new TH1F("jetFakes","jetFakes",bins_,min_,max_);
+
+    TH1F * fakefactorhisto_qcd_syst_up  = new TH1F("jetFakes_qcd_syst_up","jetFakes_qcd_syst_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_qcd_dm0_njet0_stat_up  = new TH1F("jetFakes_qcd_dm0_njet0_stat_up","jetFakes_qcd_dm0_njet0_stat_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_qcd_dm0_njet1_stat_up  = new TH1F("jetFakes_qcd_dm0_njet1_stat_up","jetFakes_qcd_dm0_njet1_stat_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_syst_up  = new TH1F("jetFakes_w_syst_up","jetFakes_w_syst_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_dm0_njet0_stat_up  = new TH1F("jetFakes_w_dm0_njet0_stat_up","jetFakes_w_dm0_njet0_stat_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_dm0_njet1_stat_up  = new TH1F("jetFakes_w_dm0_njet1_stat_up","jetFakes_w_dm0_njet1_stat_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_syst_up  = new TH1F("jetFakes_tt_syst_up","jetFakes_tt_syst_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_dm0_njet0_stat_up  = new TH1F("jetFakes_tt_dm0_njet0_stat_up","jetFakes_tt_dm0_njet0_stat_up",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_dm0_njet1_stat_up  = new TH1F("jetFakes_tt_dm0_njet1_stat_up","jetFakes_tt_dm0_njet1_stat_up",bins_,min_,max_);
+
+    TH1F * fakefactorhisto_qcd_syst_down  = new TH1F("jetFakes_qcd_syst_down","jetFakes_qcd_syst_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_qcd_dm0_njet0_stat_down  = new TH1F("jetFakes_qcd_dm0_njet0_stat_down","jetFakes_qcd_dm0_njet0_stat_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_qcd_dm0_njet1_stat_down  = new TH1F("jetFakes_qcd_dm0_njet1_stat_down","jetFakes_qcd_dm0_njet1_stat_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_syst_down  = new TH1F("jetFakes_w_syst_down","jetFakes_w_syst_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_dm0_njet0_stat_down  = new TH1F("jetFakes_w_dm0_njet0_stat_down","jetFakes_w_dm0_njet0_stat_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_w_dm0_njet1_stat_down  = new TH1F("jetFakes_w_dm0_njet1_stat_down","jetFakes_w_dm0_njet1_stat_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_syst_down  = new TH1F("jetFakes_tt_syst_down","jetFakes_tt_syst_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_dm0_njet0_stat_down  = new TH1F("jetFakes_tt_dm0_njet0_stat_down","jetFakes_tt_dm0_njet0_stat_down",bins_,min_,max_);
+    TH1F * fakefactorhisto_tt_dm0_njet1_stat_down  = new TH1F("jetFakes_tt_dm0_njet1_stat_down","jetFakes_tt_dm0_njet1_stat_down",bins_,min_,max_);
+
+
+
+
+
+    //looping over data events 
+    for(int i=0;i<trimmedTree->GetEntries();i++ ){
+        trimmedTree->GetEntry(i);
+        if(i%1000==0) std::cout<<"working on entry   "<<i<<std::endl;
+
+        //analyzing the cut string
+        
+
+        //initializing variables for FF ... 
+        //std::cout<<"Initializing vectors ... "<<std::endl;
+        fractions[0] = (float) 0.0;
+        fractions[1] = (float) 0.0;
+        fractions[2] = (float) 0.0;
+
+        variables[0] = (double) 0.0; 
+        variables[1] = (double) 0.0;
+        variables[2] = (double) 0.0;
+        variables[3] = (double) 0.0;
+        variables[4] = (double) 0.0;
+        variables[5] = (double) 0.0;
+        variables[6] = (double) 0.0;
+        variables[7] = (double) 0.0;
+        ff_nom = 0.0;//normalizing to 1 so that I can multiply 1 and 2 later in the histogramming step
+        //std::cout<<"starting Isolation ... "<<std::endl;
+        std::cout<<"value of isolation "<<isoTight_2<<std::endl;
+
+        if( isoTight_2<0.5){
+
+            //std::cout<<"Tau 1 is not isolated ... "<<std::endl;
+            variables[0] = (double) pt_2;
+            variables[1] = (double) decayMode_2; //pt of non-fake tau candidate
+            variables[2] = (double) njets;
+            variables[3] = (double) m_vis;
+            variables[4] = (double) mt;
+
+
+            //retrieving the fake factor fractions as a function of m_vis and njets
+            std::cout<<"Getting fractions"<<std::endl;
+            fractions  = getFFractions(folder, variable);
+
+            std::cout<<"fractions qcd  "<<fractions[3]<<std::endl;
+            //variables[5] = (double) fractions[3];//frac_qcd;
+            frac_qcd = (double) fractions[3];//frac_qcd;
+            variables[5] = frac_qcd;//frac_qcd;
+            //variables[6] = (double) fractions[0];//frac_w;
+            frac_w = (double) fractions[0];//frac_w;
+            variables[6] = frac_w;//frac_w;
+            //variables[7] = (double) fractions[1];//frac_tt;
+            frac_tt = (double) fractions[1];//frac_tt;
+            variables[7] = frac_tt;
+            ff_nom = ff->value(variables);
+            //ff_qcd_syst_up = ff->value(variables,"ff_qcd_syst")
+            ff_qcd_syst_up =ff->value(variables,                "ff_qcd_syst_up"                        );
+            ff_qcd_dm0_njet0_stat_up =ff->value(variables,      "ff_qcd_dm0_njet0_stat_up"              );
+            ff_qcd_dm0_njet1_stat_up =ff->value(variables,      "ff_qcd_dm0_njet1_stat_up"              );
+            ff_w_syst_up =ff->value(variables,                  "ff_w_syst_up"                          );
+            ff_w_dm0_njet0_stat_up =ff->value(variables,        "ff_w_dm0_njet0_stat_up"                );
+            ff_w_dm0_njet1_stat_up =ff->value(variables,        "ff_w_dm0_njet1_stat_up"                );
+            ff_tt_syst_up =ff->value(variables,                 "ff_tt_syst_up"                         );
+            ff_tt_dm0_njet0_stat_up =ff->value(variables,       "ff_tt_dm0_njet0_stat_up"               );
+            ff_tt_dm0_njet1_stat_up =ff->value(variables,       "ff_tt_dm0_njet1_stat_up"               );
+            ff_qcd_syst_down =ff->value(variables,              "ff_qcd_syst_down"                      );
+            ff_qcd_dm0_njet0_stat_down =ff->value(variables,    "ff_qcd_dm0_njet0_stat_down"            );
+            ff_qcd_dm0_njet1_stat_down =ff->value(variables,    "ff_qcd_dm0_njet1_stat_down"            );
+            ff_w_syst_down =ff->value(variables,                "ff_w_syst_down"                        );
+            ff_w_dm0_njet0_stat_down =ff->value(variables,      "ff_w_dm0_njet0_stat_down"              );
+            ff_w_dm0_njet1_stat_down =ff->value(variables,      "ff_w_dm0_njet1_stat_down"              );
+            ff_tt_syst_down =ff->value(variables,               "ff_tt_syst_down"                       );
+            ff_tt_dm0_njet0_stat_down =ff->value(variables,     "ff_tt_dm0_njet0_stat_down"             );
+            ff_tt_dm0_njet1_stat_down =ff->value(variables,     "ff_tt_dm0_njet1_stat_down"             );
+
+        }
+
+        //we need to make the histograms AND THE SHIFTS here if we don't want to store the weights that are calculated per event  ... otherwise harness the weights later??? 
+        fakefactorhisto->Fill(variable,ff_nom);
+
+
+        //all of the systematic shifts 
+        fakefactorhisto_qcd_syst_up               ->Fill(variable,weight_*ff_qcd_syst_up);
+        fakefactorhisto_qcd_dm0_njet0_stat_up     ->Fill(variable,weight_*ff_qcd_dm0_njet0_stat_up);
+        fakefactorhisto_qcd_dm0_njet1_stat_up     ->Fill(variable,weight_*ff_qcd_dm0_njet1_stat_up);
+        fakefactorhisto_w_syst_up                 ->Fill(variable,weight_*ff_w_syst_up);
+        fakefactorhisto_w_dm0_njet0_stat_up       ->Fill(variable,weight_*ff_w_dm0_njet0_stat_up);
+        fakefactorhisto_w_dm0_njet1_stat_up       ->Fill(variable,weight_*ff_w_dm0_njet1_stat_up);
+        fakefactorhisto_tt_syst_up                ->Fill(variable,weight_*ff_tt_syst_up);
+        fakefactorhisto_tt_dm0_njet0_stat_up      ->Fill(variable,weight_*ff_tt_dm0_njet0_stat_up);
+        fakefactorhisto_tt_dm0_njet1_stat_up      ->Fill(variable,weight_*ff_tt_dm0_njet1_stat_up);
+
+        fakefactorhisto_qcd_syst_down             ->Fill(variable,weight_*ff_qcd_syst_down);
+        fakefactorhisto_qcd_dm0_njet0_stat_down   ->Fill(variable,weight_*ff_qcd_dm0_njet0_stat_down);
+        fakefactorhisto_qcd_dm0_njet1_stat_down   ->Fill(variable,weight_*ff_qcd_dm0_njet1_stat_down);
+        fakefactorhisto_w_syst_down               ->Fill(variable,weight_*ff_w_syst_down);
+        fakefactorhisto_w_dm0_njet0_stat_down     ->Fill(variable,weight_*ff_w_dm0_njet0_stat_down);
+        fakefactorhisto_w_dm0_njet1_stat_down     ->Fill(variable,weight_*ff_w_dm0_njet1_stat_down);
+        fakefactorhisto_tt_syst_down              ->Fill(variable,weight_*ff_tt_syst_down);
+        fakefactorhisto_tt_dm0_njet0_stat_down    ->Fill(variable,weight_*ff_tt_dm0_njet0_stat_down);
+        fakefactorhisto_tt_dm0_njet1_stat_down    ->Fill(variable,weight_*ff_tt_dm0_njet1_stat_down);
+
+    }//end data event loop
+    std::cout<<"closing up"<<std::endl;
+
+    fakefactorhisto->Write();
+
+
+    //all of the systematic shifts 
+    fakefactorhisto_qcd_syst_up               ->Write( fakefactorhisto_qcd_syst_up            ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_qcd_dm0_njet0_stat_up     ->Write( fakefactorhisto_qcd_dm0_njet0_stat_up  ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_qcd_dm0_njet1_stat_up     ->Write( fakefactorhisto_qcd_dm0_njet1_stat_up  ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_syst_up                 ->Write( fakefactorhisto_w_syst_up              ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_dm0_njet0_stat_up       ->Write( fakefactorhisto_w_dm0_njet0_stat_up    ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_dm0_njet1_stat_up       ->Write( fakefactorhisto_w_dm0_njet1_stat_up    ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_syst_up                ->Write( fakefactorhisto_tt_syst_up             ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_dm0_njet0_stat_up      ->Write( fakefactorhisto_tt_dm0_njet0_stat_up   ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_dm0_njet1_stat_up      ->Write( fakefactorhisto_tt_dm0_njet1_stat_up   ->GetName(),TObject::kOverwrite);
+
+    fakefactorhisto_qcd_syst_down             ->Write( fakefactorhisto_qcd_syst_down          ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_qcd_dm0_njet0_stat_down   ->Write( fakefactorhisto_qcd_dm0_njet0_stat_down->GetName(),TObject::kOverwrite);
+    fakefactorhisto_qcd_dm0_njet1_stat_down   ->Write( fakefactorhisto_qcd_dm0_njet1_stat_down->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_syst_down               ->Write( fakefactorhisto_w_syst_down            ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_dm0_njet0_stat_down     ->Write( fakefactorhisto_w_dm0_njet0_stat_down  ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_w_dm0_njet1_stat_down     ->Write( fakefactorhisto_w_dm0_njet1_stat_down  ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_syst_down              ->Write( fakefactorhisto_tt_syst_down           ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_dm0_njet0_stat_down    ->Write( fakefactorhisto_tt_dm0_njet0_stat_down ->GetName(),TObject::kOverwrite);
+    fakefactorhisto_tt_dm0_njet1_stat_down    ->Write( fakefactorhisto_tt_dm0_njet1_stat_down ->GetName(),TObject::kOverwrite);
+
+    trimmedTree->Delete();
+    delete ff;
+    ff_file->Close();
+    return;
+
+}
+
+
+//given the variable that is plotted this will return the fractions corresponding to the appropriate processes and regions 
+std::vector<float> getFFractions(std::string folder, float variable) {
+    
+    //travel to histogram file no directory structure ... histos should be there
+    //fout_->cd(folder.c_str());
+    std::cout<<"The folder and directory where the files are:    "<<folder<<std::endl;
+
+    std::vector<float> fractions;
+
+    //Calculating the Fractions  
+    int thebin;
+    thebin = findBin(folder.c_str(), "W_AI",variable);
+    //std::cout<<"Found the bin!"<<std::endl;
+    std::cout<<"The bin!  "<<thebin<<std::endl;
+    
+     
+    float W    = ((TH1D*) fout_->Get((folder+"/W_AI"  ).c_str() ))->GetBinContent(thebin); 
+    float ZJ   = ((TH1D*) fout_->Get((folder+"/ZJ_AI" ).c_str() ))->GetBinContent(thebin);
+    float VVJ  = ((TH1D*) fout_->Get((folder+"/VVJ_AI").c_str() ))->GetBinContent(thebin);
+    float VVT  = ((TH1D*) fout_->Get((folder+"/VVT_AI").c_str() ))->GetBinContent(thebin);
+    float TTT  = ((TH1D*) fout_->Get((folder+"/TTT_AI").c_str() ))->GetBinContent(thebin);
+    float TTJ  = ((TH1D*) fout_->Get((folder+"/TTJ_AI").c_str() ))->GetBinContent(thebin);
+    float ZTT  = ((TH1D*) fout_->Get((folder+"/TTJ_AI").c_str() ))->GetBinContent(thebin);
+    float data = ((TH1D*) fout_->Get((folder+"/data_obs_AI").c_str()))->GetBinContent(thebin);
+
+    std::cout<<"W    events :"<<W   <<std::endl;
+    std::cout<<"ZJ   events :"<<ZJ  <<std::endl;
+    std::cout<<"VVJ  events :"<<VVJ <<std::endl;
+    std::cout<<"VVT  events :"<<VVT <<std::endl;
+    std::cout<<"TTT  events :"<<TTT <<std::endl;
+    std::cout<<"TTJ  events :"<<TTJ <<std::endl;
+    std::cout<<"ZTT  events :"<<ZTT <<std::endl;
+    std::cout<<"data events :"<<data<<std::endl;
+    
+    float frac_w = (W + ZJ + VVJ) / data;
+    float frac_tt = TTJ / data;
+    float frac_real = (ZTT + TTT + VVT) / data;
+    float frac_qcd = 1. - (frac_w + frac_tt + frac_real);
+    float total = frac_w + frac_tt + frac_qcd;
+    frac_w = frac_w/total;
+    frac_tt = frac_tt/total;
+    frac_qcd = frac_qcd/total;
+    
+    //make sure that these add to 1... before subtracting for qcd
+    std::cout<<"frac_qcd:   "<<frac_qcd<<std::endl;
+    std::cout<<"frac_w:   "<<frac_w<<std::endl;
+    std::cout<<"frac_tt:   "<<frac_tt<<std::endl;
+    std::cout<<"frac_real:   "<<frac_real<<std::endl;
+    fractions.push_back(frac_w);
+    fractions.push_back(frac_tt);
+    fractions.push_back(frac_real);
+    fractions.push_back(frac_qcd);
+
+    
+    return fractions; 
+}
+
+std::vector<float> getFFractions2D(std::string folder, float m_vis_val, float njets_val) {
+    
+    //travel to histogram file no directory structure ... histos should be there
+    fout_->cd(folder.c_str());
+    std::vector<float> fractions;
+
+    //Calculating the Fractions  
+    std::pair<int,int> thebins;
+
+    thebins=findBin2D(folder.c_str(),"W",m_vis_val,njets_val);
+    //std::cout<<"Found the bin!"<<std::endl;
+    std::cout<<"The bins!  "<<thebins.first<<"   2:   "<<thebins.second<<std::endl;
+    
+     
+    float W    = ((TH2D*) fout_->Get("W"   ))->GetBinContent(thebins.first,thebins.second); 
+    float ZJ   = ((TH2D*) fout_->Get("ZJ"  ))->GetBinContent(thebins.first,thebins.second);
+    float VVJ  = ((TH2D*) fout_->Get("VVJ" ))->GetBinContent(thebins.first,thebins.second);
+    float VVT  = ((TH2D*) fout_->Get("VVT" ))->GetBinContent(thebins.first,thebins.second);
+    float TTT  = ((TH2D*) fout_->Get("TTT" ))->GetBinContent(thebins.first,thebins.second);
+    float TTJ  = ((TH2D*) fout_->Get("TTJ" ))->GetBinContent(thebins.first,thebins.second);
+    float ZTT  = ((TH2D*) fout_->Get("TTJ" ))->GetBinContent(thebins.first,thebins.second);
+    float data = ((TH2D*) fout_->Get("data"))->GetBinContent(thebins.first,thebins.second);
+    std::cout<<"W    events :"<<W   <<std::endl;
+    std::cout<<"ZJ   events :"<<ZJ  <<std::endl;
+    std::cout<<"VVJ  events :"<<VVJ <<std::endl;
+    std::cout<<"VVT  events :"<<VVT <<std::endl;
+    std::cout<<"TTT  events :"<<TTT <<std::endl;
+    std::cout<<"TTJ  events :"<<TTJ <<std::endl;
+    std::cout<<"ZTT  events :"<<ZTT <<std::endl;
+    std::cout<<"data events :"<<data<<std::endl;
+    
+    float frac_w = (W + ZJ + VVJ) / data;
+    float frac_tt = TTJ / data;
+    float frac_real = (ZTT + TTT + VVT) / data;
+    float frac_qcd = 1. - (frac_w + frac_tt + frac_real);
+    std::cout<<"frac_qcd:   "<<frac_qcd<<std::endl;
+    std::cout<<"frac_w:   "<<frac_w<<std::endl;
+    std::cout<<"frac_tt:   "<<frac_tt<<std::endl;
+    std::cout<<"frac_real:   "<<frac_real<<std::endl;
+    fractions.push_back(frac_w);
+    fractions.push_back(frac_tt);
+    fractions.push_back(frac_real);
+    fractions.push_back(frac_qcd);
+
+    
+    return fractions; 
+}
+
+int findBin(std::string folder, std::string histname, float variable){
+    
+    //fout_->cd(folder.c_str());     
+    TH1D * h = (TH1D*) fout_->Get((folder+"/"+histname).c_str());
+    std::cout<<"entries in find bin histo "<<h->GetEntries()<<std::endl;
+    TAxis *X = h->GetXaxis();   
+    int binx = X->FindBin(variable);
+
+    return binx;
+}   
+
+std::pair<int,int> findBin2D(std::string folder, std::string histname,float m_vis,float njets){
+    
+    fout_->cd(folder.c_str());     
+    TH2D * h = (TH2D*) fout_->Get(histname.c_str());
+    //std::cout<<"entries in find bin histo "<<h->GetEntries()<<std::endl;
+    TAxis *X = h->GetXaxis();   
+    TAxis *Y = h->GetYaxis();   
+    int binx = X->FindBin(m_vis);
+    int biny = Y->FindBin(njets);
+    std::pair<int,int> binpair = std::make_pair(binx,biny);
+
+    return binpair;
+}   
 
 
 private:
@@ -1768,6 +2451,7 @@ std::string ZLL_genLLSel_;
 std::string ZTT_genTauSel_;
 std::string ZJFT_genLReject_;
 std::string ZLFT_genLSel_;
+std::string muTau_genTauSel_;
 std::string dataSelection_;
 
 //Luminosity and efficiency corrections

@@ -106,9 +106,10 @@ class EventTreeMaker : public edm::EDAnalyzer {
 			RUN    = iEvent.id().run();
 			LUMI   = iEvent.luminosityBlock();
 			edm::Handle<GenEventInfoProduct> genEvt;
- 			GENWEIGHT = 1;
+ 			//GENWEIGHT = 1;
             if(iEvent.getByToken(src_,genEvt)) {
                 if (genEvt->weight()<0) GENWEIGHT=-1;
+                else GENWEIGHT = genEvt->weight();
             }
             /*
                edm::Handle<LumiScalersCollection> lumi;

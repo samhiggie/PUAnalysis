@@ -32,7 +32,9 @@
 </bin>
 <bin   name="FastMTTStandAlonePUATauDM" file="FastMTTStandAlonePUATauDM.cc">
 </bin>
-<bin   name="FakeFactorSA_Syst" file="FakeFactorSA_Syst.cc">
+<bin   name="FakeFactor_2018_mt" file="FakeFactor_2018_mt.cc">
+</bin>
+<bin   name="FakeFactor_2018_mt_flat" file="FakeFactor_2018_mt_flat.cc">
 </bin>
 <!--<bin   name="FakeFactorSA" file="FakeFactorSA.cc">
 </bin>-->

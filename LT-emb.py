@@ -32,6 +32,9 @@ process.source = cms.Source("PoolSource",
 #process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/CMSSW_10_2_14/src/PUAnalysis/Configuration/data/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt').getVLuminosityBlockRange() 
 
 
+import FWCore.PythonUtilities.LumiList as LumiList #check lumilist name, not sure it matches to golden
+process.source.lumisToProcess = LumiList.LumiList(filename = '/afs/hep.wisc.edu/home/samuellh/WorkingArea/HTT/CMSSW_10_2_14/src/PUAnalysis/Configuration/data/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt').getVLuminosityBlockRange() 
+
 #Default Reconstruction from the analysTools.py config file
 #The main 'setup' processes can be found in "defaultReconstruction" and "defaultReconstructionMC"
 #analysisTools takes care of pre-selections, adding in extra ID's that do not come in the miniAOD
